@@ -6,36 +6,32 @@
 <template>
   <aside
     :class="[
-      'fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-500 ease-in-out z-99999 border-r border-gray-200',
-      {
-        'lg:w-[290px]': isExpanded || isMobileOpen || isHovered,
-        'lg:w-[90px]': !isExpanded && !isHovered,
-        'translate-x-0 w-[290px]': isMobileOpen,
-        '-translate-x-full': !isMobileOpen,
-        'lg:translate-x-0': true,
-      },
+      'fixed mt-16 flex flex-col lg:mt-0 top-0 px-0 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-500 ease-in-out z-99999 border-r border-gray-200',
+      isExpanded || isMobileOpen || isHovered ? 'w-[290px] px-5' : 'w-[90px] px-2',
+      isExpanded || isMobileOpen || isHovered ? 'sidebar-expanded' : 'sidebar-collapsed',
+      'transition-[width,padding] duration-500 ease-in-out',
     ]"
     @mouseenter="!isExpanded && (isHovered = true)"
     @mouseleave="isHovered = false"
   >
     <div
       :class="[
-        'py-8 flex',
-        !isExpanded && !isHovered ? 'lg:justify-center' : 'justify-start',
+        'py-8 flex transition-all duration-500',
+        !isExpanded && !isHovered ? 'justify-center' : 'justify-start',
       ]"
     >
       <router-link to="/">
         <img
           v-if="isExpanded || isHovered || isMobileOpen"
-          class="dark:hidden"
-          src="/images/logo/banner_huam.png"
+          class="dark:hidden transition-all duration-500 ml-6"
+          src="/images/logo/Logo-LIME-NoFondo.png"
           alt="Logo"
           width="150"
           height="40"
         />
         <img
           v-if="isExpanded || isHovered || isMobileOpen"
-          class="hidden dark:block"
+          class="hidden dark:block transition-all duration-500"
           src="/images/logo/logo-dark.svg"
           alt="Logo"
           width="150"
@@ -43,7 +39,8 @@
         />
         <img
           v-else
-          src="/images/logo/icon-huam.webp"
+          class="transition-all duration-500"
+          src="/images/logo/LOGO-LIME-Inicial.png"
           alt="Logo"
           width="32"
           height="32"
@@ -58,11 +55,11 @@
           <div v-for="(menuGroup, groupIndex) in menuGroups" :key="groupIndex">
             <h2
               :class="[
-                'mb-4 text-xs uppercase flex leading-[20px] text-gray-400',
-                !isExpanded && !isHovered
-                  ? 'lg:justify-center'
-                  : 'justify-start',
+                'mb-4 text-xs uppercase flex leading-[20px] text-gray-400 transition-all duration-500',
+                !isExpanded && !isHovered ? 'justify-center' : 'justify-start',
+                !isExpanded && !isHovered ? 'opacity-0 w-0' : 'opacity-100 w-auto',
               ]"
+              style="overflow: hidden;"
             >
               <template v-if="isExpanded || isHovered || isMobileOpen">
                 {{ menuGroup.title }}
@@ -75,41 +72,30 @@
                   v-if="item.subItems"
                   @click="toggleSubmenu(groupIndex, index)"
                   :class="[
-                    'menu-item group w-full transition-all duration-300 ease-in-out',
-                    {
-                      'menu-item-active': isSubmenuOpen(groupIndex, index),
-                      'menu-item-inactive': !isSubmenuOpen(groupIndex, index),
-                    },
-                    !isExpanded && !isHovered
-                      ? 'lg:justify-center'
-                      : 'lg:justify-start',
+                    'menu-item group w-full transition-all duration-300 ease-in-out flex items-center',
+                    !isExpanded && !isHovered ? 'justify-center' : 'justify-start',
                   ]"
                 >
                   <span
                     :class="[
-                      'transition-colors duration-300 ease-in-out',
-                      isSubmenuOpen(groupIndex, index)
-                        ? 'menu-item-icon-active'
-                        : 'menu-item-icon-inactive',
+                      'transition-colors duration-300 ease-in-out flex items-center justify-center',
+                      !isExpanded && !isHovered ? 'mx-auto' : '',
                     ]"
                   >
-                    <component :is="item.icon" />
+                    <component :is="item.icon" class="text-xl" />
                   </span>
                   <span
                     v-if="isExpanded || isHovered || isMobileOpen"
-                    class="menu-item-text transition-opacity duration-300 ease-in-out"
-                    >{{ item.name }}</span
-                  >
+                    class="menu-item-text transition-all duration-500 ml-1"
+                    :style="{ opacity: isExpanded || isHovered || isMobileOpen ? 1 : 0, width: isExpanded || isHovered || isMobileOpen ? 'auto' : '0', overflow: 'hidden', transition: 'opacity 0.5s, width 0.5s' }"
+                  >{{ item.name }}</span>
                   <ChevronDownIcon
                     v-if="isExpanded || isHovered || isMobileOpen"
                     :class="[
                       'ml-auto w-5 h-5 transition-transform duration-300 ease-in-out',
-                      {
-                        'rotate-180 text-brand-500': isSubmenuOpen(
-                          groupIndex,
-                          index
-                        ),
-                      },
+                      isSubmenuOpen(groupIndex, index)
+                        ? 'rotate-180 text-LIME-Verde-Claro-7'
+                        : ''
                     ]"
                   />
                 </button>
@@ -117,28 +103,23 @@
                   v-else-if="item.path"
                   :to="item.path"
                   :class="[
-                    'menu-item group transition-all duration-300 ease-in-out',
-                    {
-                      'menu-item-active': isActive(item.path),
-                      'menu-item-inactive': !isActive(item.path),
-                    },
+                    'menu-item group transition-all duration-300 ease-in-out flex items-center',
+                    !isExpanded && !isHovered ? 'justify-center' : 'justify-start',
                   ]"
                 >
                   <span
                     :class="[
-                      'transition-colors duration-300 ease-in-out',
-                      isActive(item.path)
-                        ? 'menu-item-icon-active'
-                        : 'menu-item-icon-inactive',
+                      'transition-colors duration-300 ease-in-out flex items-center justify-center',
+                      !isExpanded && !isHovered ? 'mx-auto' : '',
                     ]"
                   >
-                    <component :is="item.icon" />
+                    <component :is="item.icon" class="text-xl" />
                   </span>
                   <span
                     v-if="isExpanded || isHovered || isMobileOpen"
-                    class="menu-item-text transition-opacity duration-300 ease-in-out"
-                    >{{ item.name }}</span
-                  >
+                    class="menu-item-text transition-all duration-500 ml-3"
+                    :style="{ opacity: isExpanded || isHovered || isMobileOpen ? 1 : 0, width: isExpanded || isHovered || isMobileOpen ? 'auto' : '0', overflow: 'hidden', transition: 'opacity 0.5s, width 0.5s' }"
+                  >{{ item.name }}</span>
                 </router-link>
                 <div
                   v-show="
@@ -146,36 +127,24 @@
                     (isExpanded || isHovered || isMobileOpen)
                   "
                 >
-                  <ul class="mt-2 space-y-1 ml-9">
+                  <ul class="mt-2 space-y-1 ml-5">
                     <li v-for="subItem in item.subItems" :key="subItem.name">
                       <router-link
                         :to="subItem.path"
-                        :class="[
-                          'menu-dropdown-item transition-all duration-300 ease-in-out',
-                          {
-                            'menu-dropdown-item-active': isActive(
-                              subItem.path
-                            ),
-                            'menu-dropdown-item-inactive': !isActive(
-                              subItem.path
-                            ),
-                          },
-                        ]"
+                        class="menu-dropdown-item transition-all duration-300 ease-in-out flex items-center"
                       >
-                        {{ subItem.name }}
+                        <span
+                          class="transition-all duration-500 ml-3"
+                          :style="{ opacity: isExpanded || isHovered || isMobileOpen ? 1 : 0, width: isExpanded || isHovered || isMobileOpen ? 'auto' : '0', overflow: 'hidden', transition: 'opacity 0.5s, width 0.5s' }"
+                        >{{ subItem.name }}</span>
                         <span class="flex items-center gap-1 ml-auto">
                           <span
                             v-if="subItem.new"
                             :class="[
                               'menu-dropdown-badge transition-colors duration-300 ease-in-out',
-                              {
-                                'menu-dropdown-badge-active': isActive(
-                                  subItem.path
-                                ),
-                                'menu-dropdown-badge-inactive': !isActive(
-                                  subItem.path
-                                ),
-                              },
+                              isActive(subItem.path)
+                                ? 'menu-dropdown-badge-active'
+                                : 'menu-dropdown-badge-inactive'
                             ]"
                           >
                             new
@@ -184,14 +153,9 @@
                             v-if="subItem.pro"
                             :class="[
                               'menu-dropdown-badge transition-colors duration-300 ease-in-out',
-                              {
-                                'menu-dropdown-badge-active': isActive(
-                                  subItem.path
-                                ),
-                                'menu-dropdown-badge-inactive': !isActive(
-                                  subItem.path
-                                ),
-                              },
+                              isActive(subItem.path)
+                                ? 'menu-dropdown-badge-active'
+                                : 'menu-dropdown-badge-inactive'
                             ]"
                           >
                             pro
@@ -361,6 +325,17 @@ const isSubmenuOpen = (groupIndex: number, itemIndex: number): boolean => {
 </script>
 
 <style scoped>
+.sidebar-expanded {
+  transition: width 0.5s, padding 0.5s;
+}
+.sidebar-collapsed {
+  transition: width 0.5s, padding 0.5s;
+}
+.menu-item-text {
+  transition: opacity 0.5s, width 0.5s;
+  white-space: nowrap;
+}
+
 /* Animación de deslizamiento y desvanecimiento para submenús */
 .slide-fade-enter-active,
 .slide-fade-leave-active {
@@ -387,12 +362,26 @@ const isSubmenuOpen = (groupIndex: number, itemIndex: number): boolean => {
 .menu-item,
 .menu-dropdown-item {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
 }
 
 .menu-item:hover,
 .menu-dropdown-item:hover {
-  background-color: rgba(59, 130, 246, 0.1);
+  background-color: #E6FAEC;
   transform: translateX(4px);
+}
+
+/* Estilos para items activos e inactivos */
+.menu-item.router-link-active,
+.menu-dropdown-item.router-link-active {
+  background-color: #E6FAEC;
+  color: #2E7D32;
+}
+
+.menu-item:not(.router-link-active),
+.menu-dropdown-item:not(.router-link-active) {
+  color: #666666;
 }
 
 /* Transiciones para íconos y badges */

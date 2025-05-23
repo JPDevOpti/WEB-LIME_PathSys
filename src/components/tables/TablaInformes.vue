@@ -312,7 +312,7 @@
               <td class="px-5 py-4 sm:px-6">
                 <div class="flex items-center gap-3">
                   <div class="h-[32px] w-[32px] flex items-center justify-center bg-blue-50 rounded-md">
-                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-brand-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                       <rect x="5" y="3" width="14" height="18" rx="2" stroke="currentColor" />
                       <line x1="8" y1="7" x2="16" y2="7" stroke="currentColor" />
                       <line x1="8" y1="11" x2="16" y2="11" stroke="currentColor" />
@@ -375,7 +375,7 @@
                 <div class="flex gap-2">
                   <button 
                     @click="mostrarDetallesMuestra(muestra)"
-                    class="text-brand-500 hover:text-brand-600 p-1 rounded-md hover:bg-brand-50 transition-colors"
+                    class="text-brand-600 hover:text-brand-800 p-1 rounded-md hover:bg-blue-50 transition-colors"
                   >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -384,7 +384,7 @@
                   </button>
                   <button 
                     v-if="muestra.requireValidacion"
-                    class="text-brand-500 hover:text-brand-600 p-1 rounded-md hover:bg-brand-50 transition-colors"
+                    class="text-brand-700 hover:text-brand-800 p-1 rounded-md hover:bg-green-50 transition-colors"
                     :class="{ 'opacity-40 cursor-not-allowed': !muestra.fechaTranscripcion }"
                     :disabled="!muestra.fechaTranscripcion"
                     @click="validarMuestra(muestra)"
@@ -423,7 +423,7 @@
             <span class="text-sm text-gray-500">Mostrando</span>
             <select
               v-model="itemsPerPage"
-              class="h-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10"
+              class="h-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:border-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-700/10"
             >
               <option :value="5">5</option>
               <option :value="10">10</option>
@@ -446,7 +446,7 @@
             <button
               @click="currentPage++"
               :disabled="currentPage === totalPages"
-              class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-brand-700/10 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Siguiente
             </button>

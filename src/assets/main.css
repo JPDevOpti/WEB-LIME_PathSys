@@ -41,17 +41,23 @@ layer(base);
   --color-white: #ffffff;
   --color-black: #101828;
 
+  --color-LIME-Azul-Claro:   #CAEAF2;
+  --color-LIME-Azul-2:       #8FC8DE;
+  --color-LIME-Azul-3:       #5CA6C9;
+  --color-LIME-Azul-4:       #2974A3;
+  --color-LIME-Azul-Oscuro:  #064D5F;
+
   --color-brand-25: #f2f7ff;
   --color-brand-50: #ecf3ff;
-  --color-brand-100: #dde9ff;
-  --color-brand-200: #c2d6ff;
-  --color-brand-300: #9cb9ff;
-  --color-brand-400: #7592ff;
-  --color-brand-500: #465fff;
-  --color-brand-600: #3641f5;
-  --color-brand-700: #2a31d8;
-  --color-brand-800: #252dae;
-  --color-brand-900: #262e89;
+  --color-brand-100: #E6FAEC;
+  --color-brand-200: #E6FAEC;
+  --color-brand-300: #B3EBC7;
+  --color-brand-400: #A4EAB5;
+  --color-brand-500: #7FCB97;
+  --color-brand-600: #7FCB97;
+  --color-brand-700: #3D8D5B;
+  --color-brand-800: #3D8D5B;
+  --color-brand-900: #3D8D5B;
   --color-brand-950: #161950;
 
   --color-blue-light-25: #f5fbff;
@@ -193,7 +199,7 @@ layer(base);
 }
 
 @utility menu-item-active {
-  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+  @apply bg-brand-50 text-brand-700 dark:bg-brand-500/[0.12] dark:text-brand-400;
 }
 
 @utility menu-item-inactive {
@@ -205,7 +211,7 @@ layer(base);
 }
 
 @utility menu-item-icon-active {
-  @apply text-brand-500 dark:text-brand-400;
+  @apply text-brand-700 dark:text-brand-400;
 }
 
 @utility menu-item-icon-inactive {
@@ -217,7 +223,7 @@ layer(base);
 }
 
 @utility menu-item-arrow-active {
-  @apply rotate-180 text-brand-500 dark:text-brand-400;
+  @apply rotate-180 text-brand-700 dark:text-brand-400;
 }
 
 @utility menu-item-arrow-inactive {
@@ -229,7 +235,7 @@ layer(base);
 }
 
 @utility menu-dropdown-item-active {
-  @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+  @apply bg-brand-50 text-brand-700 dark:bg-brand-500/[0.12] dark:text-brand-400;
 }
 
 @utility menu-dropdown-item-inactive {

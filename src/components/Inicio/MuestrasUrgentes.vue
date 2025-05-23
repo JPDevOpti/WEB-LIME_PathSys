@@ -70,7 +70,7 @@
               <div class="flex items-center gap-3">
                 <div class="h-[50px] w-[50px] flex items-center justify-center bg-blue-50 rounded-md transition-colors duration-300 group-hover:bg-blue-100 dark:bg-blue-900/20 dark:group-hover:bg-blue-900/30">
                   <svg
-                    class="w-8 h-8 text-blue-600 transition-colors duration-300 dark:text-blue-400"
+                    class="w-8 h-8 text-brand-700 transition-colors duration-300 dark:text-blue-400"
                     fill="none"
                     stroke="currentColor"
                     stroke-width="2"

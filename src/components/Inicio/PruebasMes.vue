@@ -60,7 +60,7 @@ const series = ref([
 
 // Configuración del gráfico
 const chartOptions = ref({
-  colors: ['#465fff'],
+  colors: ['#3D8D5B'],
   chart: {
     fontFamily: 'Outfit, sans-serif',
     type: 'bar',

@@ -198,7 +198,7 @@ const series = computed(() => [props.value])
 
 // Configuración del gráfico circular
 const chartOptions = {
-  colors: ['#465FFF'],
+  colors: ['#3D8D5B'],
   chart: {
     fontFamily: 'Outfit, sans-serif',
     sparkline: {
@@ -255,7 +255,7 @@ const chartOptions = {
       shade: 'dark',
       type: 'horizontal',
       shadeIntensity: 0.5,
-      gradientToColors: ['#6B7FFF'],
+      gradientToColors: ['#7FCB97'],
       inverseColors: true,
       opacityFrom: 1,
       opacityTo: 1,
