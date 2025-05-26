@@ -250,21 +250,6 @@
         </div>
       </div>
 
-      <!-- Hospital (visible solo si es hospitalizado) -->
-      <div v-if="formData.tipoAtencion === 'hospitalizado'">
-        <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Hospital *
-        </label>
-        <input
-          type="text"
-          v-model="formData.hospital"
-          placeholder="Ingrese el nombre del hospital"
-          :class="getFieldClasses('hospital')"
-          required
-          ref="hospitalInput"
-        />
-      </div>
-
       <!-- CUPS (múltiple selección) -->
       <div class="mb-6">
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
@@ -403,7 +388,6 @@ interface FormData {
   edad: string
   entidad: string
   tipoAtencion: string
-  hospital: string
   cups: string[]
   observaciones: string
 }
@@ -422,7 +406,6 @@ const formData = reactive<FormData>({
   edad: '',
   entidad: '',
   tipoAtencion: '',
-  hospital: '',
   cups: [''],
   observaciones: ''
 })
@@ -448,7 +431,6 @@ const cedulaInput = ref<HTMLInputElement | null>(null)
 const nombreInput = ref<HTMLInputElement | null>(null)
 const edadInput = ref<HTMLInputElement | null>(null)
 const entidadInput = ref<HTMLInputElement | null>(null)
-const hospitalInput = ref<HTMLInputElement | null>(null)
 
 // Lista de entidades (simulada)
 const entidades: Entidad[] = [
@@ -476,7 +458,6 @@ const isFormValid = computed(() => {
     formData.edad.trim() !== '' &&
     formData.entidad.trim() !== '' &&
     formData.tipoAtencion !== '' &&
-    (formData.tipoAtencion !== 'hospitalizado' || formData.hospital.trim() !== '') &&
     formData.cups.every(cups => cups.trim() !== '')
   )
 })
@@ -512,7 +493,6 @@ const pacientesDB = [
     edad: '35',
     entidad: 'Hospital Central',
     tipoAtencion: 'ambulatorio',
-    hospital: '',
     cups: ['CUPS-001'],
     observaciones: 'Paciente con antecedentes de hipertensión'
   },
@@ -523,7 +503,6 @@ const pacientesDB = [
     edad: '28',
     entidad: 'Clínica San Juan',
     tipoAtencion: 'hospitalizado',
-    hospital: 'Hospital del Norte',
     cups: ['CUPS-002', 'CUPS-003'],
     observaciones: 'Paciente en observación'
   }

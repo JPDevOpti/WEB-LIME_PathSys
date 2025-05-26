@@ -164,21 +164,6 @@ np<template>
       </div>
     </div>
 
-    <!-- Hospital (visible solo si es hospitalizado) -->
-    <div v-if="formData.tipoAtencion === 'hospitalizado'">
-      <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Hospital *
-      </label>
-      <input
-        type="text"
-        v-model="formData.hospital"
-        placeholder="Ingrese el nombre del hospital"
-        :class="getFieldClasses('hospital', true)"
-        required
-        ref="hospitalInput"
-      />
-    </div>
-
     <!-- Observaciones -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
@@ -402,8 +387,7 @@ const formData = reactive({
   sexo: '',
   edad: '',
   entidad: '',
-  tipoAtencion: '', // Cambiado a string para manejar una única selección
-  hospital: '',
+  tipoAtencion: '',
   observaciones: '',
 })
 
@@ -412,7 +396,6 @@ const cedulaInput = ref<HTMLInputElement | null>(null)
 const nombreInput = ref<HTMLInputElement | null>(null)
 const edadInput = ref<HTMLInputElement | null>(null)
 const entidadInput = ref<HTMLInputElement | null>(null)
-const hospitalInput = ref<HTMLInputElement | null>(null)
 
 // Agregar después de las importaciones existentes
 const entidades = [
@@ -433,8 +416,7 @@ const isFormValid = computed(() => {
     formData.sexo &&
     formData.edad &&
     formData.entidad &&
-    formData.tipoAtencion && // Verificar que se haya seleccionado una opción
-    (formData.tipoAtencion === 'hospitalizado' ? formData.hospital : true)
+    formData.tipoAtencion
   )
 })
 
@@ -505,7 +487,6 @@ const limpiarFormulario = () => {
   formData.edad = ''
   formData.entidad = ''
   formData.tipoAtencion = ''
-  formData.hospital = ''
   formData.observaciones = ''
   
   statusMessage.value = ''

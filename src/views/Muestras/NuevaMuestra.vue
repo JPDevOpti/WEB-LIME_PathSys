@@ -27,7 +27,7 @@
 import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import DefaultInputs from '@/components/forms/NuevaMuestra/DatosDemograficos.vue'
+import DefaultInputs from '@/components/forms/NuevaMuestra/NuevoPaciente.vue'
 import ComponentCard from '@/components/common/ComponentCard.vue'
 import VerMuestrasPaciente from '@/components/forms/NuevaMuestra/VerMuestrasPaciente.vue'
 import AsignarCodigoMuestra from '@/components/forms/NuevaMuestra/AsignarCodigoMuestra.vue'

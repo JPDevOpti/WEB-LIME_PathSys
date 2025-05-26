@@ -55,7 +55,7 @@
           <div v-for="(menuGroup, groupIndex) in menuGroups" :key="groupIndex">
             <h2
               :class="[
-                'mb-4 text-xs uppercase flex leading-[20px] text-gray-400 transition-all duration-500',
+                'mb-4 text-xs uppercase flex leading-[30px] text-gray-400 transition-all duration-500',
                 !isExpanded && !isHovered ? 'justify-center' : 'justify-start',
                 !isExpanded && !isHovered ? 'opacity-0 w-0' : 'opacity-100 w-auto',
               ]"
@@ -82,7 +82,7 @@
                       !isExpanded && !isHovered ? 'mx-auto' : '',
                     ]"
                   >
-                    <component :is="item.icon" class="text-xl" />
+                    <component :is="item.icon" class="text-2xl" />
                   </span>
                   <span
                     v-if="isExpanded || isHovered || isMobileOpen"
@@ -94,7 +94,7 @@
                     :class="[
                       'ml-auto w-5 h-5 transition-transform duration-300 ease-in-out',
                       isSubmenuOpen(groupIndex, index)
-                        ? 'rotate-180 text-LIME-Verde-Claro-7'
+                        ? 'rotate-180 text-brand-700'
                         : ''
                     ]"
                   />
@@ -113,7 +113,7 @@
                       !isExpanded && !isHovered ? 'mx-auto' : '',
                     ]"
                   >
-                    <component :is="item.icon" class="text-xl" />
+                    <component :is="item.icon" class="text-2xl" />
                   </span>
                   <span
                     v-if="isExpanded || isHovered || isMobileOpen"
