@@ -25,9 +25,9 @@ import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import ComponentCard from '@/components/common/ComponentCard.vue'
-import VerificarMuestrasCodigo from '@/components/forms/ValidarInforme/VerificarMuestrasCodigo.vue'
-import VerificarMuestraPaciente from '@/components/forms/ValidarInforme/VerificarMuestrasPaciente.vue'
-import ValidarInformeMuestra from '@/components/forms/ValidarInforme/ValidarInformeMuestra.vue'
+import VerificarMuestrasCodigo from '@/components/Muestras/ValidarInforme/VerificarMuestrasCodigo.vue'
+import VerificarMuestraPaciente from '@/components/Muestras/ValidarInforme/VerificarMuestrasPaciente.vue'
+import ValidarInformeMuestra from '@/components/Muestras/ValidarInforme/ValidarInformeMuestra.vue'
 
 const currentPageTitle = ref('Gestión de Muestras')
 </script>

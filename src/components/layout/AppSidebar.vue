@@ -261,20 +261,20 @@ const menuGroups: MenuGroup[] = [
         ],
       },
       {
-        icon: CalenderIcon,
-        name: "Calendar",
-        path: "/calendar",
+        icon: UserCircleIcon,
+        name: "Nuevos integrantes",
+        subItems: [
+          { name: "Perfiles", path: "/perfil", pro: false },
+          { name: "Nuevo Patólogo", path: "/nuevo-patologo", pro: false },
+          { name: "Nueva Entidad", path: "/nueva-entidad", pro: false },
+          { name: "Nuevo Administrativo", path: "/nuevo-administrativo", pro: false },
+        ],
       },
     ],
   },
   {
     title: "Others",
     items: [
-      {
-        icon: UserCircleIcon,
-        name: "User Profile",
-        path: "/profile",
-      },
       {
         icon: PlugInIcon,
         name: "Authentication",

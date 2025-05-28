@@ -29,11 +29,11 @@ import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import ComponentCard from '@/components/common/ComponentCard.vue'
-import SelectInput from '@/components/forms/FormElements/SelectInput.vue'
-import TextArea from '@/components/forms/FormElements/TextArea.vue'
-import Dropzone from '@/components/forms/FormElements/Dropzone.vue'
-import FileInput from '@/components/forms/FormElements/FileInput.vue'
-import CheckboxInput from '@/components/forms/FormElements/CheckboxInput.vue'
+import SelectInput from '@/components/Muestras/FormElements/SelectInput.vue'
+import TextArea from '@/components/Muestras/FormElements/TextArea.vue'
+import Dropzone from '@/components/Muestras/FormElements/Dropzone.vue'
+import FileInput from '@/components/Muestras/FormElements/FileInput.vue'
+import CheckboxInput from '@/components/Muestras/FormElements/CheckboxInput.vue'
 
 const currentPageTitle = ref('Form Elements')
 </script>

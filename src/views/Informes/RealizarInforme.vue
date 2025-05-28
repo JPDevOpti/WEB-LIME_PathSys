@@ -25,9 +25,9 @@ import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import ComponentCard from '@/components/common/ComponentCard.vue'
-import RealizarInformeMuestra from '@/components/forms/RealizarInforme/RealizarInformeMuestra.vue'
-import VerificarMuestrasCodigo from '@/components/forms/RealizarInforme/VerificarMuestrasCodigo.vue'
-import VerificarMuestraPaciente from '@/components/forms/RealizarInforme/VerificarMuestrasPaciente.vue'
+import RealizarInformeMuestra from '@/components/Muestras/RealizarInforme/RealizarInformeMuestra.vue'
+import VerificarMuestrasCodigo from '@/components/Muestras/RealizarInforme/VerificarMuestrasCodigo.vue'
+import VerificarMuestraPaciente from '@/components/Muestras/RealizarInforme/VerificarMuestrasPaciente.vue'
 
 const currentPageTitle = ref('Realizar Informe')
 </script>

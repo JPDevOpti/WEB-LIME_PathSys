@@ -7,7 +7,7 @@
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
-          Buscar Muestra
+          Asignación de Patólogo a Muestra
         </h3>
         <p class="text-sm text-blue-600">Ingrese el código de la muestra para asignar un patólogo</p>
       </div>
@@ -25,7 +25,7 @@
           <input
             v-model="codigoMuestra"
             type="text"
-            placeholder="Ejemplo: M1234567890"
+            placeholder="Ejemplo: M001"
             class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 py-3 pl-[62px] text-sm text-gray-800 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             @keyup.enter="buscarMuestra"
             :disabled="isLoading"
@@ -368,8 +368,8 @@ const filteredPatologos = ref(patologos)
 
 // Base de datos simulada de muestras
 const muestrasDB: Record<string, MuestraInfo> = {
-  'M1234567890': {
-    codigo: 'M1234567890',
+  'M001': {
+    codigo: 'M001',
     numeroCaso: 'C001',
     paciente: {
       nombre: 'Juan Pérez García',
@@ -378,8 +378,8 @@ const muestrasDB: Record<string, MuestraInfo> = {
     cups: ['CUPS001', 'CUPS002', 'CUPS003'],
     entidad: 'ESSALUD'
   },
-  'M0987654321': {
-    codigo: 'M0987654321',
+  'M002': {
+    codigo: 'M002',
     numeroCaso: 'C002',
     paciente: {
       nombre: 'María López Silva',

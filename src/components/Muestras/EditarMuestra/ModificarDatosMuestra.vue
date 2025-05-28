@@ -133,34 +133,93 @@
         />
       </div>
 
-      <!-- Estado de la Muestra -->
+      <!-- Número de Caso -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Estado de la Muestra *
+          Número de Caso *
         </label>
-        <select
-          v-model="formData.estado"
-          :class="getFieldClasses('estado')"
+        <input
+          type="text"
+          v-model="formData.numeroCaso"
+          :class="getFieldClasses('numeroCaso')"
           required
-        >
-          <option value="">Seleccione un estado</option>
-          <option value="recibida">Recibida</option>
-          <option value="en-proceso">En Proceso</option>
-          <option value="completada">Completada</option>
-        </select>
+        />
       </div>
 
-      <!-- Médico Solicitante -->
+      <!-- Médico Solicitante (tipo combobox, igual que patólogo) -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
           Médico Solicitante *
         </label>
-        <input
-          type="text"
-          v-model="formData.medicoSolicitante"
-          :class="getFieldClasses('medicoSolicitante')"
-          required
-        />
+        <div class="relative">
+          <input
+            type="text"
+            v-model="medicoSolicitanteSearch"
+            @input="filterMedicos"
+            @focus="showMedicosList = true"
+            placeholder="Buscar o seleccionar médico"
+            class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+            required
+          />
+          <!-- Lista desplegable de médicos -->
+          <div
+            v-if="showMedicosList && filteredMedicos.length > 0"
+            class="absolute z-[9999] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+          >
+            <div
+              v-for="medico in filteredMedicos"
+              :key="medico.value"
+              @click="selectMedico(medico)"
+              class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+              :class="{ 'bg-gray-100': formData.medicoSolicitante === medico.value }"
+            >
+              {{ medico.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUPS por Muestra -->
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700">
+          CUPS por Muestra *
+        </label>
+        <div class="space-y-6">
+          <div v-for="(muestra, muestraIndex) in formData.muestras" :key="muestraIndex" class="space-y-2">
+            <h4 class="text-sm font-medium text-gray-700">Muestra {{ muestra.numero }}</h4>
+            <div v-for="(cups, cupsIndex) in muestra.cups" :key="cupsIndex" class="flex items-center space-x-2">
+              <input
+                type="text"
+                v-model="formData.muestras[muestraIndex].cups[cupsIndex]"
+                placeholder="Ingrese el CUPS"
+                class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                required
+                @keydown.enter.prevent="agregarCupsSiNecesario(muestraIndex, cupsIndex)"
+              />
+              <button
+                v-if="muestra.cups.length > 1"
+                @click="eliminarCups(muestraIndex, cupsIndex)"
+                type="button"
+                class="p-2 text-red-600 hover:text-red-800"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+            <!-- Botón para agregar CUPS debajo de la lista, igual que en AsignarCodigoMuestra.vue -->
+            <button
+              @click="agregarCups(muestraIndex)"
+              type="button"
+              class="mt-2 inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1 transition-colors"
+            >
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Agregar CUPS
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Observaciones -->
@@ -261,28 +320,36 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref, onMounted } from 'vue'
+import { reactive, computed, ref, onMounted, watch } from 'vue'
 
 interface FormData {
   idMuestra: string
+  numeroCaso: string
   paciente: {
     nombre: string
     cedula: string
   }
-  estado: string
   medicoSolicitante: string
   observaciones: string
+  muestras: {
+    numero: number
+    cups: string[]
+  }[]
 }
 
 const formData = reactive<FormData>({
   idMuestra: '',
+  numeroCaso: '',
   paciente: {
     nombre: '',
     cedula: ''
   },
-  estado: '',
   medicoSolicitante: '',
-  observaciones: ''
+  observaciones: '',
+  muestras: [{
+    numero: 1,
+    cups: ['']
+  }]
 })
 
 const isLoading = ref(false)
@@ -312,7 +379,10 @@ const muestrasDB = [
     },
     estado: 'en-proceso',
     medicoSolicitante: 'Dr. García',
-    observaciones: 'Muestra recibida en condiciones óptimas'
+    observaciones: 'Muestra recibida en condiciones óptimas',
+    muestras: [
+      { numero: 1, cups: ['CUPS001', 'CUPS002'] }
+    ]
   },
   {
     idMuestra: 'M002',
@@ -322,7 +392,10 @@ const muestrasDB = [
     },
     estado: 'recibida',
     medicoSolicitante: 'Dra. Martínez',
-    observaciones: 'Paciente con antecedentes de diabetes'
+    observaciones: 'Paciente con antecedentes de diabetes',
+    muestras: [
+      { numero: 1, cups: ['CUPS003'] }
+    ]
   }
 ]
 
@@ -330,10 +403,15 @@ const muestrasDB = [
 const isFormValid = computed(() => {
   return (
     formData.idMuestra.trim() !== '' &&
+    formData.numeroCaso.trim() !== '' &&
     formData.paciente.nombre.trim() !== '' &&
     formData.paciente.cedula.trim() !== '' &&
-    formData.estado !== '' &&
-    formData.medicoSolicitante.trim() !== ''
+    formData.medicoSolicitante.trim() !== '' &&
+    formData.muestras.length > 0 &&
+    formData.muestras.every(muestra =>
+      muestra.cups.length > 0 &&
+      muestra.cups.every(cups => cups.trim() !== '')
+    )
   )
 })
 
@@ -359,6 +437,53 @@ const searchStatusIconClass = computed(() => ({
   'text-red-500': searchStatusType.value === 'error'
 }))
 
+// Lista de médicos solicitantes (puedes editar estos valores)
+const medicos = [
+  { value: 'dr-jimenez', label: 'Dr. Jiménez Herrera (JH)' },
+  { value: 'dra-morales', label: 'Dra. Morales Castro (MC)' },
+  { value: 'dr-vargas', label: 'Dr. Vargas Mendez (VM)' },
+  { value: 'dra-restrepo', label: 'Dra. Restrepo Vega (RV)' },
+  { value: 'dr-sandoval', label: 'Dr. Sandoval Lima (SL)' },
+  { value: 'dra-herrera', label: 'Dra. Herrera Cruz (HC)' }
+]
+
+const medicoSolicitanteSearch = ref('')
+const showMedicosList = ref(false)
+const filteredMedicos = ref(medicos)
+
+// Filtrar médicos según búsqueda
+const filterMedicos = () => {
+  const search = medicoSolicitanteSearch.value.toLowerCase()
+  filteredMedicos.value = medicos.filter(medico =>
+    medico.label.toLowerCase().includes(search)
+  )
+}
+
+// Seleccionar médico de la lista
+const selectMedico = (medico: { value: string; label: string }) => {
+  formData.medicoSolicitante = medico.label
+  medicoSolicitanteSearch.value = medico.label
+  showMedicosList.value = false
+}
+
+// Sincronizar input con valor seleccionado
+watch(
+  () => formData.medicoSolicitante,
+  (val) => {
+    medicoSolicitanteSearch.value = val
+  }
+)
+
+// Cerrar la lista al hacer clic fuera
+onMounted(() => {
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement
+    if (!target.closest('.relative')) {
+      showMedicosList.value = false
+    }
+  })
+})
+
 // Methods
 const getFieldClasses = (field: string) => {
   const baseClasses = 'h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10'
@@ -374,11 +499,12 @@ const getTextareaClasses = (field: string) => {
 
 const limpiarFormulario = () => {
   formData.idMuestra = ''
+  formData.numeroCaso = ''
   formData.paciente.nombre = ''
   formData.paciente.cedula = ''
-  formData.estado = ''
   formData.medicoSolicitante = ''
   formData.observaciones = ''
+  formData.muestras = [{ numero: 1, cups: [''] }]
   hasAttemptedSubmit.value = false
   statusMessage.value = ''
   savedMuestraId.value = ''
@@ -409,7 +535,10 @@ const buscarMuestra = async () => {
     const muestra = muestrasDB.find(m => m.idMuestra === searchMuestraId.value.trim())
     
     if (muestra) {
-      // Actualizar el formulario con los datos de la muestra
+      // Si la muestra no tiene la propiedad 'muestras', inicialízala
+      if (!muestra.muestras) {
+        muestra.muestras = [{ numero: 1, cups: [''] }]
+      }
       Object.assign(formData, muestra)
       muestraEncontrada.value = true
       searchStatus.value = 'Muestra encontrada'
@@ -471,6 +600,22 @@ const guardarCambios = async () => {
     statusType.value = 'error'
   } finally {
     isLoading.value = false
+  }
+}
+
+// Métodos para CUPS
+const agregarCups = (muestraIndex: number) => {
+  formData.muestras[muestraIndex].cups.push('')
+}
+
+const eliminarCups = (muestraIndex: number, cupsIndex: number) => {
+  formData.muestras[muestraIndex].cups.splice(cupsIndex, 1)
+}
+
+const agregarCupsSiNecesario = (muestraIndex: number, cupsIndex: number) => {
+  const currentCups = formData.muestras[muestraIndex].cups[cupsIndex]
+  if (currentCups.trim() !== '') {
+    agregarCups(muestraIndex)
   }
 }
 

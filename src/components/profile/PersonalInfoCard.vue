@@ -370,9 +370,8 @@ const currentRole = ref<'admin' | 'dataentry' | 'transcriber' | 'specialist'>('a
 
 const roles = [
   { value: 'admin', label: 'Administrador' },
-  { value: 'dataentry', label: 'Ingreso de Informes' },
-  { value: 'transcriber', label: 'Transcriptor' },
-  { value: 'specialist', label: 'Especialista' },
+  { value: 'transcriber', label: 'Secretaria' },
+  { value: 'specialist', label: 'Patologo' },
 ] as const
 
 type UserData = {

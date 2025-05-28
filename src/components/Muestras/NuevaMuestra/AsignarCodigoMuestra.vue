@@ -7,7 +7,7 @@
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
           </svg>
-          Verificar Paciente Existente
+          Asignar Código a una Muestra
         </h3>
         <p class="text-sm text-blue-600">Ingrese la cédula para verificar si el paciente ya está registrado en el sistema</p>
       </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 sm:flex-row">
       <div class="flex-1">
         <label for="dni" class="block text-sm font-medium text-gray-700 mb-1">
           DNI/Cédula del Paciente
@@ -13,7 +13,7 @@
           class="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
         />
       </div>
-      <div class="flex items-end">
+      <div class="flex items-end sm:ml-4">
         <button
           @click="buscarPaciente"
           class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500"

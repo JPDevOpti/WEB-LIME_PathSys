@@ -86,7 +86,39 @@ const router = createRouter({
         title: 'Inicio Sesión',
       },
     },
-
+    // Paginas para registro de nuevos integrantes
+    {
+      path: '/perfil',
+      name: 'perfil',
+      component: () => import('../views/NuevosIntegrantes/Perfil.vue'),
+      meta: {
+        title: 'perfil',
+      },
+    },
+    {
+      path: '/nuevo-patologo',
+      name: 'Nueva Patologo',
+      component: () => import('../views/NuevosIntegrantes/NuevoPatologo.vue'),
+      meta: {
+        title: 'Nueva Patologo',
+      },
+    },
+    {
+      path: '/nueva-entidad',
+      name: 'Nueva Entidad',
+      component: () => import('../views/NuevosIntegrantes/NuevaEntidad.vue'),
+      meta: {
+        title: 'Nueva Entidad',
+      },
+    },
+        {
+      path: '/nuevo-administrativo',
+      name: 'Nuevo Administrativo',
+      component: () => import('../views/NuevosIntegrantes/NuevoAdministrativo.vue'),
+      meta: {
+        title: 'Nuevo Administrativo',
+      },
+    },
 
     
     {
@@ -95,14 +127,6 @@ const router = createRouter({
       component: () => import('../views/Others/Calendar.vue'),
       meta: {
         title: 'Calendar',
-      },
-    },
-    {
-      path: '/profile',
-      name: 'Profile',
-      component: () => import('../views/Others/UserProfile.vue'),
-      meta: {
-        title: 'Profile',
       },
     },
     {

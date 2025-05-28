@@ -3,13 +3,13 @@
     <PageBreadcrumb :pageTitle="currentPageTitle" />
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
       <div class="space-y-6">
-        <ComponentCard title="Modificar Datos de un Paciente" clickable>
-          <ModificarDatosDemograficos />
+        <ComponentCard title="Ingresar Nuevo Patologo" clickable>
+          <NuevoPatologo />
         </ComponentCard>
       </div>
       <div class="space-y-6">
-        <ComponentCard title="Modificar Datos de una Muestra" clickable>
-          <ModificarDatosMuestra :muestra-id="'L2024-001'" />
+        <ComponentCard title="Editar Patologo Existente" clickable>
+          <EditarPatologo />
         </ComponentCard>
 
       </div>
@@ -21,10 +21,9 @@
 import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import ModificarDatosDemograficos from '@/components/Muestras/EditarMuestra/ModificarDatosPaciente.vue'
+import NuevoPatologo from '@/components/NuevosIntegrantes/NuevoPatologo/IngresarNuevoPatologo.vue'
 import ComponentCard from '@/components/common/ComponentCard.vue'
-import ModificarDatosMuestra from '@/components/Muestras/EditarMuestra/ModificarDatosMuestra.vue'
+import EditarPatologo from '@/components/NuevosIntegrantes/NuevoPatologo/EditarPatologo.vue'
 
-
-const currentPageTitle = ref('Gestión de Muestras')
+const currentPageTitle = ref('Nuevo Patologo')
 </script>

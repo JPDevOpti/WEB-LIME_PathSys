@@ -101,16 +101,16 @@
         />
       </div>
 
-      <!-- Nombre del Paciente -->
+      <!-- Nombre del Patólogo -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Nombre del Paciente *
+          Nombre del Patólogo *
         </label>
         <input
           type="text"
-          v-model="formData.nombrePaciente"
-          placeholder="Ingrese el nombre completo del paciente"
-          :class="getFieldClasses('nombrePaciente')"
+          v-model="formData.nombreCompleto"
+          placeholder="Ingrese el nombre completo del patólogo"
+          :class="getFieldClasses('nombreCompleto')"
           required
           ref="nombreInput"
         />
@@ -148,135 +148,77 @@
         </div>
       </div>
 
-      <!-- Edad -->
+      <!-- Email -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Edad *
+          Email *
         </label>
         <input
-          type="number"
-          v-model="formData.edad"
-          placeholder="Ingrese la edad"
-          :class="getFieldClasses('edad')"
+          type="email"
+          v-model="formData.email"
+          placeholder="Ej: correo@ejemplo.com"
+          :class="getFieldClasses('email')"
           required
-          ref="edadInput"
-          min="0"
-          max="120"
+          ref="emailInput"
         />
       </div>
 
-      <!-- Entidad -->
+      <!-- Teléfono -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Entidad *
+          Teléfono
         </label>
-        <div class="relative">
-          <div class="relative">
-            <input
-              type="text"
-              v-model="formData.entidad"
-              @focus="showEntidades = true"
-              @blur="ocultarEntidades"
-              placeholder="Seleccione o escriba la entidad"
-              :class="getFieldClasses('entidad')"
-              required
-              ref="entidadInput"
-            />
-            <button
-              type="button"
-              @click="showEntidades = !showEntidades"
-              class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
-          
-          <!-- Lista desplegable de entidades -->
-          <div
-            v-if="showEntidades"
-            class="absolute z-50 w-full mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
-          >
-            <ul class="py-1">
-              <li
-                v-for="entidad in entidadesFiltradas"
-                :key="entidad.id"
-                @mousedown="seleccionarEntidad(entidad)"
-                class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-              >
-                {{ entidad.nombre }}
-              </li>
-              <li
-                v-if="entidadesFiltradas.length === 0"
-                class="px-4 py-2 text-sm text-gray-500"
-              >
-                No se encontraron resultados
-              </li>
-            </ul>
-          </div>
-        </div>
+        <input
+          type="tel"
+          v-model="formData.telefono"
+          placeholder="Ej: 987654321"
+          :class="getFieldClasses('telefono')"
+          ref="telefonoInput"
+        />
       </div>
 
-      <!-- Tipo de Atención -->
+      <!-- Especialidad -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Tipo de Atención *
+          Especialidad *
         </label>
-        <div class="flex items-center space-x-6">
-          <label class="inline-flex items-center">
-            <input
-              type="radio"
-              v-model="formData.tipoAtencion"
-              value="ambulatorio"
-              class="form-radio h-4 w-4 text-brand-600 border-gray-300 focus:ring-brand-500"
-              required
-            />
-            <span class="ml-2 text-sm text-gray-700">Ambulatorio</span>
-          </label>
-          <label class="inline-flex items-center">
-            <input
-              type="radio"
-              v-model="formData.tipoAtencion"
-              value="hospitalizado"
-              class="form-radio h-4 w-4 text-brand-600 border-gray-300 focus:ring-brand-500"
-              required
-            />
-            <span class="ml-2 text-sm text-gray-700">Hospitalizado</span>
-          </label>
-        </div>
-        <div v-if="hasAttemptedSubmit && !formData.tipoAtencion" class="mt-1 text-sm text-red-600">
-          Por favor seleccione el tipo de atención
-        </div>
+        <input
+          type="text"
+          v-model="formData.especialidad"
+          placeholder="Ej: Anatomía Patológica"
+          :class="getFieldClasses('especialidad')"
+          required
+          ref="especialidadInput"
+        />
       </div>
 
-      <!-- CUPS (múltiple selección) -->
-      <div class="mb-6">
+      <!-- Número de Registro Médico -->
+      <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          CUPS*
+          Número de Registro Médico (RNE/CMP) *
         </label>
-        <div class="space-y-2">
-          <div v-for="(cups, index) in formData.cups" :key="index" class="flex items-center space-x-2">
-            <input
-              type="text"
-              v-model="formData.cups[index]"
-              placeholder="Ingrese el CUPS"
-              class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
-              required
-              @keydown.enter.prevent="agregarCupsSiNecesario(index)"
-              :ref="el => { if (el) cupsInputs[index] = el as HTMLInputElement }"
-            />
-            <button
-              v-if="formData.cups.length > 1"
-              @click="eliminarCups(index)"
-              type="button"
-              class="p-2 text-red-600 hover:text-red-800"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </button>
-          </div>
+        <input
+          type="text"
+          v-model="formData.registroMedico"
+          placeholder="Ej: 12345"
+          :class="getFieldClasses('registroMedico')"
+          required
+          ref="registroMedicoInput"
+        />
+      </div>
+
+      <!-- Firma del Patólogo -->
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700">
+          Firma del Patólogo
+        </label>
+        <Dropzone
+          :uploadUrl="'/api/upload-signature'"
+          @file-added="handleFirmaFile"
+          id="firmaDropzonePatologo"
+        />
+        <div v-if="firmaPatologoFile" class="mt-2 text-sm text-gray-600">
+          Archivo seleccionado: {{ firmaPatologoFile.name }}
         </div>
       </div>
 
@@ -287,7 +229,7 @@
         </label>
         <textarea
           v-model="formData.observaciones"
-          placeholder="Observaciones adicionales"
+          placeholder="Observaciones adicionales sobre el patólogo"
           rows="3"
           :class="getTextareaClasses('observaciones')"
         ></textarea>
@@ -337,7 +279,7 @@
               d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
             />
           </svg>
-          {{ isLoading ? 'Guardando...' : 'Guardar Paciente' }}
+          {{ isLoading ? 'Guardando...' : 'Guardar Patólogo' }}
         </button>
       </div>
 
@@ -369,7 +311,7 @@
           <div>
             <p class="font-medium text-sm">{{ statusMessage }}</p>
             <p v-if="statusType === 'success' && savedPatientId" class="text-xs mt-1 opacity-75">
-              ID del paciente: {{ savedPatientId }}
+              ID del patólogo: {{ savedPatientId }}
             </p>
           </div>
         </div>
@@ -379,44 +321,41 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref, onMounted, watch, nextTick } from 'vue'
+import Dropzone from '@/components/Muestras/FormElements/Dropzone.vue'
+import { reactive, computed, ref, onMounted, watch } from 'vue'
 
 interface FormData {
   numeroCedula: string
-  nombrePaciente: string
+  nombreCompleto: string
   sexo: string
-  edad: string
-  entidad: string
-  tipoAtencion: string
-  cups: string[]
+  email: string
+  telefono: string
+  especialidad: string
+  registroMedico: string
   observaciones: string
+  firmaPatologoUrl?: string
 }
 
-interface Entidad {
-  id: string
-  nombre: string
-}
-
-const emit = defineEmits(['update-patient-data', 'patient-saved'])
+const emit = defineEmits(['update-patient-data', 'patologo-saved'])
 
 const formData = reactive<FormData>({
   numeroCedula: '',
-  nombrePaciente: '',
+  nombreCompleto: '',
   sexo: '',
-  edad: '',
-  entidad: '',
-  tipoAtencion: '',
-  cups: [''],
-  observaciones: ''
+  email: '',
+  telefono: '',
+  especialidad: '',
+  registroMedico: '',
+  observaciones: '',
+  firmaPatologoUrl: ''
 })
+const firmaPatologoFile = ref<File | null>(null)
 
 const isLoading = ref(false)
 const hasAttemptedSubmit = ref(false)
 const savedPatientId = ref('')
 const statusMessage = ref('')
 const statusType = ref<'success' | 'error'>('success')
-const showEntidades = ref(false)
-const cupsInputs = ref<HTMLInputElement[]>([])
 const showNotification = ref(false)
 const progressWidth = ref(100)
 
@@ -429,36 +368,35 @@ const pacienteEncontrado = ref(false)
 // Referencias para los inputs
 const cedulaInput = ref<HTMLInputElement | null>(null)
 const nombreInput = ref<HTMLInputElement | null>(null)
-const edadInput = ref<HTMLInputElement | null>(null)
-const entidadInput = ref<HTMLInputElement | null>(null)
+const emailInput = ref<HTMLInputElement | null>(null)
+const telefonoInput = ref<HTMLInputElement | null>(null)
+const especialidadInput = ref<HTMLInputElement | null>(null)
+const registroMedicoInput = ref<HTMLInputElement | null>(null)
 
-// Lista de entidades (simulada)
-const entidades: Entidad[] = [
-  { id: '1', nombre: 'Hospital Central' },
-  { id: '2', nombre: 'Clínica San Juan' },
-  { id: '3', nombre: 'Centro Médico ABC' },
-  { id: '4', nombre: 'Hospital del Norte' },
-  { id: '5', nombre: 'Clínica del Sur' }
+// Base de datos simulada de patólogos
+const patologoDB = [
+  {
+    numeroCedula: '12345678',
+    nombreCompleto: 'Dra. Ana Patóloga',
+    sexo: 'femenino',
+    email: 'ana@patologia.com',
+    telefono: '987654321',
+    especialidad: 'Anatomía Patológica',
+    registroMedico: 'CMP12345',
+    observaciones: 'Especialista en biopsias'
+  }
 ]
 
 // Computed properties
-const entidadesFiltradas = computed(() => {
-  if (!formData.entidad) return entidades
-  const searchTerm = formData.entidad.toLowerCase()
-  return entidades.filter(entidad => 
-    entidad.nombre.toLowerCase().includes(searchTerm)
-  )
-})
-
 const isFormValid = computed(() => {
   return (
     formData.numeroCedula.trim() !== '' &&
-    formData.nombrePaciente.trim() !== '' &&
+    formData.nombreCompleto.trim() !== '' &&
     formData.sexo !== '' &&
-    formData.edad.trim() !== '' &&
-    formData.entidad.trim() !== '' &&
-    formData.tipoAtencion !== '' &&
-    formData.cups.every(cups => cups.trim() !== '')
+    formData.email.trim() !== '' &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()) &&
+    formData.especialidad.trim() !== '' &&
+    formData.registroMedico.trim() !== ''
   )
 })
 
@@ -484,30 +422,6 @@ const searchStatusIconClass = computed(() => ({
   'text-red-500': searchStatusType.value === 'error'
 }))
 
-// Base de datos simulada de pacientes
-const pacientesDB = [
-  {
-    numeroCedula: '12345678',
-    nombrePaciente: 'Juan Pérez',
-    sexo: 'masculino',
-    edad: '35',
-    entidad: 'Hospital Central',
-    tipoAtencion: 'ambulatorio',
-    cups: ['CUPS-001'],
-    observaciones: 'Paciente con antecedentes de hipertensión'
-  },
-  {
-    numeroCedula: '87654321',
-    nombrePaciente: 'María García',
-    sexo: 'femenino',
-    edad: '28',
-    entidad: 'Clínica San Juan',
-    tipoAtencion: 'hospitalizado',
-    cups: ['CUPS-002', 'CUPS-003'],
-    observaciones: 'Paciente en observación'
-  }
-]
-
 // Methods
 const getFieldClasses = (field: keyof FormData) => {
   const baseClasses = 'h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10'
@@ -521,39 +435,10 @@ const getTextareaClasses = (field: keyof FormData) => {
   return `${baseClasses} ${errorClasses}`
 }
 
-const seleccionarEntidad = (entidad: Entidad) => {
-  formData.entidad = entidad.nombre
-  showEntidades.value = false
-}
-
-const ocultarEntidades = () => {
-  setTimeout(() => {
-    showEntidades.value = false
-  }, 200)
-}
-
-const agregarCupsSiNecesario = (index: number) => {
-  if (index === formData.cups.length - 1 && formData.cups[index].trim() !== '') {
-    formData.cups.push('')
-    nextTick(() => {
-      const lastInput = cupsInputs.value[formData.cups.length - 1]
-      if (lastInput) lastInput.focus()
-    })
-  }
-}
-
-const eliminarCups = (index: number) => {
-  formData.cups.splice(index, 1)
-}
-
 const limpiarFormulario = () => {
   Object.keys(formData).forEach(key => {
     const k = key as keyof FormData
-    if (k === 'cups') {
-      formData[k] = ['']
-    } else {
-      formData[k] = ''
-    }
+    formData[k] = ''
   })
   hasAttemptedSubmit.value = false
   statusMessage.value = ''
@@ -573,33 +458,24 @@ const buscarPaciente = async () => {
     searchStatusType.value = 'error'
     return
   }
-
   isLoading.value = true
-  searchStatus.value = 'Buscando paciente...'
+  searchStatus.value = 'Buscando patólogo...'
   searchStatusType.value = 'success'
-
   try {
-    // Simular llamada a API
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    const paciente = pacientesDB.find(p => p.numeroCedula === searchCedula.value.trim())
-    
-    if (paciente) {
-      // Actualizar el formulario con los datos del paciente
-      Object.assign(formData, paciente)
-      pacienteEncontrado.value = true
-      searchStatus.value = 'Paciente encontrado'
+    const patologo = patologoDB.find(p => p.numeroCedula === searchCedula.value.trim())
+    if (patologo) {
+      Object.assign(formData, patologo)
+      searchStatus.value = 'Patólogo encontrado'
       searchStatusType.value = 'success'
     } else {
-      searchStatus.value = 'No se encontró ningún paciente con esa cédula'
+      searchStatus.value = 'No se encontró ningún patólogo con esa cédula'
       searchStatusType.value = 'error'
-      pacienteEncontrado.value = false
       limpiarFormulario()
     }
   } catch {
-    searchStatus.value = 'Error al buscar el paciente'
+    searchStatus.value = 'Error al buscar el patólogo'
     searchStatusType.value = 'error'
-    pacienteEncontrado.value = false
   } finally {
     isLoading.value = false
   }
@@ -607,33 +483,22 @@ const buscarPaciente = async () => {
 
 const guardarPaciente = async () => {
   hasAttemptedSubmit.value = true
-  
   if (!isFormValid.value) {
     statusMessage.value = 'Por favor complete todos los campos requeridos'
     statusType.value = 'error'
     return
   }
-
   isLoading.value = true
-  statusMessage.value = 'Guardando datos del paciente...'
+  statusMessage.value = 'Guardando datos del patólogo...'
   statusType.value = 'success'
-
   try {
-    // Simular llamada a API
     await new Promise(resolve => setTimeout(resolve, 1500))
-    const randomId = Math.random().toString(36).substring(2, 8).toUpperCase()
-    savedPatientId.value = randomId
-    statusMessage.value = 'Datos del paciente guardados correctamente'
-    
-    // Mostrar notificación
+    statusMessage.value = 'Datos del patólogo guardados correctamente'
     showNotification.value = true
     progressWidth.value = 100
-    
-    // Iniciar barra de progreso
-    const duration = 5000 // 5 segundos
-    const interval = 50 // Update every 50ms
+    const duration = 5000
+    const interval = 50
     const decrement = (interval / duration) * 100
-
     const progressInterval = setInterval(() => {
       progressWidth.value -= decrement
       if (progressWidth.value <= 0) {
@@ -642,10 +507,9 @@ const guardarPaciente = async () => {
         progressWidth.value = 100
       }
     }, interval)
-
-    emit('patient-saved', randomId)
+    emit('patologo-saved')
   } catch {
-    statusMessage.value = 'Error al guardar los datos del paciente'
+    statusMessage.value = 'Error al guardar los datos del patólogo'
     statusType.value = 'error'
   } finally {
     isLoading.value = false
@@ -684,18 +548,7 @@ onMounted(() => {
   }
 })
 
-// Función para copiar desde la notificación y cerrarla
-const copyFromNotificationAndClose = async () => {
-  await copyToClipboard()
-  showNotification.value = false
-}
-
-// Función para copiar al portapapeles
-const copyToClipboard = async () => {
-  try {
-    await navigator.clipboard.writeText(savedPatientId.value)
-  } catch (err) {
-    console.error('Error al copiar:', err)
-  }
+const handleFirmaFile = (file: File) => {
+  firmaPatologoFile.value = file
 }
 </script>

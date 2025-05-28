@@ -18,74 +18,194 @@
               class="h-11 w-full pl-10 pr-4 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
             />
           </div>
+          <div class="relative flex-1">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              ref="medicoInput"
+              v-model="searchMedico"
+              type="text"
+              placeholder="Buscar o seleccionar médico solicitante..."
+              class="h-11 w-full pl-10 pr-10 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+              @input="filterMedicos"
+              @focus="showMedicosList = true"
+              @keydown.down.prevent="highlightNextMedico"
+              @keydown.up.prevent="highlightPrevMedico"
+              @keydown.enter.prevent="selectHighlightedMedico"
+              autocomplete="off"
+            />
+            <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3" @mousedown.prevent="toggleMedicosList">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div
+              v-if="showMedicosList && filteredMedicos.length > 0"
+              class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+            >
+              <div
+                v-for="(medico, idx) in filteredMedicos"
+                :key="medico"
+                @mousedown.prevent="selectMedico(medico)"
+                class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                :class="{ 'bg-gray-100': highlightedMedicoIndex === idx }"
+              >
+                {{ medico }}
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Fila de filtros -->
         <div class="flex flex-col sm:flex-row sm:items-center gap-3">
           <div class="flex flex-col sm:flex-row gap-3 flex-1">
-            <!-- Filtro por año -->
-            <div class="w-full sm:w-auto">
-              <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                Año
-              </label>
-              <select
-                v-model="selectedYear"
-                class="h-11 w-full sm:w-32 appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
-              >
-                <option value="">Todos</option>
-                <option v-for="year in availableYears" :key="year" :value="year">
-                  {{ year }}
-                </option>
-              </select>
+            <!-- Filtro por rango de fechas -->
+            <div class="w-full sm:w-auto flex flex-col sm:flex-row gap-3 items-end">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                  Desde
+                </label>
+                <input
+                  type="date"
+                  v-model="fechaDesde"
+                  class="h-11 w-full sm:w-32 rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                  :max="fechaHasta || undefined"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                  Hasta
+                </label>
+                <input
+                  type="date"
+                  v-model="fechaHasta"
+                  class="h-11 w-full sm:w-32 rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                  :min="fechaDesde || undefined"
+                />
+              </div>
             </div>
 
-            <!-- Filtro por mes -->
-            <div class="w-full sm:w-auto">
+            <!-- Filtro por entidad -->
+            <div class="w-full sm:w-auto relative">
               <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                Mes
+                Entidad
               </label>
-              <select
-                v-model="selectedMonth"
-                class="h-11 w-full sm:w-40 appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
-                :disabled="!selectedYear"
-              >
-                <option value="">Todos</option>
-                <option v-for="month in availableMonths" :key="month.value" :value="month.value">
-                  {{ month.name }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Filtro por tipo de análisis -->
-            <div class="w-full sm:w-auto">
-              <label class="block text-sm font-medium text-gray-700 mb-1.5">
-                Tipo de Análisis
-              </label>
-              <select
+              <input
+                ref="entidadInput"
                 v-model="selectedAnalisis"
-                class="h-11 w-full sm:w-48 appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                type="text"
+                placeholder="Buscar entidad..."
+                class="h-11 w-full sm:w-48 pl-4 pr-10 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                @input="filterEntidades"
+                @focus="showEntidadesList = true"
+                @keydown.down.prevent="highlightNextEntidad"
+                @keydown.up.prevent="highlightPrevEntidad"
+                @keydown.enter.prevent="selectHighlightedEntidad"
+                autocomplete="off"
+              />
+              <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 top-[2.2rem] sm:top-[2.2rem]" @mousedown.prevent="toggleEntidadesList">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                v-if="showEntidadesList && filteredEntidades.length > 0"
+                class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                style="min-width:12rem"
               >
-                <option value="">Todos</option>
-                <option v-for="analisis in tiposAnalisis" :key="analisis" :value="analisis">
-                  {{ analisis }}
-                </option>
-              </select>
+                <div
+                  v-for="(entidad, idx) in filteredEntidades"
+                  :key="entidad"
+                  @mousedown.prevent="selectEntidad(entidad)"
+                  class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  :class="{ 'bg-gray-100': highlightedEntidadIndex === idx }"
+                >
+                  {{ entidad }}
+                </div>
+              </div>
             </div>
 
             <!-- Filtro por estado -->
-            <div class="w-full sm:w-auto">
+            <div class="w-full sm:w-auto relative">
               <label class="block text-sm font-medium text-gray-700 mb-1.5">
                 Estado
               </label>
-              <select
+              <input
+                ref="estadoInput"
                 v-model="selectedEstado"
-                class="h-11 w-full sm:w-40 appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 shadow-theme-xs focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                type="text"
+                placeholder="Buscar estado..."
+                class="h-11 w-full sm:w-40 pl-4 pr-10 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                @input="filterEstados"
+                @focus="showEstadosList = true"
+                @keydown.down.prevent="highlightNextEstado"
+                @keydown.up.prevent="highlightPrevEstado"
+                @keydown.enter.prevent="selectHighlightedEstado"
+                autocomplete="off"
+              />
+              <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 top-[2.2rem] sm:top-[2.2rem]" @mousedown.prevent="toggleEstadosList">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                v-if="showEstadosList && filteredEstados.length > 0"
+                class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                style="min-width:10rem"
               >
-                <option value="">Todos</option>
-                <option v-for="estado in estados" :key="estado" :value="estado">
+                <div
+                  v-for="(estado, idx) in filteredEstados"
+                  :key="estado"
+                  @mousedown.prevent="selectEstado(estado)"
+                  class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  :class="{ 'bg-gray-100': highlightedEstadoIndex === idx }"
+                >
                   {{ estado }}
-                </option>
-              </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Filtro por CUPS -->
+            <div class="w-16 sm:w-auto relative">
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                CUPS
+              </label>
+              <input
+                ref="cupsInput"
+                v-model="selectedCups"
+                type="text"
+                placeholder="Buscar CUPS..."
+                class="h-11 w-full sm:w-32 pl-4 pr-10 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                @input="filterCups"
+                @focus="showCupsList = true"
+                @keydown.down.prevent="highlightNextCups"
+                @keydown.up.prevent="highlightPrevCups"
+                @keydown.enter.prevent="selectHighlightedCups"
+                autocomplete="off"
+              />
+              <button type="button" class="absolute inset-y-0 right-0 flex items-center pr-3 top-[2.2rem] sm:top-[2.2rem]" @mousedown.prevent="toggleCupsList">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                v-if="showCupsList && filteredCups.length > 0"
+                class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                style="min-width:8rem"
+              >
+                <div
+                  v-for="(cups, idx) in filteredCups"
+                  :key="cups"
+                  @mousedown.prevent="selectCups(cups)"
+                  class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm font-mono"
+                  :class="{ 'bg-gray-100': highlightedCupsIndex === idx }"
+                >
+                  {{ cups }}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -238,6 +358,17 @@
                 <p class="text-gray-500 text-theme-xs">{{ muestra.medico }}</p>
               </td>
               <td class="px-5 py-4 sm:px-6">
+                <div class="grid grid-cols-3 gap-1 max-h-12 overflow-hidden">
+                  <span 
+                    v-for="(cup, index) in muestra.cups" 
+                    :key="index"
+                    class="flex items-center justify-center bg-gray-100 text-gray-700 font-mono text-[10px] px-1.5 py-0.5 rounded border text-nowrap min-h-[20px]"
+                  >
+                    {{ cup }}
+                  </span>
+                </div>
+              </td>
+              <td class="px-5 py-4 sm:px-6">
                 <span
                   :class="[
                     'rounded-full px-2 py-0.5 text-theme-xs font-medium',
@@ -280,7 +411,7 @@
             </tr>
             <!-- Mensaje cuando no hay resultados -->
             <tr v-if="filteredMuestras.length === 0">
-              <td colspan="7" class="px-5 py-8 text-center">
+              <td colspan="8" class="px-5 py-8 text-center">
                 <div class="flex flex-col items-center">
                   <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
@@ -378,15 +509,27 @@
 
               <!-- Información del Análisis -->
               <div class="bg-gray-50 rounded-xl p-4">
-                <h5 class="text-sm font-medium text-gray-700 mb-3">Información del Análisis</h5>
-                <div class="grid grid-cols-2 gap-4">
+                <h5 class="text-sm font-medium text-gray-700 mb-3">Información de la Entidad</h5>
+                <div class="grid grid-cols-3 gap-4">
                   <div>
-                    <p class="text-sm text-gray-500">Tipo de Análisis</p>
+                    <p class="text-sm text-gray-500">Entidad</p>
                     <p class="text-base font-medium text-gray-900">{{ muestraSeleccionada.analisis }}</p>
                   </div>
                   <div>
                     <p class="text-sm text-gray-500">Médico Solicitante</p>
                     <p class="text-base font-medium text-gray-900">{{ muestraSeleccionada.medico }}</p>
+                  </div>
+                  <div>
+                    <p class="text-sm text-gray-500">CUPS</p>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                      <span 
+                        v-for="(cup, index) in muestraSeleccionada.cups" 
+                        :key="index"
+                        class="inline-block bg-white text-gray-800 font-mono text-[10px] px-1.5 py-0.5 rounded border border-gray-200 text-nowrap"
+                      >
+                        {{ cup }}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -473,15 +616,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 
 // Estados para búsqueda y filtros
 const searchQuery = ref('')
-const selectedYear = ref('')
-const selectedMonth = ref('')
+const searchMedico = ref('')
+const fechaDesde = ref('')
+const fechaHasta = ref('')
 const selectedAnalisis = ref('')
 const selectedEstado = ref('')
+const selectedCups = ref('')
 
 // Estados para ordenamiento
 const sortKey = ref('id')
@@ -496,121 +641,124 @@ const selectedMuestras = ref<string[]>([])
 const accionEnLote = ref('')
 
 // Estado para el modal de detalles
-const muestraSeleccionada = ref(null)
+const muestraSeleccionada = ref<Muestra | null>(null)
 
 // Definición de columnas
 const columns = [
-  { key: 'id', label: 'ID Muestra', class: 'w-2/11' },
-  { key: 'paciente', label: 'Paciente', class: 'w-2/11' },
-  { key: 'analisis', label: 'Tipo de Análisis', class: 'w-2/11' },
-  { key: 'estado', label: 'Estado', class: 'w-2/11' },
-  { key: 'fechaRecepcion', label: 'Fecha Recepción', class: 'w-2/11' },
-  { key: 'acciones', label: 'Acciones', class: 'w-1/11' }
+  { key: 'id', label: 'ID Muestra', class: 'w-2/10  ' },
+  { key: 'paciente', label: 'Paciente', class: 'w-2/12' },
+  { key: 'analisis', label: 'Entidad', class: 'w-2/12' },
+  { key: 'cups', label: 'CUPS', class: 'w-2/12' },
+  { key: 'estado', label: 'Estado', class: 'w-1/12' },
+  { key: 'fechaRecepcion', label: 'Fecha Recepción', class: 'w-2/12' },
+  { key: 'acciones', label: 'Acciones', class: 'w-1/12' }
 ]
 
-const muestras = ref([
+// Estados disponibles
+const estados = [
+  'Completado',
+  'En Proceso',
+  'Pendiente',
+  'Validado'
+]
+
+// CUPS únicos disponibles (obtenidos de todas las muestras)
+const cupsList = computed(() => {
+  const allCups = new Set<string>()
+  muestras.value.forEach(muestra => {
+    muestra.cups.forEach(cup => allCups.add(cup))
+  })
+  return Array.from(allCups).sort()
+})
+
+// Tipos de análisis disponibles
+const tiposAnalisis = [
+  'ESSALUD',
+  'MINSA',
+  'PRIVADO',
+  'OTRO'
+]
+
+// Tipado para muestra
+interface Muestra {
+  id: string;
+  tipoMuestra: string;
+  paciente: string;
+  dni: string;
+  analisis: string;
+  medico: string;
+  estado: string;
+  fechaRecepcion: string;
+  horaRecepcion: string;
+  cups: string[];
+}
+
+const muestras = ref<Muestra[]>([
   {
     id: 'M-2024-001',
     tipoMuestra: 'Sangre',
     paciente: 'Juan Pérez',
     dni: '12345678',
-    analisis: 'Hemograma Completo',
+    analisis: 'ESSALUD',
     medico: 'Dr. García',
     estado: 'Completado',
     fechaRecepcion: '2024-03-20',
-    horaRecepcion: '09:30'
+    horaRecepcion: '09:30',
+    cups: ['90001', '90101', '90201']
   },
   {
     id: 'M-2024-002',
     tipoMuestra: 'Orina',
     paciente: 'María López',
     dni: '87654321',
-    analisis: 'Uroanálisis',
+    analisis: 'MINSA',
     medico: 'Dra. Martínez',
     estado: 'En Proceso',
     fechaRecepcion: '2024-03-20',
-    horaRecepcion: '10:15'
+    horaRecepcion: '10:15',
+    cups: ['90002', '90102']
   },
   {
     id: 'M-2024-003',
     tipoMuestra: 'Heces',
     paciente: 'Carlos Ruiz',
     dni: '23456789',
-    analisis: 'Coprológico',
+    analisis: 'PRIVADO',
     medico: 'Dr. Sánchez',
     estado: 'Pendiente',
     fechaRecepcion: '2024-02-15',
-    horaRecepcion: '11:00'
+    horaRecepcion: '11:00',
+    cups: ['90003', '90103', '90203', '90303']
   },
   {
     id: 'M-2024-004',
     tipoMuestra: 'Sangre',
     paciente: 'Ana Torres',
     dni: '34567890',
-    analisis: 'Perfil Lipídico',
+    analisis: 'ESSALUD',
     medico: 'Dra. Rodríguez',
     estado: 'Validado',
     fechaRecepcion: '2024-01-10',
-    horaRecepcion: '11:45'
+    horaRecepcion: '11:45',
+    cups: ['90004']
   },
   {
     id: 'M-2023-005',
     tipoMuestra: 'Sangre',
     paciente: 'Roberto Díaz',
     dni: '45678901',
-    analisis: 'Glucosa',
+    analisis: 'OTRO',
     medico: 'Dr. Fernández',
     estado: 'En Proceso',
     fechaRecepcion: '2023-12-05',
-    horaRecepcion: '12:30'
+    horaRecepcion: '12:30',
+    cups: ['90005', '90105', '90205']
   }
 ])
-
-// Computed property para obtener años disponibles
-const availableYears = computed(() => {
-  const years = muestras.value.map(muestra => new Date(muestra.fechaRecepcion).getFullYear())
-  return [...new Set(years)].sort((a, b) => b - a)
-})
-
-// Computed property para obtener meses disponibles para el año seleccionado
-const availableMonths = computed(() => {
-  if (!selectedYear.value) return []
-  
-  const months = [
-    { value: '01', name: 'Enero' },
-    { value: '02', name: 'Febrero' },
-    { value: '03', name: 'Marzo' },
-    { value: '04', name: 'Abril' },
-    { value: '05', name: 'Mayo' },
-    { value: '06', name: 'Junio' },
-    { value: '07', name: 'Julio' },
-    { value: '08', name: 'Agosto' },
-    { value: '09', name: 'Septiembre' },
-    { value: '10', name: 'Octubre' },
-    { value: '11', name: 'Noviembre' },
-    { value: '12', name: 'Diciembre' }
-  ]
-  
-  // Filtrar meses que tienen muestras en el año seleccionado
-  const availableMonthNumbers = muestras.value
-    .filter(muestra => new Date(muestra.fechaRecepcion).getFullYear() == selectedYear.value)
-    .map(muestra => new Date(muestra.fechaRecepcion).getMonth() + 1)
-    .map(month => month.toString().padStart(2, '0'))
-  
-  const uniqueMonths = [...new Set(availableMonthNumbers)]
-  
-  return months.filter(month => uniqueMonths.includes(month.value))
-})
-
-// Watch para limpiar el mes cuando cambia el año
-watch(selectedYear, () => {
-  selectedMonth.value = ''
-})
 
 // Computed property para filtrar y ordenar las muestras
 const filteredMuestras = computed(() => {
   let filtered = muestras.value
-  
   // Filtrar por búsqueda de texto
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase().trim()
@@ -619,53 +767,48 @@ const filteredMuestras = computed(() => {
              muestra.dni.toLowerCase().includes(query)
     })
   }
-  
-  // Filtrar por año
-  if (selectedYear.value) {
-    filtered = filtered.filter(muestra => {
-      return new Date(muestra.fechaRecepcion).getFullYear() == selectedYear.value
-    })
+  // Filtrar por búsqueda de médico
+  if (searchMedico.value) {
+    const medicoQuery = searchMedico.value.toLowerCase().trim()
+    filtered = filtered.filter(muestra => muestra.medico.toLowerCase().includes(medicoQuery))
   }
-  
-  // Filtrar por mes
-  if (selectedMonth.value) {
-    filtered = filtered.filter(muestra => {
-      const month = (new Date(muestra.fechaRecepcion).getMonth() + 1).toString().padStart(2, '0')
-      return month === selectedMonth.value
-    })
+  // Filtrar por rango de fechas
+  if (fechaDesde.value) {
+    filtered = filtered.filter(muestra => muestra.fechaRecepcion >= fechaDesde.value)
   }
-
-  // Filtrar por tipo de análisis
+  if (fechaHasta.value) {
+    filtered = filtered.filter(muestra => muestra.fechaRecepcion <= fechaHasta.value)
+  }
+  // Filtrar por entidad
   if (selectedAnalisis.value) {
     filtered = filtered.filter(muestra => muestra.analisis === selectedAnalisis.value)
   }
-
   // Filtrar por estado
   if (selectedEstado.value) {
     filtered = filtered.filter(muestra => muestra.estado === selectedEstado.value)
   }
-  
+  // Filtrar por CUPS
+  if (selectedCups.value) {
+    filtered = filtered.filter(muestra => muestra.cups.includes(selectedCups.value))
+  }
   // Ordenar
   filtered.sort((a, b) => {
-    let aValue = a[sortKey.value]
-    let bValue = b[sortKey.value]
-
+    let aValue: string | Date = a[sortKey.value as keyof Muestra] as string
+    let bValue: string | Date = b[sortKey.value as keyof Muestra] as string
     if (sortKey.value === 'fechaRecepcion') {
       aValue = new Date(a.fechaRecepcion)
       bValue = new Date(b.fechaRecepcion)
     }
-
     if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1
     if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1
     return 0
   })
-  
   return filtered
 })
 
 // Computed property para verificar si hay filtros activos
 const hasActiveFilters = computed(() => {
-  return searchQuery.value || selectedYear.value || selectedMonth.value || selectedAnalisis.value || selectedEstado.value
+  return searchQuery.value || searchMedico.value || fechaDesde.value || fechaHasta.value || selectedAnalisis.value || selectedEstado.value || selectedCups.value
 })
 
 // Computed properties para paginación
@@ -697,7 +840,7 @@ const toggleSelectAll = () => {
   }
 }
 
-const toggleSelect = (id) => {
+const toggleSelect = (id: string) => {
   const index = selectedMuestras.value.indexOf(id)
   if (index === -1) {
     selectedMuestras.value.push(id)
@@ -722,7 +865,7 @@ const aplicarAccionEnLote = () => {
 }
 
 // Función para ordenar
-const sortBy = (key) => {
+const sortBy = (key: string) => {
   if (sortKey.value === key) {
     sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
   } else {
@@ -732,7 +875,7 @@ const sortBy = (key) => {
 }
 
 // Watch para resetear la página cuando cambian los filtros
-watch([searchQuery, selectedYear, selectedMonth, selectedAnalisis, selectedEstado], () => {
+watch([searchQuery, searchMedico, fechaDesde, fechaHasta, selectedAnalisis, selectedEstado, selectedCups], () => {
   currentPage.value = 1
 })
 
@@ -744,23 +887,24 @@ watch(itemsPerPage, () => {
 // Función para limpiar todos los filtros
 const clearAllFilters = () => {
   searchQuery.value = ''
-  selectedYear.value = ''
-  selectedMonth.value = ''
+  searchMedico.value = ''
+  fechaDesde.value = ''
+  fechaHasta.value = ''
   selectedAnalisis.value = ''
   selectedEstado.value = ''
+  selectedCups.value = ''
   currentPage.value = 1
 }
 
 // Función para resaltar texto coincidente
-const highlightText = (text, query) => {
+const highlightText = (text: string, query: string) => {
   if (!query) return text
-  
   const regex = new RegExp(`(${query})`, 'gi')
   return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>')
 }
 
 // Función para formatear fecha
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('es-ES', {
     day: '2-digit',
@@ -770,17 +914,329 @@ const formatDate = (dateString) => {
 }
 
 // Función para mostrar los detalles de la muestra
-const mostrarDetallesMuestra = (muestra) => {
+const mostrarDetallesMuestra = (muestra: Muestra) => {
   muestraSeleccionada.value = muestra
 }
 
 const router = useRouter()
 
 // Función para editar la muestra
-const editarMuestra = (muestra) => {
+const editarMuestra = (muestra: Muestra) => {
   router.push(`/editar-muestra/${muestra.id}`)
   muestraSeleccionada.value = null
 }
+
+// Computed property para obtener médicos únicos disponibles
+const availableMedicos = computed(() => {
+  const medicos = muestras.value.map(m => m.medico)
+  return [...new Set(medicos)]
+})
+
+// --- Combobox de médicos (como en AsignarPatologoMuestra.vue) ---
+const medicoInput = ref<HTMLInputElement | null>(null)
+const showMedicosList = ref(false)
+const filteredMedicos = ref<string[]>([])
+const highlightedMedicoIndex = ref(-1)
+
+const filterMedicos = () => {
+  const search = searchMedico.value.toLowerCase()
+  filteredMedicos.value = availableMedicos.value.filter(medico =>
+    medico.toLowerCase().includes(search)
+  )
+  highlightedMedicoIndex.value = -1
+}
+
+const selectMedico = (medico: string) => {
+  searchMedico.value = medico
+  showMedicosList.value = false
+  filterMedicos()
+}
+
+const toggleMedicosList = () => {
+  if (!showMedicosList.value) {
+    filterMedicos()
+    showMedicosList.value = true
+    medicoInput.value?.focus()
+  } else {
+    showMedicosList.value = false
+  }
+}
+
+const highlightNextMedico = () => {
+  if (!showMedicosList.value) {
+    showMedicosList.value = true
+    filterMedicos()
+    return
+  }
+  if (filteredMedicos.value.length === 0) return
+  highlightedMedicoIndex.value = (highlightedMedicoIndex.value + 1) % filteredMedicos.value.length
+}
+
+const highlightPrevMedico = () => {
+  if (!showMedicosList.value) {
+    showMedicosList.value = true
+    filterMedicos()
+    return
+  }
+  if (filteredMedicos.value.length === 0) return
+  highlightedMedicoIndex.value = (highlightedMedicoIndex.value - 1 + filteredMedicos.value.length) % filteredMedicos.value.length
+}
+
+const selectHighlightedMedico = () => {
+  if (showMedicosList.value && highlightedMedicoIndex.value >= 0) {
+    selectMedico(filteredMedicos.value[highlightedMedicoIndex.value])
+  }
+}
+
+// Cerrar lista al hacer clic fuera
+const onClickOutsideMedico = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (!medicoInput.value?.parentElement?.contains(target)) {
+    showMedicosList.value = false
+  }
+}
+onMounted(() => {
+  document.addEventListener('mousedown', onClickOutsideMedico)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', onClickOutsideMedico)
+})
+
+// Inicializar lista filtrada
+onMounted(() => {
+  filteredMedicos.value = availableMedicos.value
+})
+watch(searchMedico, filterMedicos)
+
+// --- Combobox de entidades (como el de médicos) ---
+const entidadInput = ref<HTMLInputElement | null>(null)
+const showEntidadesList = ref(false)
+const filteredEntidades = ref<string[]>([])
+const highlightedEntidadIndex = ref(-1)
+
+const filterEntidades = () => {
+  const search = selectedAnalisis.value.toLowerCase()
+  filteredEntidades.value = tiposAnalisis.filter(entidad =>
+    entidad.toLowerCase().includes(search)
+  )
+  highlightedEntidadIndex.value = -1
+}
+
+const selectEntidad = (entidad: string) => {
+  selectedAnalisis.value = entidad
+  showEntidadesList.value = false
+  filterEntidades()
+}
+
+const toggleEntidadesList = () => {
+  if (!showEntidadesList.value) {
+    filterEntidades()
+    showEntidadesList.value = true
+    entidadInput.value?.focus()
+  } else {
+    showEntidadesList.value = false
+  }
+}
+
+const highlightNextEntidad = () => {
+  if (!showEntidadesList.value) {
+    showEntidadesList.value = true
+    filterEntidades()
+    return
+  }
+  if (filteredEntidades.value.length === 0) return
+  highlightedEntidadIndex.value = (highlightedEntidadIndex.value + 1) % filteredEntidades.value.length
+}
+
+const highlightPrevEntidad = () => {
+  if (!showEntidadesList.value) {
+    showEntidadesList.value = true
+    filterEntidades()
+    return
+  }
+  if (filteredEntidades.value.length === 0) return
+  highlightedEntidadIndex.value = (highlightedEntidadIndex.value - 1 + filteredEntidades.value.length) % filteredEntidades.value.length
+}
+
+const selectHighlightedEntidad = () => {
+  if (showEntidadesList.value && highlightedEntidadIndex.value >= 0) {
+    selectEntidad(filteredEntidades.value[highlightedEntidadIndex.value])
+  }
+}
+
+// Cerrar lista al hacer clic fuera
+const onClickOutsideEntidad = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (!entidadInput.value?.parentElement?.contains(target)) {
+    showEntidadesList.value = false
+  }
+}
+onMounted(() => {
+  document.addEventListener('mousedown', onClickOutsideEntidad)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', onClickOutsideEntidad)
+})
+
+// Inicializar lista filtrada
+onMounted(() => {
+  filteredEntidades.value = tiposAnalisis
+})
+watch(selectedAnalisis, filterEntidades)
+
+// --- Combobox de estados (como el de médicos y entidad) ---
+const estadoInput = ref<HTMLInputElement | null>(null)
+const showEstadosList = ref(false)
+const filteredEstados = ref<string[]>([])
+const highlightedEstadoIndex = ref(-1)
+
+const filterEstados = () => {
+  const search = selectedEstado.value.toLowerCase()
+  filteredEstados.value = estados.filter(estado =>
+    estado.toLowerCase().includes(search)
+  )
+  highlightedEstadoIndex.value = -1
+}
+
+const selectEstado = (estado: string) => {
+  selectedEstado.value = estado
+  showEstadosList.value = false
+  filterEstados()
+}
+
+const toggleEstadosList = () => {
+  if (!showEstadosList.value) {
+    filterEstados()
+    showEstadosList.value = true
+    estadoInput.value?.focus()
+  } else {
+    showEstadosList.value = false
+  }
+}
+
+const highlightNextEstado = () => {
+  if (!showEstadosList.value) {
+    showEstadosList.value = true
+    filterEstados()
+    return
+  }
+  if (filteredEstados.value.length === 0) return
+  highlightedEstadoIndex.value = (highlightedEstadoIndex.value + 1) % filteredEstados.value.length
+}
+
+const highlightPrevEstado = () => {
+  if (!showEstadosList.value) {
+    showEstadosList.value = true
+    filterEstados()
+    return
+  }
+  if (filteredEstados.value.length === 0) return
+  highlightedEstadoIndex.value = (highlightedEstadoIndex.value - 1 + filteredEstados.value.length) % filteredEstados.value.length
+}
+
+const selectHighlightedEstado = () => {
+  if (showEstadosList.value && highlightedEstadoIndex.value >= 0) {
+    selectEstado(filteredEstados.value[highlightedEstadoIndex.value])
+  }
+}
+
+// Cerrar lista al hacer clic fuera
+const onClickOutsideEstado = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (!estadoInput.value?.parentElement?.contains(target)) {
+    showEstadosList.value = false
+  }
+}
+onMounted(() => {
+  document.addEventListener('mousedown', onClickOutsideEstado)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', onClickOutsideEstado)
+})
+
+// Inicializar lista filtrada
+onMounted(() => {
+  filteredEstados.value = estados
+})
+watch(selectedEstado, filterEstados)
+
+// --- Combobox de CUPS ---
+const cupsInput = ref<HTMLInputElement | null>(null)
+const showCupsList = ref(false)
+const filteredCups = ref<string[]>([])
+const highlightedCupsIndex = ref(-1)
+
+const filterCups = () => {
+  const search = selectedCups.value.toLowerCase()
+  filteredCups.value = cupsList.value.filter(cup =>
+    cup.toLowerCase().includes(search)
+  )
+  highlightedCupsIndex.value = -1
+}
+
+const selectCups = (cups: string) => {
+  selectedCups.value = cups
+  showCupsList.value = false
+  filterCups()
+}
+
+const toggleCupsList = () => {
+  if (!showCupsList.value) {
+    filterCups()
+    showCupsList.value = true
+    cupsInput.value?.focus()
+  } else {
+    showCupsList.value = false
+  }
+}
+
+const highlightNextCups = () => {
+  if (!showCupsList.value) {
+    showCupsList.value = true
+    filterCups()
+    return
+  }
+  if (filteredCups.value.length === 0) return
+  highlightedCupsIndex.value = (highlightedCupsIndex.value + 1) % filteredCups.value.length
+}
+
+const highlightPrevCups = () => {
+  if (!showCupsList.value) {
+    showCupsList.value = true
+    filterCups()
+    return
+  }
+  if (filteredCups.value.length === 0) return
+  highlightedCupsIndex.value = (highlightedCupsIndex.value - 1 + filteredCups.value.length) % filteredCups.value.length
+}
+
+const selectHighlightedCups = () => {
+  if (showCupsList.value && highlightedCupsIndex.value >= 0) {
+    selectCups(filteredCups.value[highlightedCupsIndex.value])
+  }
+}
+
+// Cerrar lista al hacer clic fuera
+const onClickOutsideCups = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (!cupsInput.value?.parentElement?.contains(target)) {
+    showCupsList.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', onClickOutsideCups)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', onClickOutsideCups)
+})
+
+// Inicializar lista filtrada
+onMounted(() => {
+  filteredCups.value = cupsList.value
+})
+watch(selectedCups, filterCups)
 </script>
 
 <style scoped>
