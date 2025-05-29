@@ -178,7 +178,7 @@
                 v-model="selectedCups"
                 type="text"
                 placeholder="Buscar CUPS..."
-                class="h-11 w-full sm:w-32 pl-4 pr-10 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+                class="h-11 w-full sm:w-40 pl-4 pr-10 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
                 @input="filterCups"
                 @focus="showCupsList = true"
                 @keydown.down.prevent="highlightNextCups"
@@ -753,6 +753,126 @@ const muestras = ref<Muestra[]>([
     fechaRecepcion: '2023-12-05',
     horaRecepcion: '12:30',
     cups: ['90005', '90105', '90205']
+  },
+  {
+    id: 'M-2023-006',
+    tipoMuestra: 'Orina',
+    paciente: 'Lucía Ramírez',
+    dni: '56789012',
+    analisis: 'ESSALUD',
+    medico: 'Dra. Morales',
+    estado: 'Pendiente',
+    fechaRecepcion: '2023-11-22',
+    horaRecepcion: '08:45',
+    cups: ['90006', '90106']
+  },
+  {
+    id: 'M-2023-007',
+    tipoMuestra: 'Heces',
+    paciente: 'Miguel Castro',
+    dni: '67890123',
+    analisis: 'MINSA',
+    medico: 'Dr. Herrera',
+    estado: 'Completado',
+    fechaRecepcion: '2023-10-18',
+    horaRecepcion: '10:10',
+    cups: ['90007', '90107', '90207']
+  },
+  {
+    id: 'M-2023-008',
+    tipoMuestra: 'Sangre',
+    paciente: 'Patricia Gómez',
+    dni: '78901234',
+    analisis: 'PRIVADO',
+    medico: 'Dra. Vargas',
+    estado: 'Validado',
+    fechaRecepcion: '2023-09-30',
+    horaRecepcion: '09:00',
+    cups: ['90008']
+  },
+  {
+    id: 'M-2023-009',
+    tipoMuestra: 'Orina',
+    paciente: 'Jorge Salazar',
+    dni: '89012345',
+    analisis: 'ESSALUD',
+    medico: 'Dr. Paredes',
+    estado: 'Pendiente',
+    fechaRecepcion: '2023-08-15',
+    horaRecepcion: '11:20',
+    cups: ['90009', '90109']
+  },
+  {
+    id: 'M-2023-010',
+    tipoMuestra: 'Heces',
+    paciente: 'Carmen Ríos',
+    dni: '90123456',
+    analisis: 'MINSA',
+    medico: 'Dra. Mendoza',
+    estado: 'En Proceso',
+    fechaRecepcion: '2023-07-12',
+    horaRecepcion: '13:05',
+    cups: ['90010', '90110', '90210']
+  },
+  {
+    id: 'M-2023-011',
+    tipoMuestra: 'Sangre',
+    paciente: 'Luis Torres',
+    dni: '11223344',
+    analisis: 'OTRO',
+    medico: 'Dr. Castillo',
+    estado: 'Completado',
+    fechaRecepcion: '2023-06-25',
+    horaRecepcion: '10:30',
+    cups: ['90011', '90111']
+  },
+  {
+    id: 'M-2023-012',
+    tipoMuestra: 'Orina',
+    paciente: 'Elena Bravo',
+    dni: '22334455',
+    analisis: 'ESSALUD',
+    medico: 'Dra. Peña',
+    estado: 'Validado',
+    fechaRecepcion: '2023-05-19',
+    horaRecepcion: '09:50',
+    cups: ['90012']
+  },
+  {
+    id: 'M-2023-013',
+    tipoMuestra: 'Heces',
+    paciente: 'Ricardo Medina',
+    dni: '33445566',
+    analisis: 'PRIVADO',
+    medico: 'Dr. Aguirre',
+    estado: 'Pendiente',
+    fechaRecepcion: '2023-04-10',
+    horaRecepcion: '12:15',
+    cups: ['90013', '90113']
+  },
+  {
+    id: 'M-2023-014',
+    tipoMuestra: 'Sangre',
+    paciente: 'Gabriela Soto',
+    dni: '44556677',
+    analisis: 'MINSA',
+    medico: 'Dra. Cárdenas',
+    estado: 'En Proceso',
+    fechaRecepcion: '2023-03-03',
+    horaRecepcion: '08:20',
+    cups: ['90014', '90114', '90214']
+  },
+  {
+    id: 'M-2023-015',
+    tipoMuestra: 'Orina',
+    paciente: 'Fernando León',
+    dni: '55667788',
+    analisis: 'ESSALUD',
+    medico: 'Dr. Rojas',
+    estado: 'Completado',
+    fechaRecepcion: '2023-02-14',
+    horaRecepcion: '10:40',
+    cups: ['90015']
   }
 ])
 

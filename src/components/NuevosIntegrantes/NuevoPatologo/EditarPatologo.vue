@@ -30,7 +30,7 @@
           @click="buscarPaciente"
           type="button"
           class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400 transition-colors"
-          :disabled="!searchCedula || isLoading"
+          :disabled="isLoading"
         >
           <svg
             v-if="isLoading"

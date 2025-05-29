@@ -14,10 +14,6 @@
         <ComponentCard title="Ingresar Nuevo Paciente" clickable>
           <DefaultInputs />
         </ComponentCard>
-        <ComponentCard title="Verificar Muestras" clickable> 
-          <VerMuestrasPaciente /> 
-        </ComponentCard>
-
       </div>
     </div>
   </AdminLayout>

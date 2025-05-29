@@ -26,19 +26,19 @@
         required
         ref="tipoEntidadInput"
       >
-        <option value="">Seleccione un tipo</option>
+        <option value="" disabled>Seleccione un tipo</option>
         <option value="Hospital">Hospital</option>
         <option value="Clínica">Clínica</option>
-        <option value="Centro Médico">Centro Médico</option>
+        <option value="Centro de Salud">Centro de Salud</option>
         <option value="Laboratorio">Laboratorio</option>
         <option value="Otro">Otro</option>
       </select>
     </div>
 
-    <!-- RUC / NIT / Código -->
+    <!-- RUC/NIT -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        RUC / NIT / Código de la Entidad *
+        RUC / NIT *
       </label>
       <input
         type="text"
@@ -58,7 +58,7 @@
       <input
         type="text"
         v-model="formData.direccion"
-        placeholder="Ej: Av. Principal 1234, Ciudad"
+        placeholder="Ej: Av. Principal 123, Ciudad"
         :class="getFieldClasses('direccion', true)"
         required
         ref="direccionInput"
@@ -82,26 +82,27 @@
     <!-- Email -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Email
+        Email *
       </label>
       <input
         type="email"
         v-model="formData.email"
-        placeholder="Ej: contacto@entidad.com"
-        :class="getFieldClasses('email')"
+        placeholder="Ej: correo@ejemplo.com"
+        :class="getFieldClasses('email', true)"
+        required
         ref="emailInput"
       />
     </div>
 
-    <!-- Responsable / Representante -->
+    <!-- Responsable -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Responsable / Representante
+        Responsable
       </label>
       <input
         type="text"
         v-model="formData.responsable"
-        placeholder="Nombre del responsable o representante legal"
+        placeholder="Nombre del responsable de la entidad"
         :class="getFieldClasses('responsable')"
         ref="responsableInput"
       />
@@ -140,29 +141,11 @@
         class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         :disabled="isLoading"
       >
-        <svg
-          v-if="isLoading"
-          class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
+        <svg v-if="isLoading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <svg
-          v-else
-          class="w-4 h-4 mr-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
-          />
+        <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
         </svg>
         {{ isLoading ? 'Guardando...' : 'Guardar Entidad' }}
       </button>
@@ -172,42 +155,13 @@
     <div v-if="statusMessage" :class="statusMessageClasses" class="mt-6">
       <div class="flex items-center space-x-3">
         <div class="flex-shrink-0">
-          <svg
-            :class="statusIconClass"
-            class="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              v-if="statusType === 'success'"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-            <path
-              v-else
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
+          <svg :class="statusIconClass" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path v-if="statusType === 'success'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
         <div class="flex-1">
           <p class="font-bold text-lg">{{ statusMessage }}</p>
-          <div v-if="statusType === 'success'" class="mt-3">
-            <div class="bg-white bg-opacity-50 rounded-md border border-green-300 p-3">
-              <p class="text-sm font-medium text-green-800 mb-2">Datos de la Entidad Registrada:</p>
-              <div class="space-y-1">
-                <p class="text-lg font-semibold text-green-900">{{ formData.nombreEntidad }}</p>
-                <p class="text-base text-green-800">Tipo: <span class="font-semibold">{{ formData.tipoEntidad }}</span></p>
-                <p class="text-base text-green-800">RUC/NIT: <span class="font-mono font-bold">{{ formData.ruc }}</span></p>
-                <p class="text-base text-green-800">Dirección: <span class="font-semibold">{{ formData.direccion }}</span></p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -244,9 +198,11 @@ const responsableInput = ref<HTMLInputElement | null>(null)
 const isFormValid = computed(() => {
   return !!(
     formData.nombreEntidad.trim() &&
-    formData.tipoEntidad.trim() &&
+    formData.tipoEntidad &&
     formData.ruc.trim() &&
-    formData.direccion.trim()
+    formData.direccion.trim() &&
+    formData.email.trim() &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())
   )
 })
 
@@ -259,6 +215,46 @@ const statusMessageClasses = computed(() => {
 const statusIconClass = computed(() => {
   return statusType.value === 'success' ? 'text-green-600' : 'text-red-600'
 })
+
+const guardarEntidad = async () => {
+  hasAttemptedSubmit.value = true
+
+  if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+    statusType.value = 'error'
+    statusMessage.value = 'Por favor ingrese un email válido.'
+    emailInput.value?.focus()
+    return
+  }
+
+  if (!isFormValid.value) {
+    statusType.value = 'error'
+    statusMessage.value = 'Por favor complete todos los campos requeridos (*)'
+    if (!formData.nombreEntidad.trim()) nombreEntidadInput.value?.focus()
+    else if (!formData.tipoEntidad) tipoEntidadInput.value?.focus()
+    else if (!formData.ruc.trim()) rucInput.value?.focus()
+    else if (!formData.direccion.trim()) direccionInput.value?.focus()
+    else if (!formData.email.trim()) emailInput.value?.focus()
+    return
+  }
+
+  isLoading.value = true
+  statusMessage.value = ''
+
+  try {
+    // Aquí iría la lógica para enviar los datos a un backend
+    const dataToSave = { ...formData }
+    console.log('Datos de la entidad a guardar:', dataToSave)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    statusType.value = 'success'
+    statusMessage.value = 'Entidad guardada exitosamente'
+  } catch (error) {
+    statusType.value = 'error'
+    statusMessage.value = 'Error al guardar la entidad. Intente nuevamente.'
+    console.error('Error al guardar entidad:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
 
 const limpiarFormulario = () => {
   formData.nombreEntidad = ''
@@ -274,41 +270,13 @@ const limpiarFormulario = () => {
   nombreEntidadInput.value?.focus()
 }
 
-const guardarEntidad = async () => {
-  hasAttemptedSubmit.value = true
-  if (!isFormValid.value) {
-    statusType.value = 'error'
-    statusMessage.value = 'Por favor complete todos los campos obligatorios (*)'
-    if (!formData.nombreEntidad.trim()) nombreEntidadInput.value?.focus()
-    else if (!formData.tipoEntidad.trim()) tipoEntidadInput.value?.focus()
-    else if (!formData.ruc.trim()) rucInput.value?.focus()
-    else if (!formData.direccion.trim()) direccionInput.value?.focus()
-    return
-  }
-  isLoading.value = true
-  statusMessage.value = ''
-  try {
-    // Aquí iría la lógica para enviar los datos a un backend
-    // await api.registrarEntidad(formData)
-    const dataToSave = { ...formData }
-    console.log('Datos de la entidad a guardar:', dataToSave)
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    statusType.value = 'success'
-    statusMessage.value = 'Entidad guardada exitosamente'
-  } catch (error) {
-    statusType.value = 'error'
-    statusMessage.value = 'Error al guardar la entidad. Intente nuevamente.'
-    console.error('Error al guardar entidad:', error)
-  } finally {
-    isLoading.value = false
-  }
-}
-
 const getFieldClasses = (fieldName: keyof typeof formData, isRequired = false) => {
   const baseClasses = "h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3"
-  let fieldIsInvalid = false;
-  if (isRequired && hasAttemptedSubmit.value && !formData[fieldName]) {
-    fieldIsInvalid = true
+  let fieldIsInvalid = false
+  if (fieldName === 'email') {
+    fieldIsInvalid = isRequired && hasAttemptedSubmit.value && (!formData[fieldName].trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData[fieldName].trim()))
+  } else {
+    fieldIsInvalid = isRequired && hasAttemptedSubmit.value && !formData[fieldName]
   }
   if (fieldIsInvalid) {
     return `${baseClasses} border-red-500 focus:border-red-500 focus:ring-red-500/10 bg-red-50`

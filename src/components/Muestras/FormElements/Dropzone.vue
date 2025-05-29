@@ -2,7 +2,7 @@
   <div class="file-uploader">
     <form
       ref="dropzoneForm"
-      :id="dropzoneId"
+      :id="props.id"
       :action="uploadUrl"
       class="border-gray-300 border-dashed dropzone rounded-xl bg-gray-50 p-7 hover:border-brand-500 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-brand-500 lg:p-10"
     >
@@ -46,7 +46,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, defineEmits } from 'vue'
 import Dropzone from 'dropzone'
 import 'dropzone/dist/dropzone.css'
@@ -64,38 +64,44 @@ const props = defineProps({
 
 const emit = defineEmits(['file-added'])
 
-const dropzoneForm = ref(null)
-const dropzoneId = `dropzone-${Math.random().toString(36).substr(2, 9)}`
-let dropzoneInstance = null
+const dropzoneForm = ref<HTMLFormElement | null>(null)
+let dropzoneInstance: unknown = null
 
 onMounted(() => {
   Dropzone.autoDiscover = false
 
-  dropzoneInstance = new Dropzone(`#${props.id}`, {
-    url: props.uploadUrl,
-    thumbnailWidth: 150,
-    maxFilesize: 0.5,
-    acceptedFiles: 'image/jpeg,image/png,image/gif,image/webp,image/svg+xml',
-    headers: { 'My-Awesome-Header': 'header value' },
-    dictDefaultMessage: '',
-    init: function () {
-      this.on('addedfile', (file) => {
-        console.log('A file has been added to Dropzone instance:', file)
-        emit('file-added', file)
-      })
-      this.on('success', (file, response) => {
-        console.log('File successfully uploaded', file, response)
-      })
-      this.on('error', (file, error) => {
-        console.error('An error occurred during upload', file, error)
-      })
-    },
-  })
+  // Destroy any existing Dropzone instance on this element
+  if (dropzoneForm.value && typeof ((dropzoneForm.value as unknown as { dropzone?: { destroy: () => void } }).dropzone?.destroy) === 'function') {
+    (dropzoneForm.value as unknown as { dropzone: { destroy: () => void } }).dropzone.destroy();
+  }
+
+  if (dropzoneForm.value) {
+    dropzoneInstance = new Dropzone(dropzoneForm.value, {
+      url: props.uploadUrl,
+      thumbnailWidth: 150,
+      maxFilesize: 0.5,
+      acceptedFiles: 'image/jpeg,image/png,image/gif,image/webp,image/svg+xml',
+      headers: { 'My-Awesome-Header': 'header value' },
+      dictDefaultMessage: '',
+      init: function () {
+        this.on('addedfile', (file: File) => {
+          console.log('A file has been added to Dropzone instance:', file)
+          emit('file-added', file)
+        })
+        this.on('success', (file: File, response: unknown) => {
+          console.log('File successfully uploaded', file, response)
+        })
+        this.on('error', (file: File, error: unknown) => {
+          console.error('An error occurred during upload', file, error)
+        })
+      },
+    })
+  }
 })
 
 onBeforeUnmount(() => {
-  if (dropzoneInstance) {
-    dropzoneInstance.destroy()
+  if (dropzoneInstance && typeof (dropzoneInstance as { destroy?: () => void }).destroy === 'function') {
+    (dropzoneInstance as { destroy: () => void }).destroy()
   }
 })
 </script>
@@ -139,3 +145,9 @@ onBeforeUnmount(() => {
   border-color: #6366f1;
 }
 </style>
+
+<!--
+  Rename this file/component to DropzoneUploader.vue and update all imports:
+  import DropzoneUploader from '@/components/Muestras/FormElements/DropzoneUploader.vue'
+  <DropzoneUploader ... />
+-->

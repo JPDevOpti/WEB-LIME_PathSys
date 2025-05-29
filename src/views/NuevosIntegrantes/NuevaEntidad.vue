@@ -3,12 +3,12 @@
     <PageBreadcrumb :pageTitle="currentPageTitle" />
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
       <div class="space-y-6">
-        <ComponentCard title="Ingresar Nueva Entidad" clickable>
+        <ComponentCard title="Ingresar Nuevo Patologo" clickable>
           <NuevaEntidad />
         </ComponentCard>
       </div>
       <div class="space-y-6">
-        <ComponentCard title="Editar Entidad Existente" clickable>
+        <ComponentCard title="Editar Patologo Existente" clickable>
           <EditarEntidad />
         </ComponentCard>
 
@@ -25,5 +25,5 @@ import NuevaEntidad from '@/components/NuevosIntegrantes/NuevaEntidad/IngresarNu
 import ComponentCard from '@/components/common/ComponentCard.vue'
 import EditarEntidad from '@/components/NuevosIntegrantes/NuevaEntidad/EditarEntidad.vue'
 
-const currentPageTitle = ref('Nueva Entidad')
+const currentPageTitle = ref('Nuevo Patologo')
 </script>
