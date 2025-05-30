@@ -140,51 +140,64 @@
     </div>
 
     <!-- Botones de Acción -->
-    <div class="flex items-center justify-end space-x-3 pt-6">
-      <button
-        @click="limpiarFormulario"
-        type="button"
-        class="inline-flex items-center px-4 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-3 focus:ring-gray-300/30 focus:border-gray-400 transition-colors"
-        :disabled="isLoading"
-      >
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-        Limpiar
-      </button>
-
-      <button
-        @click="guardarPaciente"
-        type="button"
-        class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        :disabled="isLoading"
-      >
-        <svg
-          v-if="isLoading"
-          class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
+    <div class="flex flex-col pt-6">
+      <!-- Fila de Botones -->
+      <div class="flex items-center justify-end space-x-3 mb-4">
+        <BotonLimpiar 
+          @limpiar="limpiarFormulario"
+          :disabled="isLoading"
+        />
+        <button
+          @click="handleGuardarClick"
+          type="button"
+          class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          :disabled="isLoading"
         >
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <svg
-          v-else
-          class="w-4 h-4 mr-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
-          />
-        </svg>
-        {{ isLoading ? 'Guardando...' : 'Guardar Paciente' }}
-      </button>
+          <svg
+            v-if="isLoading"
+            class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <svg
+            v-else
+            class="w-4 h-4 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+            />
+          </svg>
+          {{ isLoading ? 'Guardando...' : 'Guardar Paciente' }}
+        </button>
+      </div>
+      
+      <!-- Alerta de Validación -->
+      <BotonGuardar
+        ref="botonGuardarRef"
+        :campos="formData"
+        :campos-obligatorios="['numeroCedula','nombrePaciente','sexo','edad','entidad','tipoAtencion']"
+        :etiquetas="{
+          numeroCedula: 'Número de Cédula',
+          nombrePaciente: 'Nombre del Paciente',
+          sexo: 'Sexo',
+          edad: 'Edad',
+          entidad: 'Entidad',
+          tipoAtencion: 'Tipo de Atención'
+        }"
+        :solo-alerta="true"
+        :mostrar-error="showValidationError"
+        @validation-error="handleValidationError"
+      />
     </div>
 
     <!-- Mensaje de Estado -->
@@ -333,6 +346,8 @@
 import { reactive, computed, ref, watch } from 'vue'
 import 'flatpickr/dist/flatpickr.css'
 import ListaDesplegable from '../../ui/ListaDesplegable.vue'
+import BotonGuardar from '../../ui/BotonGuardar.vue'
+import BotonLimpiar from '../../ui/BotonLimpiar.vue'
 
 // Estados para el componente
 const isLoading = ref(false)
@@ -341,6 +356,8 @@ const statusType = ref<'success' | 'error'>('success')
 const hasAttemptedSubmit = ref(false)
 const showNotification = ref(false)
 const progressWidth = ref(100)
+const botonGuardarRef = ref<{ validarExternamente: () => boolean } | null>(null)
+const showValidationError = ref(false)
 
 // Entidades disponibles
 const entidades = [
@@ -369,18 +386,6 @@ const cedulaInput = ref<HTMLInputElement | null>(null)
 const nombreInput = ref<HTMLInputElement | null>(null)
 const edadInput = ref<HTMLInputElement | null>(null)
 
-// Validación del formulario
-const isFormValid = computed(() => {
-  return !!(
-    formData.numeroCedula.trim() &&
-    formData.nombrePaciente.trim() &&
-    formData.sexo &&
-    formData.edad &&
-    formData.entidad &&
-    formData.tipoAtencion
-  )
-})
-
 // Clases para el mensaje de estado
 const statusMessageClasses = computed(() => {
   return statusType.value === 'success'
@@ -394,31 +399,16 @@ const statusIconClass = computed(() => {
 
 // Función para guardar el paciente
 const guardarPaciente = async () => {
-  hasAttemptedSubmit.value = true
-  
-  if (!isFormValid.value) {
-    statusType.value = 'error'
-    statusMessage.value = 'Por favor complete todos los campos requeridos'
-    return
-  }
-
   isLoading.value = true
   statusMessage.value = ''
-
   try {
-    
     statusType.value = 'success'
     statusMessage.value = 'Paciente guardado exitosamente'
-    
-    // Mostrar notificación emergente
     showNotification.value = true
     progressWidth.value = 100
-    
-    // Crear barra de progreso para auto-cierre
-    const duration = 5000 // 5 segundos
-    const interval = 50 // Update every 50ms
+    const duration = 5000
+    const interval = 50
     const decrement = (interval / duration) * 100
-    
     const progressInterval = setInterval(() => {
       progressWidth.value -= decrement
       if (progressWidth.value <= 0) {
@@ -427,10 +417,7 @@ const guardarPaciente = async () => {
         progressWidth.value = 100
       }
     }, interval)
-    
-    // Emitir evento de éxito
     emit('patient-saved', { ...formData })
-    
   } catch (error) {
     statusType.value = 'error'
     statusMessage.value = 'Error al guardar el paciente. Intente nuevamente.'
@@ -452,6 +439,27 @@ const limpiarFormulario = () => {
   
   statusMessage.value = ''
   hasAttemptedSubmit.value = false
+  showValidationError.value = false
+}
+
+// Función para manejar errores de validación
+const handleValidationError = (camposInvalidos: string[]) => {
+  hasAttemptedSubmit.value = true
+  console.log('Campos inválidos:', camposInvalidos)
+}
+
+// Función para manejar el click del botón guardar
+const handleGuardarClick = () => {
+  // Trigger validation using the BotonGuardar component
+  if (botonGuardarRef.value) {
+    const isValid = botonGuardarRef.value.validarExternamente()
+    if (isValid) {
+      guardarPaciente()
+      showValidationError.value = false
+    } else {
+      showValidationError.value = true
+    }
+  }
 }
 
 // Emitir los datos del formulario para poder usarlos en el componente padre
@@ -461,6 +469,16 @@ const emit = defineEmits(['update-patient-data', 'patient-saved'])
 watch(formData, (newData) => {
   emit('update-patient-data', newData)
 }, { deep: true, immediate: true })
+
+// Watch para ocultar errores de validación cuando el formulario se vuelve válido
+watch(formData, () => {
+  if (showValidationError.value && botonGuardarRef.value) {
+    const isValid = botonGuardarRef.value.validarExternamente()
+    if (isValid) {
+      showValidationError.value = false
+    }
+  }
+}, { deep: true })
 
 // Función para obtener clases CSS condicionales para campos requeridos
 const getFieldClasses = (fieldName: keyof typeof formData, isRequired = false) => {

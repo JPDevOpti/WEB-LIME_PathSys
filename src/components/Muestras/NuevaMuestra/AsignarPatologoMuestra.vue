@@ -185,28 +185,53 @@
         </div>
 
         <!-- Botones de Acción -->
-        <div class="flex justify-end space-x-4">
-          <button
-            @click="limpiarFormulario"
-            type="button"
-            class="inline-flex items-center px-6 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-3 focus:ring-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            Limpiar
-          </button>
-          <button
-            @click="asignarPatologo"
-            type="button"
-            class="inline-flex items-center px-6 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            :disabled="!isFormValid"
-          >
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            Asignar Patólogo
-          </button>
+        <div class="flex flex-col">
+          <!-- Fila de Botones -->
+          <div class="flex justify-end space-x-4 mb-4">
+            <BotonLimpiar 
+              @limpiar="limpiarFormulario"
+            />
+            <button
+              @click="handleAsignarClick"
+              type="button"
+              class="inline-flex items-center px-6 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              :disabled="isLoading"
+            >
+              <svg
+                v-if="isLoading"
+                class="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <svg
+                v-else
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              {{ isLoading ? 'Asignando...' : 'Asignar Patólogo' }}
+            </button>
+          </div>
+          
+          <!-- Alerta de Validación -->
+          <BotonGuardar
+            ref="botonGuardarRef"
+            :campos="{ patologoAsignado: formData.patologoAsignado }"
+            :campos-obligatorios="['patologoAsignado']"
+            :etiquetas="{
+              patologoAsignado: 'Patólogo Asignado'
+            }"
+            :solo-alerta="true"
+            :mostrar-error="showValidationError"
+            @validation-error="handleValidationError"
+          />
         </div>
       </div>
     </div>
@@ -297,8 +322,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import ListaDesplegable from '../../ui/ListaDesplegable.vue'
+import BotonGuardar from '../../ui/BotonGuardar.vue'
+import BotonLimpiar from '../../ui/BotonLimpiar.vue'
 
 interface MuestraInfo {
   codigo: string
@@ -318,6 +345,8 @@ const searchPerformed = ref(false)
 const muestraEncontrada = ref(false)
 const showNotification = ref(false)
 const progressWidth = ref(100)
+const showValidationError = ref(false)
+const botonGuardarRef = ref<{ validarExternamente: () => boolean } | null>(null)
 
 // Información de la muestra
 const muestraInfo = ref<MuestraInfo>({
@@ -429,6 +458,7 @@ const limpiarFormulario = () => {
   formData.patologoAsignado = ''
   showNotification.value = false
   progressWidth.value = 100
+  showValidationError.value = false
 }
 
 // Función para asignar patólogo
@@ -459,6 +489,39 @@ const asignarPatologo = () => {
     patologo: formData.patologoAsignado
   })
 }
+
+// Función para manejar errores de validación
+const handleValidationError = (camposInvalidos: string[]) => {
+  console.log('Campos inválidos:', camposInvalidos)
+}
+
+// Función para manejar el click del botón asignar
+const handleAsignarClick = () => {
+  // Validar que haya una muestra encontrada primero
+  if (!muestraEncontrada.value) {
+    showValidationError.value = true
+    handleValidationError(['Debe buscar y encontrar una muestra primero'])
+    return
+  }
+
+  // Trigger validation using the BotonGuardar component
+  if (botonGuardarRef.value) {
+    const isValid = botonGuardarRef.value.validarExternamente()
+    if (isValid) {
+      asignarPatologo()
+      showValidationError.value = false
+    } else {
+      showValidationError.value = true
+    }
+  }
+}
+
+// Watcher para ocultar el error de validación cuando el formulario se vuelve válido
+watch([() => formData.patologoAsignado, muestraEncontrada], () => {
+  if (showValidationError.value && isFormValid.value) {
+    showValidationError.value = false
+  }
+})
 
 // Emits
 const emit = defineEmits<{
