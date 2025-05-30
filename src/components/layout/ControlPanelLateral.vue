@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSidebarProvider } from '@/composables/useSidebar'
+import { useSidebarProvider } from '@/composables/ControlBarraLateral'
 
 // Inicializa el proveedor de estado del sidebar
 useSidebarProvider()

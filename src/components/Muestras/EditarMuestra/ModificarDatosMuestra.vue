@@ -304,7 +304,7 @@
 
 <script setup lang="ts">
 import { reactive, computed, ref, onMounted } from 'vue'
-import ListaDesplegable from '../../ui/ListaDesplegable.vue'
+import ListaDesplegable from '../../ComponentesFormularios/ListaDesplegable.vue'
 
 interface FormData {
   idMuestra: string

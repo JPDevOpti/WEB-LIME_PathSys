@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSidebar } from '@/composables/useSidebar'
+import { useSidebar } from '@/composables/ControlBarraLateral'
 
 // Obtener el estado y funciones del sidebar
 const { toggleMobileSidebar, isMobileOpen } = useSidebar()

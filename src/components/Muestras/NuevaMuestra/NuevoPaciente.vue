@@ -345,9 +345,9 @@
 <script setup lang="ts">
 import { reactive, computed, ref, watch } from 'vue'
 import 'flatpickr/dist/flatpickr.css'
-import ListaDesplegable from '../../ui/ListaDesplegable.vue'
-import BotonGuardar from '../../ui/BotonGuardar.vue'
-import BotonLimpiar from '../../ui/BotonLimpiar.vue'
+import ListaDesplegable from '../../ComponentesFormularios/ListaDesplegable.vue'
+import BotonGuardar from '../../ComponentesFormularios/BotonGuardar.vue'
+import BotonLimpiar from '../../ComponentesFormularios/BotonLimpiar.vue'
 
 // Estados para el componente
 const isLoading = ref(false)

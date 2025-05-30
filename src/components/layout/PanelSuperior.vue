@@ -98,11 +98,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useSidebar } from '@/composables/useSidebar'
-import SearchBar from './header/SearchBar.vue'
-import HeaderLogo from './header/HeaderLogo.vue'
-import NotificationMenu from './header/NotificationMenu.vue'
-import UserMenu from './header/UserMenu.vue'
+import { useSidebar } from '@/composables/ControlBarraLateral'
+import SearchBar from './BarraSuperior/Buscador.vue'
+import HeaderLogo from './BarraSuperior/LogoSuperior.vue'
+import NotificationMenu from './BarraSuperior/Notificaciones.vue'
+import UserMenu from './BarraSuperior/Perfil.vue'
 
 const { toggleSidebar, toggleMobileSidebar, isMobileOpen } = useSidebar()
 

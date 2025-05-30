@@ -12,7 +12,7 @@
       </div>
       <div class="space-y-6">
         <ComponentCard title="Ingresar Nuevo Paciente" clickable>
-          <DefaultInputs />
+          <NuevoPaciente />
         </ComponentCard>
       </div>
     </div>
@@ -23,9 +23,8 @@
 import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import DefaultInputs from '@/components/Muestras/NuevaMuestra/NuevoPaciente.vue'
+import NuevoPaciente from '@/components/Muestras/NuevaMuestra/NuevoPaciente.vue'
 import ComponentCard from '@/components/common/ComponentCard.vue'
-import VerMuestrasPaciente from '@/components/Muestras/NuevaMuestra/VerMuestrasPaciente.vue'
 import AsignarCodigoMuestra from '@/components/Muestras/NuevaMuestra/AsignarCodigoMuestra.vue'
 import AsignarPatologoMuestra from '@/components/Muestras/NuevaMuestra/AsignarPatologoMuestra.vue'
 

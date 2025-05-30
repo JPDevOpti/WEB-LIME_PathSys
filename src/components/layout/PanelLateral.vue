@@ -191,7 +191,7 @@ import {
   PlugInIcon,
 } from "../../icons";
 import BoxCubeIcon from "@/icons/BoxCubeIcon.vue";
-import { useSidebar } from "@/composables/useSidebar";
+import { useSidebar } from "@/composables/ControlBarraLateral";
 
 const route = useRoute();
 

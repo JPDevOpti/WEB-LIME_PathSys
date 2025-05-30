@@ -30,9 +30,9 @@
 </template>
 
 <script setup lang="ts">
-import AppSidebar from './AppSidebar.vue'
-import AppHeader from './AppHeader.vue'
-import { useSidebar } from '@/composables/useSidebar'
+import AppSidebar from './PanelLateral.vue'
+import AppHeader from './PanelSuperior.vue'
+import { useSidebar } from '@/composables/ControlBarraLateral'
 import Backdrop from './Backdrop.vue'
 import { onMounted, onUnmounted } from 'vue'
 

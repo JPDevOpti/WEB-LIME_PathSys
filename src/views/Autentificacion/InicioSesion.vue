@@ -238,7 +238,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import FullScreenLayout from '@/components/layout/FullScreenLayout.vue'
+import FullScreenLayout from '@/components/layout/PantallaBlancaCompleta.vue'
 
 // Estado reactivo para los campos del formulario
 const email = ref('')
