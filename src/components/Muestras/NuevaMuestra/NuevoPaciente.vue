@@ -1,4 +1,4 @@
-np<template>
+<template>
   <div class="space-y-6">
     <!-- Número de Cédula -->
     <div>
@@ -84,52 +84,14 @@ np<template>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
         Entidad *
       </label>
-      <div class="relative">
-        <div class="relative">
-          <input
-            type="text"
-            v-model="formData.entidad"
-            @focus="showEntidades = true"
-            @blur="ocultarEntidades"
-            placeholder="Seleccione o escriba la entidad"
-            :class="getFieldClasses('entidad', true)"
-            required
-            ref="entidadInput"
-          />
-          <button
-            type="button"
-            @click="showEntidades = !showEntidades"
-            class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-        </div>
-        
-        <!-- Lista desplegable de entidades -->
-        <div
-          v-if="showEntidades"
-          class="absolute z-50 w-full mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
-        >
-          <ul class="py-1">
-            <li
-              v-for="entidad in entidadesFiltradas"
-              :key="entidad.id"
-              @mousedown="seleccionarEntidad(entidad)"
-              class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-            >
-              {{ entidad.nombre }}
-            </li>
-            <li
-              v-if="entidadesFiltradas.length === 0"
-              class="px-4 py-2 text-sm text-gray-500"
-            >
-              No se encontraron resultados
-            </li>
-          </ul>
-        </div>
-      </div>
+      <ListaDesplegable
+        v-model="formData.entidad"
+        :options="entidades"
+        label=""
+        placeholder="Seleccione o escriba la entidad"
+        :required="true"
+        :error="hasAttemptedSubmit && !formData.entidad"
+      />
     </div>
 
     <!-- Tipo de Atención -->
@@ -370,6 +332,7 @@ np<template>
 <script setup lang="ts">
 import { reactive, computed, ref, watch } from 'vue'
 import 'flatpickr/dist/flatpickr.css'
+import ListaDesplegable from '../../ui/ListaDesplegable.vue'
 
 // Estados para el componente
 const isLoading = ref(false)
@@ -378,9 +341,19 @@ const statusType = ref<'success' | 'error'>('success')
 const hasAttemptedSubmit = ref(false)
 const showNotification = ref(false)
 const progressWidth = ref(100)
-const showEntidades = ref(false)
 
+// Entidades disponibles
+const entidades = [
+  { id: 'ESSALUD', nombre: 'ESSALUD' },
+  { id: 'MINSA', nombre: 'MINSA' },
+  { id: 'FFAA', nombre: 'FFAA' },
+  { id: 'PNP', nombre: 'PNP' },
+  { id: 'SIS', nombre: 'SIS' },
+  { id: 'PRIVADO', nombre: 'PRIVADO' },
+  { id: 'OTRO', nombre: 'OTRO' }
+]
 
+// Datos del formulario reactivos
 const formData = reactive({
   numeroCedula: '',
   nombrePaciente: '',
@@ -395,18 +368,6 @@ const formData = reactive({
 const cedulaInput = ref<HTMLInputElement | null>(null)
 const nombreInput = ref<HTMLInputElement | null>(null)
 const edadInput = ref<HTMLInputElement | null>(null)
-const entidadInput = ref<HTMLInputElement | null>(null)
-
-// Agregar después de las importaciones existentes
-const entidades = [
-  { id: 'ESSALUD', nombre: 'ESSALUD' },
-  { id: 'MINSA', nombre: 'MINSA' },
-  { id: 'FFAA', nombre: 'FFAA' },
-  { id: 'PNP', nombre: 'PNP' },
-  { id: 'SIS', nombre: 'SIS' },
-  { id: 'PRIVADO', nombre: 'PRIVADO' },
-  { id: 'OTRO', nombre: 'OTRO' }
-]
 
 // Validación del formulario
 const isFormValid = computed(() => {
@@ -534,26 +495,5 @@ const copiarDNI = async () => {
       console.error('Error al copiar el Número de Cédula:', err)
     }
   }
-}
-
-// Agregar estas computed properties
-const entidadesFiltradas = computed(() => {
-  const searchTerm = formData.entidad.toLowerCase()
-  return entidades.filter(entidad => 
-    entidad.nombre.toLowerCase().includes(searchTerm)
-  )
-})
-
-// Agregar esta función
-const seleccionarEntidad = (entidad: { id: string, nombre: string }) => {
-  formData.entidad = entidad.nombre
-  showEntidades.value = false
-}
-
-// Agregar después de las funciones existentes
-const ocultarEntidades = () => {
-  window.setTimeout(() => {
-    showEntidades.value = false
-  }, 200)
 }
 </script>

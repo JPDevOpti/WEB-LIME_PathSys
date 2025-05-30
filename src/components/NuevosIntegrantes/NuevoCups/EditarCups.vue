@@ -1,27 +1,22 @@
-<!-- 
-  Componente de demostración para búsqueda y edición de muestras
-  Simula la búsqueda y edición de muestras en el front-end
--->
-
 <template>
   <div class="space-y-6">
-    <!-- Búsqueda de ID de Muestra -->
+    <!-- Búsqueda de Cédula -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Buscar por ID de Muestra *
+        Buscar por Cédula *
       </label>
       <div class="flex space-x-2">
         <div class="relative flex-1">
           <input
             type="text"
-            v-model="searchMuestraId"
-            placeholder="Ingrese el ID de la muestra"
+            v-model="searchCedula"
+            placeholder="Ingrese el número de cédula"
             class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
-            @keyup.enter="buscarMuestra"
-            ref="muestraInput"
+            @keyup.enter="buscarPaciente"
+            ref="cedulaInput"
           />
           <button
-            v-if="searchMuestraId"
+            v-if="searchCedula"
             @click="limpiarBusqueda"
             type="button"
             class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
@@ -32,10 +27,10 @@
           </button>
         </div>
         <button
-          @click="buscarMuestra"
+          @click="buscarPaciente"
           type="button"
           class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400 transition-colors"
-          :disabled="!searchMuestraId || isLoading"
+          :disabled="isLoading"
         >
           <svg
             v-if="isLoading"
@@ -91,117 +86,139 @@
 
     <!-- Formulario -->
     <div class="space-y-6">
-      <!-- Información del Paciente -->
-      <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-        <h3 class="text-sm font-semibold text-gray-700 mb-3">Información del Paciente</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-gray-600">
-              Nombre Completo *
-            </label>
+      <!-- Número de Cédula -->
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700">
+          Número de Cédula *
+        </label>
+        <input
+          type="text"
+          v-model="formData.numeroCedula"
+          placeholder="Ej: 12345678"
+          :class="getFieldClasses('numeroCedula')"
+          required
+          ref="cedulaInput"
+        />
+      </div>
+
+      <!-- Nombre del Patólogo -->
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700">
+          Nombre del Patólogo *
+        </label>
+        <input
+          type="text"
+          v-model="formData.nombreCompleto"
+          placeholder="Ingrese el nombre completo del patólogo"
+          :class="getFieldClasses('nombreCompleto')"
+          required
+          ref="nombreInput"
+        />
+      </div>
+
+      <!-- Sexo -->
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700">
+          Sexo *
+        </label>
+        <div class="flex items-center space-x-6">
+          <label class="inline-flex items-center">
             <input
-              type="text"
-              v-model="formData.paciente.nombre"
-              :class="getFieldClasses('paciente.nombre')"
+              type="radio"
+              v-model="formData.sexo"
+              value="masculino"
+              class="form-radio h-4 w-4 text-brand-600 border-gray-300 focus:ring-brand-500"
               required
             />
-          </div>
-          <div>
-            <label class="mb-1.5 block text-sm font-medium text-gray-600">
-              Cédula *
-            </label>
+            <span class="ml-2 text-sm text-gray-700">Masculino</span>
+          </label>
+          <label class="inline-flex items-center">
             <input
-              type="text"
-              v-model="formData.paciente.cedula"
-              :class="getFieldClasses('paciente.cedula')"
+              type="radio"
+              v-model="formData.sexo"
+              value="femenino"
+              class="form-radio h-4 w-4 text-brand-600 border-gray-300 focus:ring-brand-500"
               required
             />
-          </div>
+            <span class="ml-2 text-sm text-gray-700">Femenino</span>
+          </label>
+        </div>
+        <div v-if="hasAttemptedSubmit && !formData.sexo" class="mt-1 text-sm text-red-600">
+          Por favor seleccione el sexo
         </div>
       </div>
 
-      <!-- ID de Muestra -->
+      <!-- Email -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          ID de Muestra *
+          Email *
         </label>
         <input
-          type="text"
-          v-model="formData.idMuestra"
-          class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs"
-          readonly
-        />
-      </div>
-
-      <!-- Número de Caso -->
-      <div>
-        <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Número de Caso *
-        </label>
-        <input
-          type="text"
-          v-model="formData.numeroCaso"
-          :class="getFieldClasses('numeroCaso')"
+          type="email"
+          v-model="formData.email"
+          placeholder="Ej: correo@ejemplo.com"
+          :class="getFieldClasses('email')"
           required
+          ref="emailInput"
         />
       </div>
 
-      <!-- Médico Solicitante (tipo combobox, igual que patólogo) -->
+      <!-- Teléfono -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Médico Solicitante *
+          Teléfono
         </label>
-        <ListaDesplegable
-          v-model="formData.medicoSolicitante"
-          :options="medicos"
-          label=""
-          placeholder="Buscar o seleccionar médico"
-          :required="true"
-          :error="hasAttemptedSubmit && !formData.medicoSolicitante"
-          label-key="label"
+        <input
+          type="tel"
+          v-model="formData.telefono"
+          placeholder="Ej: 987654321"
+          :class="getFieldClasses('telefono')"
+          ref="telefonoInput"
         />
       </div>
 
-      <!-- CUPS por Muestra -->
+      <!-- Especialidad -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          CUPS por Muestra *
+          Especialidad *
         </label>
-        <div class="space-y-6">
-          <div v-for="(muestra, muestraIndex) in formData.muestras" :key="muestraIndex" class="space-y-2">
-            <h4 class="text-sm font-medium text-gray-700">Muestra {{ muestra.numero }}</h4>
-            <div v-for="(cups, cupsIndex) in muestra.cups" :key="cupsIndex" class="flex items-center space-x-2">
-              <input
-                type="text"
-                v-model="formData.muestras[muestraIndex].cups[cupsIndex]"
-                placeholder="Ingrese el CUPS"
-                class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
-                required
-                @keydown.enter.prevent="agregarCupsSiNecesario(muestraIndex, cupsIndex)"
-              />
-              <button
-                v-if="muestra.cups.length > 1"
-                @click="eliminarCups(muestraIndex, cupsIndex)"
-                type="button"
-                class="p-2 text-red-600 hover:text-red-800"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </div>
-            <!-- Botón para agregar CUPS debajo de la lista, igual que en AsignarCodigoMuestra.vue -->
-            <button
-              @click="agregarCups(muestraIndex)"
-              type="button"
-              class="mt-2 inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1 transition-colors"
-            >
-              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              Agregar CUPS
-            </button>
-          </div>
+        <input
+          type="text"
+          v-model="formData.especialidad"
+          placeholder="Ej: Anatomía Patológica"
+          :class="getFieldClasses('especialidad')"
+          required
+          ref="especialidadInput"
+        />
+      </div>
+
+      <!-- Número de Registro Médico -->
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700">
+          Número de Registro Médico (RNE/CMP) *
+        </label>
+        <input
+          type="text"
+          v-model="formData.registroMedico"
+          placeholder="Ej: 12345"
+          :class="getFieldClasses('registroMedico')"
+          required
+          ref="registroMedicoInput"
+        />
+      </div>
+
+      <!-- Firma del Patólogo -->
+      <div>
+        <label class="mb-1.5 block text-sm font-medium text-gray-700">
+          Firma del Patólogo
+        </label>
+        <Dropzone
+          :uploadUrl="'/api/upload-signature'"
+          @file-added="handleFirmaFile"
+          id="firmaDropzonePatologo"
+        />
+        <div v-if="firmaPatologoFile" class="mt-2 text-sm text-gray-600">
+          Archivo seleccionado: {{ firmaPatologoFile.name }}
         </div>
       </div>
 
@@ -212,7 +229,8 @@
         </label>
         <textarea
           v-model="formData.observaciones"
-          rows="4"
+          placeholder="Observaciones adicionales sobre el patólogo"
+          rows="3"
           :class="getTextareaClasses('observaciones')"
         ></textarea>
       </div>
@@ -232,7 +250,7 @@
         </button>
 
         <button
-          @click="guardarCambios"
+          @click="guardarPaciente"
           type="button"
           class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400 disabled:hover:bg-gray-400 transition-colors"
           :disabled="isLoading || !isFormValid"
@@ -261,7 +279,7 @@
               d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
             />
           </svg>
-          {{ isLoading ? 'Guardando...' : 'Guardar Cambios' }}
+          {{ isLoading ? 'Guardando...' : 'Guardar Patólogo' }}
         </button>
       </div>
 
@@ -292,8 +310,8 @@
           </svg>
           <div>
             <p class="font-medium text-sm">{{ statusMessage }}</p>
-            <p v-if="statusType === 'success' && savedMuestraId" class="text-xs mt-1 opacity-75">
-              ID de la muestra: {{ savedMuestraId }}
+            <p v-if="statusType === 'success' && savedPatientId" class="text-xs mt-1 opacity-75">
+              ID del patólogo: {{ savedPatientId }}
             </p>
           </div>
         </div>
@@ -303,99 +321,82 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref, onMounted } from 'vue'
-import ListaDesplegable from '../../ui/ListaDesplegable.vue'
+import Dropzone from '@/components/Muestras/FormElements/Dropzone.vue'
+import { reactive, computed, ref, onMounted, watch } from 'vue'
 
 interface FormData {
-  idMuestra: string
-  numeroCaso: string
-  paciente: {
-    nombre: string
-    cedula: string
-  }
-  medicoSolicitante: string
+  numeroCedula: string
+  nombreCompleto: string
+  sexo: string
+  email: string
+  telefono: string
+  especialidad: string
+  registroMedico: string
   observaciones: string
-  muestras: {
-    numero: number
-    cups: string[]
-  }[]
+  firmaPatologoUrl?: string
 }
 
+const emit = defineEmits(['update-patient-data', 'patologo-saved'])
+
 const formData = reactive<FormData>({
-  idMuestra: '',
-  numeroCaso: '',
-  paciente: {
-    nombre: '',
-    cedula: ''
-  },
-  medicoSolicitante: '',
+  numeroCedula: '',
+  nombreCompleto: '',
+  sexo: '',
+  email: '',
+  telefono: '',
+  especialidad: '',
+  registroMedico: '',
   observaciones: '',
-  muestras: [{
-    numero: 1,
-    cups: ['']
-  }]
+  firmaPatologoUrl: ''
 })
+const firmaPatologoFile = ref<File | null>(null)
 
 const isLoading = ref(false)
 const hasAttemptedSubmit = ref(false)
-const savedMuestraId = ref('')
+const savedPatientId = ref('')
 const statusMessage = ref('')
 const statusType = ref<'success' | 'error'>('success')
 const showNotification = ref(false)
 const progressWidth = ref(100)
 
 // Estado de búsqueda
-const searchMuestraId = ref('')
+const searchCedula = ref('')
 const searchStatus = ref('')
 const searchStatusType = ref<'success' | 'error'>('success')
-const muestraEncontrada = ref(false)
+const pacienteEncontrado = ref(false)
 
 // Referencias para los inputs
-const muestraInput = ref<HTMLInputElement | null>(null)
+const cedulaInput = ref<HTMLInputElement | null>(null)
+const nombreInput = ref<HTMLInputElement | null>(null)
+const emailInput = ref<HTMLInputElement | null>(null)
+const telefonoInput = ref<HTMLInputElement | null>(null)
+const especialidadInput = ref<HTMLInputElement | null>(null)
+const registroMedicoInput = ref<HTMLInputElement | null>(null)
 
-// Base de datos simulada de muestras
-const muestrasDB = [
+// Base de datos simulada de patólogos
+const patologoDB = [
   {
-    idMuestra: 'M001',
-    paciente: {
-      nombre: 'Juan Pérez García',
-      cedula: '12345678'
-    },
-    estado: 'en-proceso',
-    medicoSolicitante: 'Dr. García',
-    observaciones: 'Muestra recibida en condiciones óptimas',
-    muestras: [
-      { numero: 1, cups: ['CUPS001', 'CUPS002'] }
-    ]
-  },
-  {
-    idMuestra: 'M002',
-    paciente: {
-      nombre: 'María García López',
-      cedula: '87654321'
-    },
-    estado: 'recibida',
-    medicoSolicitante: 'Dra. Martínez',
-    observaciones: 'Paciente con antecedentes de diabetes',
-    muestras: [
-      { numero: 1, cups: ['CUPS003'] }
-    ]
+    numeroCedula: '12345678',
+    nombreCompleto: 'Dra. Ana Patóloga',
+    sexo: 'femenino',
+    email: 'ana@patologia.com',
+    telefono: '987654321',
+    especialidad: 'Anatomía Patológica',
+    registroMedico: 'CMP12345',
+    observaciones: 'Especialista en biopsias'
   }
 ]
 
 // Computed properties
 const isFormValid = computed(() => {
   return (
-    formData.idMuestra.trim() !== '' &&
-    formData.numeroCaso.trim() !== '' &&
-    formData.paciente.nombre.trim() !== '' &&
-    formData.paciente.cedula.trim() !== '' &&
-    formData.medicoSolicitante.trim() !== '' &&
-    formData.muestras.length > 0 &&
-    formData.muestras.every(muestra =>
-      muestra.cups.length > 0 &&
-      muestra.cups.every(cups => cups.trim() !== '')
-    )
+    formData.numeroCedula.trim() !== '' &&
+    formData.nombreCompleto.trim() !== '' &&
+    formData.sexo !== '' &&
+    formData.email.trim() !== '' &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()) &&
+    formData.especialidad.trim() !== '' &&
+    formData.registroMedico.trim() !== ''
   )
 })
 
@@ -421,129 +422,106 @@ const searchStatusIconClass = computed(() => ({
   'text-red-500': searchStatusType.value === 'error'
 }))
 
-// Lista de médicos solicitantes (puedes editar estos valores)
-const medicos = [
-  { value: 'dr-jimenez', label: 'Dr. Jiménez Herrera (JH)' },
-  { value: 'dra-morales', label: 'Dra. Morales Castro (MC)' },
-  { value: 'dr-vargas', label: 'Dr. Vargas Mendez (VM)' },
-  { value: 'dra-restrepo', label: 'Dra. Restrepo Vega (RV)' },
-  { value: 'dr-sandoval', label: 'Dr. Sandoval Lima (SL)' },
-  { value: 'dra-herrera', label: 'Dra. Herrera Cruz (HC)' }
-]
-
 // Methods
-const getFieldClasses = (field: string) => {
+const getFieldClasses = (field: keyof FormData) => {
   const baseClasses = 'h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10'
-  let value = ''
-  if (field === 'idMuestra') {
-    value = formData.idMuestra
-  } else if (field === 'numeroCaso') {
-    value = formData.numeroCaso
-  } else if (field === 'medicoSolicitante') {
-    value = formData.medicoSolicitante
-  } else if (field === 'observaciones') {
-    value = formData.observaciones
-  } else if (field === 'paciente.nombre') {
-    value = formData.paciente.nombre
-  } else if (field === 'paciente.cedula') {
-    value = formData.paciente.cedula
-  }
-  const errorClasses = hasAttemptedSubmit.value && !value ? 'border-red-300' : 'border-gray-300'
+  const errorClasses = hasAttemptedSubmit.value && !formData[field] ? 'border-red-300' : 'border-gray-300'
   return `${baseClasses} ${errorClasses}`
 }
 
-const getTextareaClasses = (field: string) => {
+const getTextareaClasses = (field: keyof FormData) => {
   const baseClasses = 'w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none'
-  let value = ''
-  if (field === 'observaciones') {
-    value = formData.observaciones
-  }
-  const errorClasses = hasAttemptedSubmit.value && !value ? 'border-red-300' : 'border-gray-300'
+  const errorClasses = hasAttemptedSubmit.value && !formData[field] ? 'border-red-300' : 'border-gray-300'
   return `${baseClasses} ${errorClasses}`
 }
 
 const limpiarFormulario = () => {
-  formData.idMuestra = ''
-  formData.numeroCaso = ''
-  formData.paciente.nombre = ''
-  formData.paciente.cedula = ''
-  formData.medicoSolicitante = ''
-  formData.observaciones = ''
-  formData.muestras = [{ numero: 1, cups: [''] }]
+  Object.keys(formData).forEach(key => {
+    const k = key as keyof FormData
+    formData[k] = ''
+  })
   hasAttemptedSubmit.value = false
   statusMessage.value = ''
-  savedMuestraId.value = ''
+  savedPatientId.value = ''
 }
 
 const limpiarBusqueda = () => {
-  searchMuestraId.value = ''
+  searchCedula.value = ''
   searchStatus.value = ''
-  muestraEncontrada.value = false
+  pacienteEncontrado.value = false
   limpiarFormulario()
 }
 
-const buscarMuestra = async () => {
-  if (!searchMuestraId.value.trim()) {
-    searchStatus.value = 'Por favor ingrese un ID de muestra'
+const buscarPaciente = async () => {
+  if (!searchCedula.value.trim()) {
+    searchStatus.value = 'Por favor ingrese un número de cédula'
     searchStatusType.value = 'error'
     return
   }
-
   isLoading.value = true
-  searchStatus.value = 'Buscando muestra...'
+  searchStatus.value = 'Buscando patólogo...'
   searchStatusType.value = 'success'
-
   try {
-    // Simular llamada a API
-    await new Promise(resolve => setTimeout(resolve, 500))
-    
-    const muestra = muestrasDB.find(m => m.idMuestra === searchMuestraId.value.trim())
-    
-    if (muestra) {
-      // Si la muestra no tiene la propiedad 'muestras', inicialízala
-      if (!muestra.muestras) {
-        muestra.muestras = [{ numero: 1, cups: [''] }]
-      }
-      Object.assign(formData, muestra)
-      muestraEncontrada.value = true
-      searchStatus.value = 'Muestra encontrada'
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    const patologo = patologoDB.find(p => p.numeroCedula === searchCedula.value.trim())
+    if (patologo) {
+      Object.assign(formData, patologo)
+      searchStatus.value = 'Patólogo encontrado'
       searchStatusType.value = 'success'
     } else {
-      searchStatus.value = 'No se encontró ninguna muestra con ese ID'
+      searchStatus.value = 'No se encontró ningún patólogo con esa cédula'
       searchStatusType.value = 'error'
-      muestraEncontrada.value = false
       limpiarFormulario()
     }
   } catch {
-    searchStatus.value = 'Error al buscar la muestra'
+    searchStatus.value = 'Error al buscar el patólogo'
     searchStatusType.value = 'error'
-    muestraEncontrada.value = false
   } finally {
     isLoading.value = false
   }
 }
 
-const guardarCambios = async () => {
+const guardarPaciente = async () => {
   hasAttemptedSubmit.value = true
-  
   if (!isFormValid.value) {
     statusMessage.value = 'Por favor complete todos los campos requeridos'
     statusType.value = 'error'
     return
   }
-
   isLoading.value = true
-  statusMessage.value = 'Guardando datos de la muestra...'
+  statusMessage.value = 'Guardando datos del patólogo...'
   statusType.value = 'success'
-
   try {
-    // Simular llamada a API
     await new Promise(resolve => setTimeout(resolve, 1500))
-    const randomId = Math.random().toString(36).substring(2, 8).toUpperCase()
-    savedMuestraId.value = randomId
-    statusMessage.value = 'Datos de la muestra guardados correctamente'
-    
-    // Mostrar notificación
+    statusMessage.value = 'Datos del patólogo guardados correctamente'
+    showNotification.value = true
+    progressWidth.value = 100
+    const duration = 5000
+    const interval = 50
+    const decrement = (interval / duration) * 100
+    const progressInterval = setInterval(() => {
+      progressWidth.value -= decrement
+      if (progressWidth.value <= 0) {
+        clearInterval(progressInterval)
+        showNotification.value = false
+        progressWidth.value = 100
+      }
+    }, interval)
+    emit('patologo-saved')
+  } catch {
+    statusMessage.value = 'Error al guardar los datos del patólogo'
+    statusType.value = 'error'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// Watch para emitir cambios y mostrar notificación
+watch(formData, (newData) => {
+  emit('update-patient-data', newData)
+  
+  // Mostrar notificación solo si hay cambios y el formulario es válido
+  if (isFormValid.value && !isLoading.value) {
     showNotification.value = true
     progressWidth.value = 100
     
@@ -560,34 +538,17 @@ const guardarCambios = async () => {
         progressWidth.value = 100
       }
     }, interval)
-  } catch {
-    statusMessage.value = 'Error al guardar los datos de la muestra'
-    statusType.value = 'error'
-  } finally {
-    isLoading.value = false
   }
-}
-
-// Métodos para CUPS
-const agregarCups = (muestraIndex: number) => {
-  formData.muestras[muestraIndex].cups.push('')
-}
-
-const eliminarCups = (muestraIndex: number, cupsIndex: number) => {
-  formData.muestras[muestraIndex].cups.splice(cupsIndex, 1)
-}
-
-const agregarCupsSiNecesario = (muestraIndex: number, cupsIndex: number) => {
-  const currentCups = formData.muestras[muestraIndex].cups[cupsIndex]
-  if (currentCups.trim() !== '') {
-    agregarCups(muestraIndex)
-  }
-}
+}, { deep: true })
 
 // Focus en el primer campo al montar
 onMounted(() => {
-  if (muestraInput.value) {
-    muestraInput.value.focus()
+  if (cedulaInput.value) {
+    cedulaInput.value.focus()
   }
 })
+
+const handleFirmaFile = (file: File) => {
+  firmaPatologoFile.value = file
+}
 </script>

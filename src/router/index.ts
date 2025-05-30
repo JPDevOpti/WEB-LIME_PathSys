@@ -81,7 +81,7 @@ const router = createRouter({
     {
       path: '/inicio-sesion',
       name: 'Inicio Sesión',
-      component: () => import('../views/Auth/InicioSesion.vue'),
+      component: () => import('../views/Autentificacion/InicioSesion.vue'),
       meta: {
         title: 'Inicio Sesión',
       },
@@ -112,113 +112,27 @@ const router = createRouter({
       },
     },
         {
-      path: '/nuevo-administrativo',
-      name: 'Nuevo Administrativo',
-      component: () => import('../views/NuevosIntegrantes/NuevoAdministrativo.vue'),
+      path: '/nuevo-cups',
+      name: 'Nuevo Cups',
+      component: () => import('../views/NuevosIntegrantes/NuevoCups.vue'),
       meta: {
-        title: 'Nuevo Administrativo',
-      },
-    },
-
-    
-    {
-      path: '/calendar',
-      name: 'Calendar',
-      component: () => import('../views/Others/Calendar.vue'),
-      meta: {
-        title: 'Calendar',
-      },
-    },
-    {
-      path: '/form-elements',
-      name: 'Form Elements',
-      component: () => import('../views/Forms/FormElements.vue'),
-      meta: {
-        title: 'Form Elements',
-      },
-    },
-
-    {
-      path: '/basic-tables',
-      name: 'Basic Tables',
-      component: () => import('../views/Tables/BasicTables.vue'),
-      meta: {
-        title: 'Basic Tables',
+        title: 'Nuevo Cups',
       },
     },
     {
       path: '/line-chart',
       name: 'Line Chart',
-      component: () => import('../views/Chart/LineChart/LineChart.vue'),
+      component: () => import('../views/Estadisticas/LineChart/LineChart.vue'),
     },
     {
       path: '/bar-chart',
       name: 'Bar Chart',
-      component: () => import('../views/Chart/BarChart/BarChart.vue'),
+      component: () => import('../views/Estadisticas/BarChart/BarChart.vue'),
     },
-    {
-      path: '/alerts',
-      name: 'Alerts',
-      component: () => import('../views/UiElements/Alerts.vue'),
-      meta: {
-        title: 'Alerts',
-      },
-    },
-    {
-      path: '/avatars',
-      name: 'Avatars',
-      component: () => import('../views/UiElements/Avatars.vue'),
-      meta: {
-        title: 'Avatars',
-      },
-    },
-    {
-      path: '/badge',
-      name: 'Badge',
-      component: () => import('../views/UiElements/Badges.vue'),
-      meta: {
-        title: 'Badge',
-      },
-    },
-
-    {
-      path: '/buttons',
-      name: 'Buttons',
-      component: () => import('../views/UiElements/Buttons.vue'),
-      meta: {
-        title: 'Buttons',
-      },
-    },
-
-    {
-      path: '/images',
-      name: 'Images',
-      component: () => import('../views/UiElements/Images.vue'),
-      meta: {
-        title: 'Images',
-      },
-    },
-    {
-      path: '/videos',
-      name: 'Videos',
-      component: () => import('../views/UiElements/Videos.vue'),
-      meta: {
-        title: 'Videos',
-      },
-    },
-    {
-      path: '/blank',
-      name: 'Blank',
-      component: () => import('../views/Pages/BlankPage.vue'),
-      meta: {
-        title: 'Blank',
-      },
-    },
-
     {
       path: '/error-404',
       name: '404 Error',
-      component: () => import('../views/Errors/FourZeroFour.vue'),
+      component: () => import('../views/Errores/FourZeroFour.vue'),
       meta: {
         title: '404 Error',
       },

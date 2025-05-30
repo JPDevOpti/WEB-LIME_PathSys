@@ -1,4 +1,4 @@
-np<template>
+<template>
   <div class="space-y-6">
     <!-- Número de Cédula -->
     <div>
@@ -15,16 +15,16 @@ np<template>
       />
     </div>
 
-    <!-- Nombre del Paciente -->
+    <!-- Nombre del Patólogo -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Nombre del Paciente *
+        Nombre del Patólogo *
       </label>
       <input
         type="text"
-        v-model="formData.nombrePaciente"
-        placeholder="Ingrese el nombre completo del paciente"
-        :class="getFieldClasses('nombrePaciente', true)"
+        v-model="formData.nombreCompleto"
+        placeholder="Ingrese el nombre completo del patólogo"
+        :class="getFieldClasses('nombreCompleto', true)"
         required
         ref="nombreInput"
       />
@@ -62,106 +62,80 @@ np<template>
       </div>
     </div>
 
-    <!-- Edad -->
+    <!-- Email -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Edad *
+        Email *
       </label>
       <input
-        type="number"
-        v-model="formData.edad"
-        placeholder="Ingrese la edad"
-        :class="getFieldClasses('edad', true)"
+        type="email"
+        v-model="formData.email"
+        placeholder="Ej: correo@ejemplo.com"
+        :class="getFieldClasses('email', true)"
         required
-        ref="edadInput"
-        min="0"
-        max="120"
+        ref="emailInput"
       />
     </div>
 
-    <!-- Entidad -->
+    <!-- Teléfono -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Entidad *
+        Teléfono
       </label>
-      <div class="relative">
-        <div class="relative">
-          <input
-            type="text"
-            v-model="formData.entidad"
-            @focus="showEntidades = true"
-            @blur="ocultarEntidades"
-            placeholder="Seleccione o escriba la entidad"
-            :class="getFieldClasses('entidad', true)"
-            required
-            ref="entidadInput"
-          />
-          <button
-            type="button"
-            @click="showEntidades = !showEntidades"
-            class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-        </div>
-        
-        <!-- Lista desplegable de entidades -->
-        <div
-          v-if="showEntidades"
-          class="absolute z-50 w-full mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
-        >
-          <ul class="py-1">
-            <li
-              v-for="entidad in entidadesFiltradas"
-              :key="entidad.id"
-              @mousedown="seleccionarEntidad(entidad)"
-              class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-            >
-              {{ entidad.nombre }}
-            </li>
-            <li
-              v-if="entidadesFiltradas.length === 0"
-              class="px-4 py-2 text-sm text-gray-500"
-            >
-              No se encontraron resultados
-            </li>
-          </ul>
-        </div>
-      </div>
+      <input
+        type="tel"
+        v-model="formData.telefono"
+        placeholder="Ej: 987654321"
+        :class="getFieldClasses('telefono')"
+        ref="telefonoInput"
+      />
     </div>
 
-    <!-- Tipo de Atención -->
+    <!-- Especialidad -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Tipo de Atención *
+        Especialidad *
       </label>
-      <div class="flex items-center space-x-6">
-        <label class="inline-flex items-center">
-          <input
-            type="radio"
-            v-model="formData.tipoAtencion"
-            value="ambulatorio"
-            class="form-radio h-4 w-4 text-brand-600 border-gray-300 focus:ring-brand-500"
-            required
-          />
-          <span class="ml-2 text-sm text-gray-700">Ambulatorio</span>
-        </label>
-        <label class="inline-flex items-center">
-          <input
-            type="radio"
-            v-model="formData.tipoAtencion"
-            value="hospitalizado"
-            class="form-radio h-4 w-4 text-brand-600 border-gray-300 focus:ring-brand-500"
-            required
-          />
-          <span class="ml-2 text-sm text-gray-700">Hospitalizado</span>
-        </label>
+      <input
+        type="text"
+        v-model="formData.especialidad"
+        placeholder="Ej: Anatomía Patológica"
+        :class="getFieldClasses('especialidad', true)"
+        required
+        ref="especialidadInput"
+      />
+      <!-- Podría ser un select si hay especialidades predefinidas -->
+    </div>
+
+    <!-- Número de Registro Médico -->
+    <div>
+      <label class="mb-1.5 block text-sm font-medium text-gray-700">
+        Número de Registro Médico (RNE/CMP) *
+      </label>
+      <input
+        type="text"
+        v-model="formData.registroMedico"
+        placeholder="Ej: 12345"
+        :class="getFieldClasses('registroMedico', true)"
+        required
+        ref="registroMedicoInput"
+      />
+    </div>
+
+    <!-- Firma del Patólogo -->
+    <div>
+      <label class="mb-1.5 block text-sm font-medium text-gray-700">
+        Firma del Patólogo
+      </label>
+      <Dropzone
+        :uploadUrl="'/api/upload-signature'"
+        @file-added="handleFirmaFile"
+        id="firmaDropzonePatologo" 
+      />
+      <div v-if="firmaPatologoFile" class="mt-2 text-sm text-gray-600">
+        Archivo seleccionado: {{ firmaPatologoFile.name }}
       </div>
-      <div v-if="hasAttemptedSubmit && !formData.tipoAtencion" class="mt-1 text-sm text-red-600">
-        Por favor seleccione el tipo de atención
-      </div>
+      <!-- Aquí podrías añadir una validación si la firma es requerida -->
     </div>
 
     <!-- Observaciones -->
@@ -171,7 +145,7 @@ np<template>
       </label>
       <textarea
         v-model="formData.observaciones"
-        placeholder="Observaciones adicionales"
+        placeholder="Observaciones adicionales sobre el patólogo"
         rows="3"
         :class="getTextareaClasses('observaciones')"
       ></textarea>
@@ -192,7 +166,7 @@ np<template>
       </button>
 
       <button
-        @click="guardarPaciente"
+        @click="guardarPatologo"
         type="button"
         class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         :disabled="isLoading"
@@ -221,7 +195,7 @@ np<template>
             d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
           />
         </svg>
-        {{ isLoading ? 'Guardando...' : 'Guardar Paciente' }}
+        {{ isLoading ? 'Guardando...' : 'Guardar Patólogo' }}
       </button>
     </div>
 
@@ -256,13 +230,15 @@ np<template>
           <p class="font-bold text-lg">{{ statusMessage }}</p>
           <div v-if="statusType === 'success'" class="mt-3">
             <div class="bg-white bg-opacity-50 rounded-md border border-green-300 p-3">
-              <p class="text-sm font-medium text-green-800 mb-2">Datos del Paciente Registrado:</p>
+              <p class="text-sm font-medium text-green-800 mb-2">Datos del Patólogo Registrado:</p>
               <div class="space-y-1">
-                <p class="text-lg font-semibold text-green-900">{{ formData.nombrePaciente }}</p>
+                <p class="text-lg font-semibold text-green-900">{{ formData.nombreCompleto }}</p>
                 <p class="text-base text-green-800">Número de Cédula: <span class="font-mono font-bold">{{ formData.numeroCedula }}</span></p>
+                <p class="text-base text-green-800">Especialidad: <span class="font-semibold">{{ formData.especialidad }}</span></p>
+                <p class="text-base text-green-800">Reg. Médico: <span class="font-mono font-bold">{{ formData.registroMedico }}</span></p>
               </div>
               <button 
-                @click="copiarDNI"
+                @click="copiarCedula"
                 class="mt-2 inline-flex items-center px-3 py-1.5 border border-green-300 rounded-md text-xs font-medium text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors"
               >
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -308,11 +284,11 @@ np<template>
             </div>
             
             <!-- Título -->
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">¡Paciente Registrado!</h3>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">¡Patólogo Registrado!</h3>
             
             <!-- Mensaje -->
             <p class="text-gray-600 mb-1">
-              El paciente <strong class="text-brand-600">{{ formData.nombrePaciente }}</strong>
+              El patólogo <strong class="text-brand-600">{{ formData.nombreCompleto }}</strong>
             </p>
             <p class="text-gray-600 mb-1">
               con Número de Cédula
@@ -369,7 +345,9 @@ np<template>
 
 <script setup lang="ts">
 import { reactive, computed, ref, watch } from 'vue'
-import 'flatpickr/dist/flatpickr.css'
+import Dropzone from '@/components/Muestras/FormElements/Dropzone.vue' // Import Dropzone
+// No se necesita flatpickr para este formulario
+// import 'flatpickr/dist/flatpickr.css' 
 
 // Estados para el componente
 const isLoading = ref(false)
@@ -378,45 +356,42 @@ const statusType = ref<'success' | 'error'>('success')
 const hasAttemptedSubmit = ref(false)
 const showNotification = ref(false)
 const progressWidth = ref(100)
-const showEntidades = ref(false)
-
+// showEntidades ya no es necesario
+const firmaPatologoFile = ref<File | null>(null)
 
 const formData = reactive({
   numeroCedula: '',
-  nombrePaciente: '',
+  nombreCompleto: '',
   sexo: '',
-  edad: '',
-  entidad: '',
-  tipoAtencion: '',
+  email: '',
+  telefono: '',
+  especialidad: '',
+  registroMedico: '',
   observaciones: '',
+  firmaPatologoUrl: '', // Campo para la URL de la firma o referencia
 })
 
 // Referencias a los inputs
 const cedulaInput = ref<HTMLInputElement | null>(null)
 const nombreInput = ref<HTMLInputElement | null>(null)
-const edadInput = ref<HTMLInputElement | null>(null)
-const entidadInput = ref<HTMLInputElement | null>(null)
+const emailInput = ref<HTMLInputElement | null>(null)
+const telefonoInput = ref<HTMLInputElement | null>(null)
+const especialidadInput = ref<HTMLInputElement | null>(null)
+const registroMedicoInput = ref<HTMLInputElement | null>(null)
+// edadInput y entidadInput ya no son necesarios
 
-// Agregar después de las importaciones existentes
-const entidades = [
-  { id: 'ESSALUD', nombre: 'ESSALUD' },
-  { id: 'MINSA', nombre: 'MINSA' },
-  { id: 'FFAA', nombre: 'FFAA' },
-  { id: 'PNP', nombre: 'PNP' },
-  { id: 'SIS', nombre: 'SIS' },
-  { id: 'PRIVADO', nombre: 'PRIVADO' },
-  { id: 'OTRO', nombre: 'OTRO' }
-]
+// Lista de entidades ya no es necesaria
 
 // Validación del formulario
 const isFormValid = computed(() => {
   return !!(
     formData.numeroCedula.trim() &&
-    formData.nombrePaciente.trim() &&
+    formData.nombreCompleto.trim() &&
     formData.sexo &&
-    formData.edad &&
-    formData.entidad &&
-    formData.tipoAtencion
+    formData.email.trim() && // Validar que el email no esté vacío
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()) && // Validación básica de formato de email
+    formData.especialidad.trim() &&
+    formData.registroMedico.trim()
   )
 })
 
@@ -431,13 +406,27 @@ const statusIconClass = computed(() => {
   return statusType.value === 'success' ? 'text-green-600' : 'text-red-600'
 })
 
-// Función para guardar el paciente
-const guardarPaciente = async () => {
+// Función para guardar el patólogo
+const guardarPatologo = async () => {
   hasAttemptedSubmit.value = true
   
+  if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+    statusType.value = 'error'
+    statusMessage.value = 'Por favor ingrese un email válido.'
+    emailInput.value?.focus()
+    return
+  }
+
   if (!isFormValid.value) {
     statusType.value = 'error'
-    statusMessage.value = 'Por favor complete todos los campos requeridos'
+    statusMessage.value = 'Por favor complete todos los campos requeridos (*)'
+    // Enfocar el primer campo inválido podría ser una mejora aquí
+    if (!formData.numeroCedula.trim()) cedulaInput.value?.focus()
+    else if (!formData.nombreCompleto.trim()) nombreInput.value?.focus()
+    else if (!formData.sexo) { /* No hay input directo para enfocar para radio buttons */ }
+    else if (!formData.email.trim()) emailInput.value?.focus()
+    else if (!formData.especialidad.trim()) especialidadInput.value?.focus()
+    else if (!formData.registroMedico.trim()) registroMedicoInput.value?.focus()
     return
   }
 
@@ -445,15 +434,27 @@ const guardarPaciente = async () => {
   statusMessage.value = ''
 
   try {
+    // Aquí iría la lógica para enviar los datos a un backend
+    // await api.registrarPatologo(formData)
+    const dataToSave = { ...formData }
+    if (firmaPatologoFile.value) {
+      // Lógica para manejar el archivo de la firma, por ejemplo, subirlo y obtener una URL
+      // Por ahora, solo lo incluimos en el log o lo guardamos como nombre de archivo
+      console.log('Archivo de firma seleccionado:', firmaPatologoFile.value.name)
+      // dataToSave.firmaPatologoUrl = await uploadFileAndGetURL(firmaPatologoFile.value); // Ejemplo
+    }
+    console.log('Datos del patólogo a guardar:', dataToSave)
     
+    // Simulación de guardado exitoso
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
     statusType.value = 'success'
-    statusMessage.value = 'Paciente guardado exitosamente'
+    statusMessage.value = 'Patólogo guardado exitosamente'
     
     // Mostrar notificación emergente
     showNotification.value = true
     progressWidth.value = 100
     
-    // Crear barra de progreso para auto-cierre
     const duration = 5000 // 5 segundos
     const interval = 50 // Update every 50ms
     const decrement = (interval / duration) * 100
@@ -463,17 +464,18 @@ const guardarPaciente = async () => {
       if (progressWidth.value <= 0) {
         clearInterval(progressInterval)
         showNotification.value = false
-        progressWidth.value = 100
+        progressWidth.value = 100 // Reset for next time
       }
     }, interval)
     
     // Emitir evento de éxito
-    emit('patient-saved', { ...formData })
+    emit('patologo-saved', { ...formData })
+    // limpiarFormulario() // Opcional: limpiar el formulario después de guardar
     
   } catch (error) {
     statusType.value = 'error'
-    statusMessage.value = 'Error al guardar el paciente. Intente nuevamente.'
-    console.error('Error:', error)
+    statusMessage.value = 'Error al guardar el patólogo. Intente nuevamente.'
+    console.error('Error al guardar patólogo:', error)
   } finally {
     isLoading.value = false
   }
@@ -482,30 +484,41 @@ const guardarPaciente = async () => {
 // Función para limpiar el formulario
 const limpiarFormulario = () => {
   formData.numeroCedula = ''
-  formData.nombrePaciente = ''
+  formData.nombreCompleto = ''
   formData.sexo = ''
-  formData.edad = ''
-  formData.entidad = ''
-  formData.tipoAtencion = ''
+  formData.email = ''
+  formData.telefono = ''
+  formData.especialidad = ''
+  formData.registroMedico = ''
   formData.observaciones = ''
+  formData.firmaPatologoUrl = '' // Limpiar campo de firma
+  firmaPatologoFile.value = null // Limpiar el archivo de firma
   
   statusMessage.value = ''
   hasAttemptedSubmit.value = false
+  cedulaInput.value?.focus() // Enfocar el primer campo al limpiar
 }
 
 // Emitir los datos del formulario para poder usarlos en el componente padre
-const emit = defineEmits(['update-patient-data', 'patient-saved'])
+const emit = defineEmits(['update-patologo-data', 'patologo-saved'])
 
 // Watch para emitir cambios
 watch(formData, (newData) => {
-  emit('update-patient-data', newData)
+  emit('update-patologo-data', newData)
 }, { deep: true, immediate: true })
 
 // Función para obtener clases CSS condicionales para campos requeridos
 const getFieldClasses = (fieldName: keyof typeof formData, isRequired = false) => {
   const baseClasses = "h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3"
   
-  if (isRequired && hasAttemptedSubmit.value && !formData[fieldName]) {
+  let fieldIsInvalid = false;
+  if (fieldName === 'email') {
+    fieldIsInvalid = isRequired && hasAttemptedSubmit.value && (!formData[fieldName].trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData[fieldName].trim()));
+  } else {
+    fieldIsInvalid = isRequired && hasAttemptedSubmit.value && !formData[fieldName];
+  }
+
+  if (fieldIsInvalid) {
     return `${baseClasses} border-red-500 focus:border-red-500 focus:ring-red-500/10 bg-red-50`
   }
   
@@ -523,37 +536,27 @@ const getTextareaClasses = (fieldName: keyof typeof formData, isRequired = false
   return `${baseClasses} border-gray-300 focus:border-brand-300 focus:ring-brand-500/10`
 }
 
-// Función para copiar el Número de Cédula del paciente
-const copiarDNI = async () => {
+// Función para copiar el Número de Cédula del patólogo
+const copiarCedula = async () => {
   if (formData.numeroCedula) {
     try {
       await navigator.clipboard.writeText(formData.numeroCedula)
       // Opcional: mostrar feedback visual de que se copió
       console.log('Número de Cédula copiado al portapapeles')
+      // Podrías añadir una pequeña notificación temporal aquí
+      // Ejemplo: showToast('¡Número de Cédula copiado!')
     } catch (err) {
       console.error('Error al copiar el Número de Cédula:', err)
     }
   }
 }
 
-// Agregar estas computed properties
-const entidadesFiltradas = computed(() => {
-  const searchTerm = formData.entidad.toLowerCase()
-  return entidades.filter(entidad => 
-    entidad.nombre.toLowerCase().includes(searchTerm)
-  )
-})
-
-// Agregar esta función
-const seleccionarEntidad = (entidad: { id: string, nombre: string }) => {
-  formData.entidad = entidad.nombre
-  showEntidades.value = false
+// Manejar el archivo de la firma desde el evento del Dropzone
+const handleFirmaFile = (file: File) => {
+  firmaPatologoFile.value = file
+  // Opcionalmente, podrías mostrar una vista previa o el nombre del archivo
+  console.log('Firma recibida:', file.name)
 }
 
-// Agregar después de las funciones existentes
-const ocultarEntidades = () => {
-  window.setTimeout(() => {
-    showEntidades.value = false
-  }, 200)
-}
+// Lógica de entidades filtradas, seleccionarEntidad y ocultarEntidades ya no son necesarias
 </script>

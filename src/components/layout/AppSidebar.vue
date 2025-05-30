@@ -267,7 +267,7 @@ const menuGroups: MenuGroup[] = [
           { name: "Perfiles", path: "/perfil", pro: false },
           { name: "Nuevo Patólogo", path: "/nuevo-patologo", pro: false },
           { name: "Nueva Entidad", path: "/nueva-entidad", pro: false },
-          { name: "Nuevo Administrativo", path: "/nuevo-administrativo", pro: false },
+          { name: "Nuevo Cups", path: "/nuevo-cups", pro: false },
         ],
       },
     ],
@@ -280,18 +280,6 @@ const menuGroups: MenuGroup[] = [
         name: "Authentication",
         subItems: [
           { name: "Inicio de sesión", path: "/inicio-sesion", pro: false },
-        ],
-      },
-      {
-        icon: BoxCubeIcon,
-        name: "Ui Elements",
-        subItems: [
-          { name: "Alerts", path: "/alerts", pro: false },
-          { name: "Avatars", path: "/avatars", pro: false },
-          { name: "Badge", path: "/badge", pro: false },
-          { name: "Buttons", path: "/buttons", pro: false },
-          { name: "Images", path: "/images", pro: false },
-          { name: "Videos", path: "/videos", pro: false },
         ],
       },
     ],

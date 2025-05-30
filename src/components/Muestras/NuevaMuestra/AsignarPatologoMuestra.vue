@@ -173,31 +173,15 @@
         <!-- Selección de Patólogo -->
         <div class="mb-6">
           <label class="mb-1.5 block text-sm font-medium text-gray-700">Patólogo Asignado *</label>
-          <div class="relative">
-            <input
-              type="text"
-              v-model="patologoSearch"
-              @input="filterPatologos"
-              @focus="showPatologosList = true"
-              placeholder="Buscar o seleccionar patólogo"
-              class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
-            />
-            <!-- Lista desplegable de patólogos -->
-            <div
-              v-if="showPatologosList && filteredPatologos.length > 0"
-              class="absolute z-[9999] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
-            >
-              <div
-                v-for="patologo in filteredPatologos"
-                :key="patologo.value"
-                @click="selectPatologo(patologo)"
-                class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                :class="{ 'bg-gray-100': formData.patologoAsignado === patologo.value }"
-              >
-                {{ patologo.label }}
-              </div>
-            </div>
-          </div>
+          <ListaDesplegable
+            v-model="formData.patologoAsignado"
+            :options="patologos"
+            label=""
+            placeholder="Buscar o seleccionar patólogo"
+            :required="true"
+            :error="!formData.patologoAsignado && searchPerformed"
+            label-key="label"
+          />
         </div>
 
         <!-- Botones de Acción -->
@@ -313,7 +297,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import ListaDesplegable from '../../ui/ListaDesplegable.vue'
 
 interface MuestraInfo {
   codigo: string
@@ -360,11 +345,6 @@ const patologos = [
   { value: 'dr-sandoval', label: 'Dr. Sandoval Lima (SL)' },
   { value: 'dra-herrera', label: 'Dra. Herrera Cruz (HC)' }
 ]
-
-// Estado para el combobox de patólogos
-const patologoSearch = ref('')
-const showPatologosList = ref(false)
-const filteredPatologos = ref(patologos)
 
 // Base de datos simulada de muestras
 const muestrasDB: Record<string, MuestraInfo> = {
@@ -447,24 +427,8 @@ const limpiarFormulario = () => {
     entidad: ''
   }
   formData.patologoAsignado = ''
-  patologoSearch.value = ''
   showNotification.value = false
   progressWidth.value = 100
-}
-
-// Función para filtrar patólogos
-const filterPatologos = () => {
-  const search = patologoSearch.value.toLowerCase()
-  filteredPatologos.value = patologos.filter(patologo => 
-    patologo.label.toLowerCase().includes(search)
-  )
-}
-
-// Función para seleccionar patólogo
-const selectPatologo = (patologo: { value: string; label: string }) => {
-  formData.patologoAsignado = patologo.value
-  patologoSearch.value = patologo.label
-  showPatologosList.value = false
 }
 
 // Función para asignar patólogo
@@ -505,15 +469,5 @@ const emit = defineEmits<{
 defineExpose({
   limpiarFormulario,
   buscarMuestra
-})
-
-// Cerrar la lista al hacer clic fuera
-onMounted(() => {
-  document.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement
-    if (!target.closest('.relative')) {
-      showPatologosList.value = false
-    }
-  })
 })
 </script>
