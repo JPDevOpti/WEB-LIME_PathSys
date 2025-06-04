@@ -133,33 +133,37 @@
         />
       </div>
 
-      <!-- Número de Caso -->
-      <div>
-        <label class="mb-1.5 block text-sm font-medium text-gray-700">
-          Número de Caso *
-        </label>
-        <input
-          type="text"
-          v-model="formData.numeroCaso"
-          :class="getFieldClasses('numeroCaso')"
-          required
-        />
-      </div>
-
       <!-- Médico Solicitante (tipo combobox, igual que patólogo) -->
       <div>
         <label class="mb-1.5 block text-sm font-medium text-gray-700">
           Médico Solicitante *
         </label>
-        <ListaDesplegable
-          v-model="formData.medicoSolicitante"
-          :options="medicos"
-          label=""
-          placeholder="Buscar o seleccionar médico"
-          :required="true"
-          :error="hasAttemptedSubmit && !formData.medicoSolicitante"
-          label-key="label"
-        />
+        <div class="relative">
+          <input
+            type="text"
+            v-model="medicoSolicitanteSearch"
+            @input="filterMedicos"
+            @focus="showMedicosList = true"
+            placeholder="Buscar o seleccionar médico"
+            class="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+            required
+          />
+          <!-- Lista desplegable de médicos -->
+          <div
+            v-if="showMedicosList && filteredMedicos.length > 0"
+            class="absolute z-[9999] w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+          >
+            <div
+              v-for="medico in filteredMedicos"
+              :key="medico.value"
+              @click="selectMedico(medico)"
+              class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+              :class="{ 'bg-gray-100': formData.medicoSolicitante === medico.value }"
+            >
+              {{ medico.label }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- CUPS por Muestra -->
@@ -303,12 +307,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref, onMounted } from 'vue'
-import ListaDesplegable from '../../ComponentesFormularios/ListaDesplegable.vue'
+import { reactive, computed, ref, onMounted, watch } from 'vue'
 
 interface FormData {
   idMuestra: string
-  numeroCaso: string
   paciente: {
     nombre: string
     cedula: string
@@ -323,7 +325,6 @@ interface FormData {
 
 const formData = reactive<FormData>({
   idMuestra: '',
-  numeroCaso: '',
   paciente: {
     nombre: '',
     cedula: ''
@@ -387,7 +388,6 @@ const muestrasDB = [
 const isFormValid = computed(() => {
   return (
     formData.idMuestra.trim() !== '' &&
-    formData.numeroCaso.trim() !== '' &&
     formData.paciente.nombre.trim() !== '' &&
     formData.paciente.cedula.trim() !== '' &&
     formData.medicoSolicitante.trim() !== '' &&
@@ -431,40 +431,58 @@ const medicos = [
   { value: 'dra-herrera', label: 'Dra. Herrera Cruz (HC)' }
 ]
 
+const medicoSolicitanteSearch = ref('')
+const showMedicosList = ref(false)
+const filteredMedicos = ref(medicos)
+
+// Filtrar médicos según búsqueda
+const filterMedicos = () => {
+  const search = medicoSolicitanteSearch.value.toLowerCase()
+  filteredMedicos.value = medicos.filter(medico =>
+    medico.label.toLowerCase().includes(search)
+  )
+}
+
+// Seleccionar médico de la lista
+const selectMedico = (medico: { value: string; label: string }) => {
+  formData.medicoSolicitante = medico.label
+  medicoSolicitanteSearch.value = medico.label
+  showMedicosList.value = false
+}
+
+// Sincronizar input con valor seleccionado
+watch(
+  () => formData.medicoSolicitante,
+  (val) => {
+    medicoSolicitanteSearch.value = val
+  }
+)
+
+// Cerrar la lista al hacer clic fuera
+onMounted(() => {
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement
+    if (!target.closest('.relative')) {
+      showMedicosList.value = false
+    }
+  })
+})
+
 // Methods
 const getFieldClasses = (field: string) => {
   const baseClasses = 'h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10'
-  let value = ''
-  if (field === 'idMuestra') {
-    value = formData.idMuestra
-  } else if (field === 'numeroCaso') {
-    value = formData.numeroCaso
-  } else if (field === 'medicoSolicitante') {
-    value = formData.medicoSolicitante
-  } else if (field === 'observaciones') {
-    value = formData.observaciones
-  } else if (field === 'paciente.nombre') {
-    value = formData.paciente.nombre
-  } else if (field === 'paciente.cedula') {
-    value = formData.paciente.cedula
-  }
-  const errorClasses = hasAttemptedSubmit.value && !value ? 'border-red-300' : 'border-gray-300'
+  const errorClasses = hasAttemptedSubmit.value && !formData[field] ? 'border-red-300' : 'border-gray-300'
   return `${baseClasses} ${errorClasses}`
 }
 
 const getTextareaClasses = (field: string) => {
   const baseClasses = 'w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none'
-  let value = ''
-  if (field === 'observaciones') {
-    value = formData.observaciones
-  }
-  const errorClasses = hasAttemptedSubmit.value && !value ? 'border-red-300' : 'border-gray-300'
+  const errorClasses = hasAttemptedSubmit.value && !formData[field] ? 'border-red-300' : 'border-gray-300'
   return `${baseClasses} ${errorClasses}`
 }
 
 const limpiarFormulario = () => {
   formData.idMuestra = ''
-  formData.numeroCaso = ''
   formData.paciente.nombre = ''
   formData.paciente.cedula = ''
   formData.medicoSolicitante = ''

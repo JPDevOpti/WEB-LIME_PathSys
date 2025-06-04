@@ -679,8 +679,6 @@ const CODIGOS_CUPS = [
 const TIPOS_ATENCION = [
   { value: 'ambulatorio', label: 'Ambulatorio' },
   { value: 'hospitalizado', label: 'Hospitalizado' },
-  { value: 'urgencias', label: 'Urgencias' },
-  { value: 'cirugia', label: 'Cirugía' }
 ] as const
 
 const ENTIDADES = [

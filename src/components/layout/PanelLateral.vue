@@ -264,7 +264,8 @@ const menuGroups: MenuGroup[] = [
         icon: UserCircleIcon,
         name: "Nuevos integrantes",
         subItems: [
-          { name: "Perfiles", path: "/perfil", pro: false },
+          { name: "Mi Perfil", path: "/perfil", pro: false },
+          { name: "Crear Usuario", path: "/crear-usuario", pro: false },
           { name: "Nuevo Patólogo", path: "/nuevo-patologo", pro: false },
           { name: "Nueva Entidad", path: "/nueva-entidad", pro: false },
           { name: "Nuevo Cups", path: "/nuevo-cups", pro: false },

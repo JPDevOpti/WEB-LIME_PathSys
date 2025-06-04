@@ -243,10 +243,10 @@
               class="h-9 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:border-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500/10"
             >
               <option value="">Acciones en lote</option>
-              <option value="completado">Marcar como Completado</option>
+              <option value="urgente">Marcar como Urgente</option>
               <option value="en-proceso">Marcar como En Proceso</option>
-              <option value="pendiente">Marcar como Pendiente</option>
-              <option value="validado">Marcar como Validado</option>
+              <option value="por validar">Marcar como Por Validar</option>
+              <option value="completado">Marcar como Completado</option>
             </select>
             <button
               v-if="accionEnLote"
@@ -373,10 +373,10 @@
                   :class="[
                     'rounded-full px-2 py-0.5 text-theme-xs font-medium',
                     {
-                      'bg-success-50 text-success-700': muestra.estado === 'Completado',
+                      'bg-error-50 text-error-700': muestra.estado === 'Urgente',
                       'bg-warning-50 text-warning-700': muestra.estado === 'En Proceso',
-                      'bg-error-50 text-error-700': muestra.estado === 'Pendiente',
-                      'bg-success-50 text-info-700': muestra.estado === 'Validado',
+                      'bg-info-50 text-info-700': muestra.estado === 'Por Validar',
+                      'bg-success-50 text-success-700': muestra.estado === 'Completado',
                     },
                   ]"
                 >
@@ -392,6 +392,7 @@
                   <button 
                     @click="mostrarDetallesMuestra(muestra)"
                     class="text-brand-500 hover:text-brand-700 p-1 rounded-md hover:bg-brand-50 transition-colors"
+                    title="Ver detalles"
                   >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -401,9 +402,32 @@
                   <button 
                     @click="editarMuestra(muestra)"
                     class="text-brand-500 hover:text-brand-700 p-1 rounded-md hover:bg-brand-50 transition-colors"
+                    title="Editar muestra"
                   >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  <button 
+                    @click="validarMuestra(muestra)"
+                    class="text-green-600 hover:text-green-800 p-1 rounded-md hover:bg-green-50 transition-colors"
+                    :disabled="muestra.estado === 'Validado'"
+                    :class="{ 'opacity-50 cursor-not-allowed': muestra.estado === 'Validado' }"
+                    title="Validar muestra"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </button>
+                  <!-- Botón para cambiar de 'Por Validar' a 'Completado' -->
+                  <button 
+                    v-if="muestra.estado === 'Por Validar'"
+                    @click="marcarComoCompletado(muestra)"
+                    class="text-green-600 hover:text-green-800 p-1 rounded-md hover:bg-green-50 transition-colors"
+                    title="Marcar como Completado"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </button>
                 </div>
@@ -483,8 +507,8 @@
                     {
                       'bg-success-50 text-success-700': muestraSeleccionada.estado === 'Completado',
                       'bg-warning-50 text-warning-700': muestraSeleccionada.estado === 'En Proceso',
-                      'bg-error-50 text-error-700': muestraSeleccionada.estado === 'Pendiente',
-                      'bg-info-50 text-info-700': muestraSeleccionada.estado === 'Validado',
+                      'bg-error-50 text-error-700': muestraSeleccionada.estado === 'Urgente',
+                      'bg-info-50 text-info-700': muestraSeleccionada.estado === 'Por Validar',
                     },
                   ]"
                 >
@@ -656,10 +680,10 @@ const columns = [
 
 // Estados disponibles
 const estados = [
-  'Completado',
+  'Urgente',
   'En Proceso',
-  'Pendiente',
-  'Validado'
+  'Por Validar',
+  'Completado'
 ]
 
 // CUPS únicos disponibles (obtenidos de todas las muestras)
@@ -725,7 +749,7 @@ const muestras = ref<Muestra[]>([
     dni: '23456789',
     analisis: 'PRIVADO',
     medico: 'Dr. Sánchez',
-    estado: 'Pendiente',
+    estado: 'Urgente',
     fechaRecepcion: '2024-02-15',
     horaRecepcion: '11:00',
     cups: ['90003', '90103', '90203', '90303']
@@ -737,7 +761,7 @@ const muestras = ref<Muestra[]>([
     dni: '34567890',
     analisis: 'ESSALUD',
     medico: 'Dra. Rodríguez',
-    estado: 'Validado',
+    estado: 'Completado',
     fechaRecepcion: '2024-01-10',
     horaRecepcion: '11:45',
     cups: ['90004']
@@ -761,7 +785,7 @@ const muestras = ref<Muestra[]>([
     dni: '56789012',
     analisis: 'ESSALUD',
     medico: 'Dra. Morales',
-    estado: 'Pendiente',
+    estado: 'Urgente',
     fechaRecepcion: '2023-11-22',
     horaRecepcion: '08:45',
     cups: ['90006', '90106']
@@ -785,7 +809,7 @@ const muestras = ref<Muestra[]>([
     dni: '78901234',
     analisis: 'PRIVADO',
     medico: 'Dra. Vargas',
-    estado: 'Validado',
+    estado: 'Completado',
     fechaRecepcion: '2023-09-30',
     horaRecepcion: '09:00',
     cups: ['90008']
@@ -797,7 +821,7 @@ const muestras = ref<Muestra[]>([
     dni: '89012345',
     analisis: 'ESSALUD',
     medico: 'Dr. Paredes',
-    estado: 'Pendiente',
+    estado: 'Urgente',
     fechaRecepcion: '2023-08-15',
     horaRecepcion: '11:20',
     cups: ['90009', '90109']
@@ -833,7 +857,7 @@ const muestras = ref<Muestra[]>([
     dni: '22334455',
     analisis: 'ESSALUD',
     medico: 'Dra. Peña',
-    estado: 'Validado',
+    estado: 'Completado',
     fechaRecepcion: '2023-05-19',
     horaRecepcion: '09:50',
     cups: ['90012']
@@ -845,7 +869,7 @@ const muestras = ref<Muestra[]>([
     dni: '33445566',
     analisis: 'PRIVADO',
     medico: 'Dr. Aguirre',
-    estado: 'Pendiente',
+    estado: 'Urgente',
     fechaRecepcion: '2023-04-10',
     horaRecepcion: '12:15',
     cups: ['90013', '90113']
@@ -972,14 +996,17 @@ const toggleSelect = (id: string) => {
 // Función para aplicar acción en lote
 const aplicarAccionEnLote = () => {
   if (!accionEnLote.value) return
-
   muestras.value = muestras.value.map(muestra => {
     if (selectedMuestras.value.includes(muestra.id)) {
-      return { ...muestra, estado: accionEnLote.value }
+      let nuevoEstado = accionEnLote.value
+      if (accionEnLote.value === 'por validar') nuevoEstado = 'Por Validar'
+      if (accionEnLote.value === 'en-proceso') nuevoEstado = 'En Proceso'
+      if (accionEnLote.value === 'urgente') nuevoEstado = 'Urgente'
+      if (accionEnLote.value === 'completado') nuevoEstado = 'Completado'
+      return { ...muestra, estado: nuevoEstado }
     }
     return muestra
   })
-
   selectedMuestras.value = []
   accionEnLote.value = ''
 }
@@ -1044,6 +1071,40 @@ const router = useRouter()
 const editarMuestra = (muestra: Muestra) => {
   router.push(`/editar-muestra/${muestra.id}`)
   muestraSeleccionada.value = null
+}
+
+// Función para validar la muestra
+const validarMuestra = (muestra: Muestra) => {
+  if (muestra.estado === 'Validado') {
+    return // No hacer nada si ya está validado
+  }
+  
+  // Cambiar el estado de la muestra a "Validado"
+  const index = muestras.value.findIndex(m => m.id === muestra.id)
+  if (index !== -1) {
+    muestras.value[index].estado = 'Validado'
+  }
+  
+  // También actualizar la muestra seleccionada si coincide
+  if (muestraSeleccionada.value && muestraSeleccionada.value.id === muestra.id) {
+    muestraSeleccionada.value.estado = 'Validado'
+  }
+  
+  // Aquí podrías agregar una llamada a la API para actualizar el estado en el backend
+  console.log(`Muestra ${muestra.id} validada correctamente`)
+}
+
+// Nueva función para marcar como completado
+const marcarComoCompletado = (muestra: Muestra) => {
+  if (muestra.estado === 'Por Validar') {
+    const index = muestras.value.findIndex(m => m.id === muestra.id)
+    if (index !== -1) {
+      muestras.value[index].estado = 'Completado'
+    }
+    if (muestraSeleccionada.value && muestraSeleccionada.value.id === muestra.id) {
+      muestraSeleccionada.value.estado = 'Completado'
+    }
+  }
 }
 
 // Computed property para obtener médicos únicos disponibles

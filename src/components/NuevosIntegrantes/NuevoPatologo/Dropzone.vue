@@ -46,8 +46,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
-// @ts-nocheck
+<script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Dropzone from 'dropzone'
 import 'dropzone/dist/dropzone.css'
@@ -57,19 +56,16 @@ const props = defineProps({
     type: String,
     default: '/upload',
   },
-  dropzoneId: {
-    type: String,
-    default: () => `dropzone-${Math.random().toString(36).substr(2, 9)}`,
-  },
 })
 
-const dropzoneForm = ref<HTMLFormElement | null>(null)
-let dropzoneInstance: typeof Dropzone | null = null
+const dropzoneForm = ref(null)
+const dropzoneId = `dropzone-${Math.random().toString(36).substr(2, 9)}`
+let dropzoneInstance = null
 
 onMounted(() => {
   Dropzone.autoDiscover = false
 
-  dropzoneInstance = new Dropzone(`#${props.dropzoneId}`, {
+  dropzoneInstance = new Dropzone(`#${dropzoneId}`, {
     url: props.uploadUrl,
     thumbnailWidth: 150,
     maxFilesize: 0.5,
@@ -77,13 +73,13 @@ onMounted(() => {
     headers: { 'My-Awesome-Header': 'header value' },
     dictDefaultMessage: '',
     init: function () {
-      this.on('addedfile', (file: File) => {
+      this.on('addedfile', (file) => {
         console.log('A file has been added', file)
       })
-      this.on('success', (file: File, response: unknown) => {
+      this.on('success', (file, response) => {
         console.log('File successfully uploaded', file, response)
       })
-      this.on('error', (file: File, error: unknown) => {
+      this.on('error', (file, error) => {
         console.error('An error occurred during upload', file, error)
       })
     },
@@ -95,12 +91,6 @@ onBeforeUnmount(() => {
     dropzoneInstance.destroy()
   }
 })
-</script>
-
-<script lang="ts">
-export default {
-  name: 'CustomDropzone',
-}
 </script>
 
 <style>

@@ -345,7 +345,7 @@
 
 <script setup lang="ts">
 import { reactive, computed, ref, watch } from 'vue'
-import Dropzone from '@/components/Muestras/FormElements/Dropzone.vue' // Import Dropzone
+import Dropzone from '@/components/Muestras/NuevaMuestra/Dropzone.vue' // Import Dropzone correcto
 // No se necesita flatpickr para este formulario
 // import 'flatpickr/dist/flatpickr.css' 
 

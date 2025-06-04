@@ -214,8 +214,8 @@
         </label>
         <Dropzone
           :uploadUrl="'/api/upload-signature'"
+          :dropzoneId="dropzoneId"
           @file-added="handleFirmaFile"
-          id="firmaDropzonePatologo"
         />
         <div v-if="firmaPatologoFile" class="mt-2 text-sm text-gray-600">
           Archivo seleccionado: {{ firmaPatologoFile.name }}
@@ -321,7 +321,7 @@
 </template>
 
 <script setup lang="ts">
-import Dropzone from '@/components/Muestras/FormElements/Dropzone.vue'
+import Dropzone from '@/components/Muestras/NuevaMuestra/Dropzone.vue' // Import Dropzone correcto
 import { reactive, computed, ref, onMounted, watch } from 'vue'
 
 interface FormData {
@@ -551,4 +551,6 @@ onMounted(() => {
 const handleFirmaFile = (file: File) => {
   firmaPatologoFile.value = file
 }
+
+const dropzoneId = 'firmaDropzonePatologo'; // id fijo y consistente para el Dropzone
 </script>

@@ -111,7 +111,7 @@ const router = createRouter({
         title: 'Nueva Entidad',
       },
     },
-        {
+    {
       path: '/nuevo-cups',
       name: 'Nuevo Cups',
       component: () => import('../views/NuevosIntegrantes/NuevoCups.vue'),
@@ -119,6 +119,15 @@ const router = createRouter({
         title: 'Nuevo Cups',
       },
     },
+    {
+      path: '/crear-usuario',
+      name: 'Nuevo Usuario',
+      component: () => import('../views/NuevosIntegrantes/NuevoUsuario.vue'),
+      meta: {
+        title: 'Nuevo Usuario',
+      },
+    },
+    
     {
       path: '/line-chart',
       name: 'Line Chart',
