@@ -16,5 +16,5 @@ import AdminLayout from '../../components/layout/AdminLayout.vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import { ref } from 'vue'
 import PersonalInfoCard from '../../components/profile/CrearUsuario.vue'
-const currentPageTitle = ref('User Profile')
+const currentPageTitle = ref('Crear Usuario')
 </script>

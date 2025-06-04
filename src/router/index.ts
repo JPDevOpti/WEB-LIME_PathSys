@@ -127,7 +127,17 @@ const router = createRouter({
         title: 'Nuevo Usuario',
       },
     },
-    
+
+    {
+      path: '/informe-mensual',
+      name: 'Informe Mensual',
+      component: () => import('../views/Estadisticas/InformeMensual.vue'),
+      meta: {
+        title: 'Informe Mensual',
+      },
+    },
+
+
     {
       path: '/line-chart',
       name: 'Line Chart',

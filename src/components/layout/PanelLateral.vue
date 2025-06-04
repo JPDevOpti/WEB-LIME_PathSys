@@ -256,8 +256,7 @@ const menuGroups: MenuGroup[] = [
         icon: PieChartIcon,
         name: "Estadisticas",
         subItems: [
-          { name: "Line Chart", path: "/line-chart", pro: false },
-          { name: "Bar Chart", path: "/bar-chart", pro: false },
+          { name: "Informe mensual", path: "/informe-mensual", pro: false },
         ],
       },
       {
