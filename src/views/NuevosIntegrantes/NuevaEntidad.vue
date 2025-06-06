@@ -3,12 +3,12 @@
     <PageBreadcrumb :pageTitle="currentPageTitle" />
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
       <div class="space-y-6">
-        <ComponentCard title="Ingresar Nuevo Patologo" clickable>
+        <ComponentCard title="Ingresar Nueva Entidad" clickable>
           <NuevaEntidad />
         </ComponentCard>
       </div>
       <div class="space-y-6">
-        <ComponentCard title="Editar Patologo Existente" clickable>
+        <ComponentCard title="Editar Entidad Existente" clickable>
           <EditarEntidad />
         </ComponentCard>
 

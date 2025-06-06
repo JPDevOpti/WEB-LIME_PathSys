@@ -190,7 +190,6 @@ import {
   ListIcon,
   PlugInIcon,
 } from "../../icons";
-import BoxCubeIcon from "@/icons/BoxCubeIcon.vue";
 import { useSidebar } from "@/composables/ControlBarraLateral";
 
 const route = useRoute();
@@ -249,7 +248,6 @@ const menuGroups: MenuGroup[] = [
         subItems: [
           { name: "Realizar informe", path: "/realizar-informe", pro: false },
           { name: "Validar informe", path: "/validar-informe", pro: false },
-          { name: "Listado de informes", path: "/listado-informes", pro: false },
         ],
       },
       {

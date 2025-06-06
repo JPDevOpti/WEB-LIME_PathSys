@@ -14,7 +14,7 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Buscar por ID de muestra o cédula del paciente..."
+              placeholder="Buscar por nombre, cedula o ID de muestra..."
               class="h-11 w-full pl-10 pr-4 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
             />
           </div>
@@ -28,7 +28,7 @@
               ref="medicoInput"
               v-model="searchMedico"
               type="text"
-              placeholder="Buscar o seleccionar médico solicitante..."
+              placeholder="Buscar por medico solicitante..."
               class="h-11 w-full pl-10 pr-10 rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
               @input="filterMedicos"
               @focus="showMedicosList = true"
@@ -905,10 +905,14 @@ const filteredMuestras = computed(() => {
   let filtered = muestras.value
   // Filtrar por búsqueda de texto
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase().trim()
+    const normalize = (str: string) => str.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
+    const query = normalize(searchQuery.value)
     filtered = filtered.filter(muestra => {
-      return muestra.id.toLowerCase().includes(query) || 
-             muestra.dni.toLowerCase().includes(query)
+      return (
+        normalize(muestra.id).includes(query) ||
+        normalize(muestra.dni).includes(query) ||
+        normalize(muestra.paciente).includes(query)
+      )
     })
   }
   // Filtrar por búsqueda de médico
