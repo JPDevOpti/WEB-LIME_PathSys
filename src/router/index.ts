@@ -131,23 +131,12 @@ const router = createRouter({
     {
       path: '/informe-mensual',
       name: 'Informe Mensual',
-      component: () => import('../views/Estadisticas/InformeMensual.vue'),
+      component: () => import('../views/Estadisticas/InformesMensuales.vue'),
       meta: {
         title: 'Informe Mensual',
       },
     },
 
-
-    {
-      path: '/line-chart',
-      name: 'Line Chart',
-      component: () => import('../views/Estadisticas/LineChart/LineChart.vue'),
-    },
-    {
-      path: '/bar-chart',
-      name: 'Bar Chart',
-      component: () => import('../views/Estadisticas/BarChart/BarChart.vue'),
-    },
     {
       path: '/error-404',
       name: '404 Error',

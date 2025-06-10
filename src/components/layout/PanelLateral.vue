@@ -254,12 +254,12 @@ const menuGroups: MenuGroup[] = [
         icon: PieChartIcon,
         name: "Estadisticas",
         subItems: [
-          { name: "Informe mensual", path: "/informe-mensual", pro: false },
+          { name: "Informes mensuales", path: "/informe-mensual", pro: false },
         ],
       },
       {
         icon: UserCircleIcon,
-        name: "Nuevos integrantes",
+        name: "Perfiles",
         subItems: [
           { name: "Mi Perfil", path: "/perfil", pro: false },
           { name: "Crear Usuario", path: "/crear-usuario", pro: false },
