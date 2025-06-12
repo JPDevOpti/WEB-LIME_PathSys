@@ -85,66 +85,60 @@
       </div>
     </div>
 
-    <!-- Resultados de Análisis -->
+    <!-- Resultados de Análisis (Editable) -->
     <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
       <h3 class="text-sm font-semibold text-blue-700 mb-4">Resultados de Análisis</h3>
       
-      <!-- Prueba 1 -->
+      <!-- Resultado Macroscópico -->
       <div class="mb-4">
-        <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-medium text-gray-700">Prueba 1</label>
-          <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            Código: {{ formData.codigoPrueba1 }}
-          </span>
-        </div>
-        <textarea
-          v-model="formData.resultadoPrueba1"
-          placeholder="Ingrese los resultados de la prueba 1"
-          rows="4"
-          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
-        ></textarea>
-      </div>
-
-      <!-- Prueba 2 -->
-      <div class="mb-4">
-        <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-medium text-gray-700">Prueba 2</label>
-          <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            Código: {{ formData.codigoPrueba2 }}
-          </span>
-        </div>
-        <textarea
-          v-model="formData.resultadoPrueba2"
-          placeholder="Ingrese los resultados de la prueba 2"
-          rows="4"
-          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
-        ></textarea>
-      </div>
-
-      <!-- Prueba 3 -->
-      <div class="mb-4">
-        <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-medium text-gray-700">Prueba 3</label>
-          <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            Código: {{ formData.codigoPrueba3 }}
-          </span>
-        </div>
-        <textarea
-          v-model="formData.resultadoPrueba3"
-          placeholder="Ingrese los resultados de la prueba 3"
-          rows="4"
-          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
-        ></textarea>
-      </div>
-
-      <!-- Diagnóstico Final -->
-      <div>
         <label class="mb-2 block text-sm font-medium text-gray-700">
-          Diagnóstico Final *
+          Resultado Macroscópico *
         </label>
         <textarea
-          v-model="formData.diagnosticoFinal"
-          placeholder="Ingrese el diagnóstico final basado en los resultados de las pruebas"
+          v-model="formData.resultadoMacro"
+          placeholder="Ingrese el resultado macroscópico"
+          rows="3"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
+          required
+        ></textarea>
+      </div>
+
+      <!-- Resultado Microscópico -->
+      <div class="mb-4">
+        <label class="mb-2 block text-sm font-medium text-gray-700">
+          Resultado Microscópico *
+        </label>
+        <textarea
+          v-model="formData.resultadoMicro"
+          placeholder="Ingrese el resultado microscópico"
+          rows="3"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
+          required
+        ></textarea>
+      </div>
+
+      <!-- Método Utilizado -->
+      <div class="mb-4">
+        <label class="mb-2 block text-sm font-medium text-gray-700">
+          Método Utilizado *
+        </label>
+        <textarea
+          v-model="formData.resultadoMetodo"
+          placeholder="Ingrese el método utilizado"
+          rows="2"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
+          required
+        ></textarea>
+      </div>
+
+      <!-- Diagnóstico -->
+      <div>
+        <label class="mb-2 block text-sm font-medium text-gray-700">
+          Diagnóstico *
+        </label>
+        <textarea
+          v-model="formData.diagnostico"
+          placeholder="Ingrese el diagnóstico"
           rows="4"
           class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
           required
@@ -167,23 +161,10 @@
       </button>
 
       <button
-        @click="previsualizar"
-        type="button"
-        class="inline-flex items-center px-4 py-2.5 border border-brand-300 rounded-lg text-sm font-medium text-brand-600 bg-brand-50 hover:bg-brand-100 focus:outline-none focus:ring-3 focus:ring-brand-300/30 focus:border-brand-400 transition-colors"
-        :disabled="isLoading || !diagnosticoFinalCompleto"
-      >
-        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </svg>
-        Previsualizar
-      </button>
-
-      <button
         @click="guardarInforme"
         type="button"
         class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        :disabled="isLoading || !diagnosticoFinalCompleto"
+        :disabled="isLoading || !informeCompleto"
       >
         <svg
           v-if="isLoading"
@@ -206,7 +187,7 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
         {{ isLoading ? 'Guardando...' : 'Guardar Informe' }}
@@ -333,7 +314,23 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, computed, ref, onMounted } from 'vue'
+import { reactive, computed, ref, onMounted, watch } from 'vue'
+
+interface MuestraData {
+  idMuestra: string;
+  paciente: {
+    nombre: string;
+    cedula: string;
+  };
+  tipoAnalisisTexto: string;
+  estadoTexto: string;
+  medicoSolicitanteTexto: string;
+  fechaIngresoTexto: string;
+  resultadoMacro: string;
+  resultadoMicro: string;
+  resultadoMetodo: string;
+  diagnostico: string;
+}
 
 // Estados para el componente
 const isLoading = ref(false)
@@ -342,15 +339,37 @@ const statusType = ref<'success' | 'error'>('success')
 const showNotification = ref(false)
 const progressWidth = ref(100)
 
-// Props para recibir el ID de la muestra a editar
+// Props para recibir datos del componente padre
 const props = defineProps({
   muestraId: {
     type: String,
     required: true
+  },
+  datosMuestra: {
+    type: Object as () => MuestraData,
+    required: false,
+    default: () => ({
+      idMuestra: '',
+      paciente: {
+        nombre: '',
+        cedula: ''
+      },
+      tipoAnalisisTexto: '',
+      estadoTexto: '',
+      medicoSolicitanteTexto: '',
+      fechaIngresoTexto: '',
+      resultadoMacro: '',
+      resultadoMicro: '',
+      resultadoMetodo: '',
+      diagnostico: ''
+    })
   }
 })
 
-const formData = reactive({
+// Emits para comunicar cambios al componente padre
+const emit = defineEmits(['informe-guardado', 'previsualizar-informe', 'cancelar', 'update:datosMuestra'])
+
+const formData = reactive<MuestraData>({
   // Datos de solo lectura
   idMuestra: '',
   paciente: {
@@ -362,21 +381,31 @@ const formData = reactive({
   medicoSolicitanteTexto: '',
   fechaIngresoTexto: '',
   
-  // Códigos de prueba
-  codigoPrueba1: '',
-  codigoPrueba2: '',
-  codigoPrueba3: '',
-  
   // Campos editables para los análisis
-  resultadoPrueba1: '',
-  resultadoPrueba2: '',
-  resultadoPrueba3: '',
-  diagnosticoFinal: ''
+  resultadoMacro: '',
+  resultadoMicro: '',
+  resultadoMetodo: '',
+  diagnostico: ''
 })
 
-// Validación: al menos el diagnóstico final debe estar completo
-const diagnosticoFinalCompleto = computed(() => {
-  return formData.diagnosticoFinal.trim().length > 0
+// Observar cambios en los datos recibidos
+watch(() => props.datosMuestra, (newData) => {
+  if (newData) {
+    Object.assign(formData, newData)
+  }
+}, { immediate: true, deep: true })
+
+// Observar cambios en formData para emitir actualizaciones
+watch(formData, (newData) => {
+  emit('update:datosMuestra', newData)
+}, { deep: true })
+
+// Validación: se requieren todos los campos de resultados
+const informeCompleto = computed(() => {
+  return formData.resultadoMacro.trim() !== '' &&
+         formData.resultadoMicro.trim() !== '' &&
+         formData.resultadoMetodo.trim() !== '' &&
+         formData.diagnostico.trim() !== ''
 })
 
 // Clases para el mensaje de estado
@@ -390,55 +419,11 @@ const statusIconClass = computed(() => {
   return statusType.value === 'success' ? 'text-green-600' : 'text-red-600'
 })
 
-// Función para cargar los datos de la muestra
-const cargarMuestra = async () => {
-  if (!props.muestraId) return
-
-  isLoading.value = true
-
-  try {
-    
-    // Datos simulados de la muestra
-    const muestraData = {
-      idMuestra: props.muestraId,
-      paciente: {
-        nombre: 'Juan Pérez García',
-        cedula: '12345678'
-      },
-      tipoAnalisisTexto: 'Hemograma Completo',
-      estadoTexto: 'En Proceso',
-      medicoSolicitanteTexto: 'Dr. García Pérez',
-      fechaIngresoTexto: '15/01/2024 10:30',
-      
-      // Códigos de prueba generados automáticamente
-      codigoPrueba1: 'LAB-HEM-001',
-      codigoPrueba2: 'LAB-HEM-002', 
-      codigoPrueba3: 'LAB-HEM-003',
-      
-      // Resultados vacíos para editar
-      resultadoPrueba1: '',
-      resultadoPrueba2: '',
-      resultadoPrueba3: '',
-      diagnosticoFinal: ''
-    }
-    
-    // Asignar datos al formulario
-    Object.assign(formData, muestraData)
-    
-  } catch (error) {
-    statusType.value = 'error'
-    statusMessage.value = 'Error al cargar los datos de la muestra'
-    console.error('Error:', error)
-  } finally {
-    isLoading.value = false
-  }
-}
-
 // Función para guardar el informe
 const guardarInforme = async () => {
-  if (!diagnosticoFinalCompleto.value) {
+  if (!informeCompleto.value) {
     statusType.value = 'error'
-    statusMessage.value = 'Por favor complete el diagnóstico final'
+    statusMessage.value = 'Por favor complete todos los campos requeridos'
     return
   }
 
@@ -447,7 +432,7 @@ const guardarInforme = async () => {
 
   try {
     // Simular llamada a API
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise(resolve => setTimeout(resolve, 1000))
     
     statusType.value = 'success'
     statusMessage.value = 'Informe guardado exitosamente'
@@ -473,12 +458,10 @@ const guardarInforme = async () => {
     // Emitir evento de éxito
     emit('informe-guardado', {
       muestraId: formData.idMuestra,
-      resultados: {
-        prueba1: formData.resultadoPrueba1,
-        prueba2: formData.resultadoPrueba2,
-        prueba3: formData.resultadoPrueba3,
-        diagnosticoFinal: formData.diagnosticoFinal
-      }
+      resultadoMacro: formData.resultadoMacro,
+      resultadoMicro: formData.resultadoMicro,
+      resultadoMetodo: formData.resultadoMetodo,
+      diagnostico: formData.diagnostico
     })
     
   } catch (error) {
@@ -490,42 +473,16 @@ const guardarInforme = async () => {
   }
 }
 
-// Función para previsualizar
-const previsualizar = () => {
-  emit('previsualizar-informe', {
-    muestraId: formData.idMuestra,
-    paciente: formData.paciente,
-    tipoAnalisis: formData.tipoAnalisisTexto,
-    medicoSolicitante: formData.medicoSolicitanteTexto,
-    fechaIngreso: formData.fechaIngresoTexto,
-    resultados: {
-      prueba1: {
-        codigo: formData.codigoPrueba1,
-        resultado: formData.resultadoPrueba1
-      },
-      prueba2: {
-        codigo: formData.codigoPrueba2,
-        resultado: formData.resultadoPrueba2
-      },
-      prueba3: {
-        codigo: formData.codigoPrueba3,
-        resultado: formData.resultadoPrueba3
-      }
-    },
-    diagnosticoFinal: formData.diagnosticoFinal
-  })
-}
-
 // Función para cancelar
 const cancelar = () => {
   emit('cancelar')
 }
 
-// Emits
-const emit = defineEmits(['informe-guardado', 'previsualizar-informe', 'cancelar'])
-
 // Cargar datos al montar el componente
 onMounted(() => {
-  cargarMuestra()
+  // Si ya tenemos datos en props.datosMuestra, los usamos
+  if (props.datosMuestra) {
+    Object.assign(formData, props.datosMuestra)
+  }
 })
 </script>

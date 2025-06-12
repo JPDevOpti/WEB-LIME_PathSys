@@ -96,30 +96,6 @@ const router = createRouter({
       },
     },
     {
-      path: '/nuevo-patologo',
-      name: 'Nueva Patologo',
-      component: () => import('../views/NuevosIntegrantes/NuevoPatologo.vue'),
-      meta: {
-        title: 'Nueva Patologo',
-      },
-    },
-    {
-      path: '/nueva-entidad',
-      name: 'Nueva Entidad',
-      component: () => import('../views/NuevosIntegrantes/NuevaEntidad.vue'),
-      meta: {
-        title: 'Nueva Entidad',
-      },
-    },
-    {
-      path: '/nuevo-cups',
-      name: 'Nuevo Cups',
-      component: () => import('../views/NuevosIntegrantes/NuevoCups.vue'),
-      meta: {
-        title: 'Nuevo Cups',
-      },
-    },
-    {
       path: '/crear-usuario',
       name: 'Nuevo Usuario',
       component: () => import('../views/NuevosIntegrantes/NuevoUsuario.vue'),
@@ -134,6 +110,14 @@ const router = createRouter({
       component: () => import('../views/Estadisticas/InformesMensuales.vue'),
       meta: {
         title: 'Informe Mensual',
+      },
+    },
+    {
+      path: '/informe-oportunidad',
+      name: 'Informe Oportunidad',
+      component: () => import('../views/Estadisticas/Oportunidad.vue'),
+      meta: {
+        title: 'Informe Oportunidad',
       },
     },
 

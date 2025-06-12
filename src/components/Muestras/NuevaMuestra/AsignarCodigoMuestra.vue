@@ -294,6 +294,16 @@
             </span>
           </div>
         </div>
+        <!-- Médico Solicitante -->
+        <div class="mb-4">
+          <label class="mb-1.5 block text-sm font-medium text-gray-700">Médico Solicitante</label>
+          <input
+            type="text"
+            v-model="formData.medicoSolicitante"
+            placeholder="Nombre del médico solicitante (opcional)"
+            class="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10"
+          />
+        </div>
 
         <!-- Número de Muestras -->
         <div class="mb-4">
@@ -385,7 +395,7 @@
                       <div class="relative">
                         <input
                           type="text"
-                          v-model="formData.muestras[muestraIndex].cups[cupsIndex]"
+                          v-model="formData.muestras[muestraIndex].cups[cupsIndex].code"
                           @focus="showCupsList[getCupsKey(muestraIndex, cupsIndex)] = true"
                           @blur="ocultarCupsList(muestraIndex, cupsIndex)"
                           placeholder="Seleccione o escriba el código CUPS"
@@ -412,7 +422,7 @@
                       >
                         <ul class="py-1">
                           <li
-                            v-for="cupsOption in getCupsFiltrados(formData.muestras[muestraIndex].cups[cupsIndex])"
+                            v-for="cupsOption in getCupsFiltrados(formData.muestras[muestraIndex].cups[cupsIndex].code)"
                             :key="cupsOption.value"
                             @mousedown="seleccionarCups(muestraIndex, cupsIndex, cupsOption)"
                             class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors"
@@ -420,7 +430,7 @@
                             {{ cupsOption.label }}
                           </li>
                           <li
-                            v-if="getCupsFiltrados(formData.muestras[muestraIndex].cups[cupsIndex]).length === 0"
+                            v-if="getCupsFiltrados(formData.muestras[muestraIndex].cups[cupsIndex].code).length === 0"
                             class="px-4 py-2 text-sm text-gray-500"
                           >
                             No se encontraron códigos CUPS
@@ -428,6 +438,17 @@
                         </ul>
                       </div>
                     </div>
+                    <!-- Input para el multiplicador -->
+                    <input
+                      type="number"
+                      min="1"
+                      v-model.number="formData.muestras[muestraIndex].cups[cupsIndex].cantidad"
+                      class="w-11 h-11 rounded-lg border border-gray-300 bg-white px-1 py-1 text-sm text-gray-800 text-center focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 appearance-none hide-number-spin"
+                      placeholder="#"
+                      title="Cantidad de veces"
+                      inputmode="numeric"
+                      @wheel="(e) => { const t = e.target as HTMLInputElement; if (t) t.blur(); }"
+                    />
                     <button
                       v-if="muestra.cups.length > 1"
                       @click="eliminarCups(muestraIndex, cupsIndex)"
@@ -752,14 +773,14 @@ interface MuestraData {
   regionCuerpo: string
   muestras: {
     numero: number
-    cups: string[]
+    cups: { code: string, cantidad: number }[]
   }[]
 }
 
 interface Muestra {
   numero: number
   regionCuerpo: string
-  cups: string[]
+  cups: { code: string, cantidad: number }[]
 }
 
 // ===== COMPOSABLES =====
@@ -825,7 +846,7 @@ const createEmptyPaciente = (cedula = ''): PacienteData => ({
 const createEmptyMuestra = (numero: number): Muestra => ({
   numero,
   regionCuerpo: '',
-  cups: ['']
+  cups: [{ code: '', cantidad: 1 }]
 })
 
 const sanitizeNumericInput = (value: string, max: number): string => {
@@ -849,7 +870,8 @@ const registeredSampleId = ref('')
 const fechaIngreso = ref('')
 const formData = reactive({
   numeroMuestras: '1',
-  muestras: [createEmptyMuestra(1)]
+  muestras: [createEmptyMuestra(1)],
+  medicoSolicitante: ''
 })
 
 // Referencias y utilidades
@@ -877,7 +899,7 @@ const isFormValid = computed(() => {
     formData.muestras.every(muestra => 
       muestra.regionCuerpo.trim() &&
       muestra.cups.length > 0 && 
-      muestra.cups.every(cups => cups.trim() !== '')
+      muestra.cups.every(cups => cups.code.trim() !== '')
     )
   )
 })
@@ -981,6 +1003,7 @@ const limpiarFormulario = () => {
   // Limpiar datos de la muestra
   formData.numeroMuestras = '1'
   formData.muestras = [createEmptyMuestra(1)]
+  formData.medicoSolicitante = ''
   fechaIngreso.value = ''
   
   // Limpiar notificación
@@ -995,7 +1018,7 @@ const handleNumeroMuestrasInput = (event: Event) => {
 }
 
 const agregarCups = (muestraIndex: number) => {
-  formData.muestras[muestraIndex].cups.push('')
+  formData.muestras[muestraIndex].cups.push({ code: '', cantidad: 1 })
   nextTick(() => {
     const lastIndex = formData.muestras[muestraIndex].cups.length - 1
     cupsInputs.value[muestraIndex]?.[lastIndex]?.focus()
@@ -1011,7 +1034,7 @@ const eliminarCups = (muestraIndex: number, cupsIndex: number) => {
 }
 
 const agregarCupsSiNecesario = (muestraIndex: number, cupsIndex: number) => {
-  const currentCups = formData.muestras[muestraIndex].cups[cupsIndex]
+  const currentCups = formData.muestras[muestraIndex].cups[cupsIndex].code
   if (currentCups.trim() !== '') {
     agregarCups(muestraIndex)
   }
@@ -1026,7 +1049,7 @@ const generarCodigoMuestra = (): string => {
 const guardarMuestra = () => {
   if (!isFormValid.value || !pacienteAsignado.value) return
 
-  const nuevaMuestra: MuestraData = {
+  const nuevaMuestra: MuestraData & { medicoSolicitante?: string } = {
     id: generarCodigoMuestra(),
     paciente: pacienteAsignado.value,
     regionCuerpo: '', // Este campo se mantendrá por compatibilidad pero las regiones estarán en cada muestra
@@ -1034,9 +1057,12 @@ const guardarMuestra = () => {
       .map(muestra => ({
         numero: muestra.numero,
         regionCuerpo: muestra.regionCuerpo,
-        cups: muestra.cups.filter(cups => cups.trim() !== '')
+        cups: muestra.cups
+          .filter(cups => cups.code.trim() !== '')
+          .map(cups => ({ code: cups.code, cantidad: cups.cantidad }))
       }))
-      .filter(muestra => muestra.cups.length > 0 && muestra.regionCuerpo.trim() !== '')
+      .filter(muestra => muestra.cups.length > 0 && muestra.regionCuerpo.trim() !== ''),
+    medicoSolicitante: formData.medicoSolicitante
   }
 
   registeredSampleId.value = nuevaMuestra.id
@@ -1115,7 +1141,7 @@ const getCupsKey = (muestraIndex: number, cupsIndex: number) => {
 }
 
 const seleccionarCups = (muestraIndex: number, cupsIndex: number, cups: { value: string, label: string }) => {
-  formData.muestras[muestraIndex].cups[cupsIndex] = cups.value
+  formData.muestras[muestraIndex].cups[cupsIndex].code = cups.value
   const key = getCupsKey(muestraIndex, cupsIndex)
   showCupsList.value[key] = false
 }
@@ -1147,3 +1173,15 @@ defineExpose({
   verificarPaciente
 })
 </script>
+
+<style scoped>
+/* Oculta los spinners de los inputs type=number en la mayoría de navegadores */
+.hide-number-spin::-webkit-inner-spin-button,
+.hide-number-spin::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.hide-number-spin {
+  -moz-appearance: textfield;
+}
+</style>

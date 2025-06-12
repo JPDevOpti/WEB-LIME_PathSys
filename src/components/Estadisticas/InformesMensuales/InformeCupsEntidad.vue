@@ -81,6 +81,7 @@
       <table class="w-full min-w-[400px] border border-gray-200 rounded-lg shadow-sm bg-white">
         <thead class="bg-gray-50">
           <tr>
+            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Código</th>
             <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">CUPS</th>
             <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700">Cantidad</th>
             <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700">Porcentaje</th>
@@ -88,6 +89,7 @@
         </thead>
         <tbody>
           <tr v-for="cups in cupsPorEntidad" :key="cups.nombre" class="even:bg-gray-50">
+            <td class="px-6 py-3">{{ cups.codigoCups }}</td>
             <td class="px-6 py-3">{{ cups.nombre }}</td>
             <td class="px-6 py-3 text-right">{{ cups.cantidad }}</td>
             <td class="px-6 py-3 text-right">{{ ((cups.cantidad / totalCups) * 100).toFixed(1) }}%</td>
@@ -95,7 +97,7 @@
         </tbody>
         <tfoot>
           <tr class="bg-brand-50 font-bold">
-            <td class="px-6 py-3">Total</td>
+            <td class="px-6 py-3" colspan="2">Total</td>
             <td class="px-6 py-3 text-right">{{ totalCups }}</td>
             <td class="px-6 py-3 text-right">100%</td>
           </tr>
@@ -126,6 +128,7 @@
       <table class="w-full border border-gray-300 rounded-lg bg-white text-sm">
         <thead class="bg-gray-100">
           <tr>
+            <th class="px-4 py-2 text-left font-semibold">Código</th>
             <th class="px-4 py-2 text-left font-semibold">CUPS</th>
             <th class="px-4 py-2 text-right font-semibold">Cantidad</th>
             <th class="px-4 py-2 text-right font-semibold">Porcentaje</th>
@@ -133,6 +136,7 @@
         </thead>
         <tbody>
           <tr v-for="cups in cupsPorEntidad" :key="cups.nombre" class="even:bg-gray-50">
+            <td class="px-4 py-2">{{ cups.codigoCups }}</td>
             <td class="px-4 py-2">{{ cups.nombre }}</td>
             <td class="px-4 py-2 text-right">{{ cups.cantidad }}</td>
             <td class="px-4 py-2 text-right">{{ ((cups.cantidad / totalCups) * 100).toFixed(1) }}%</td>
@@ -140,7 +144,7 @@
         </tbody>
         <tfoot>
           <tr class="bg-brand-50 font-bold">
-            <td class="px-4 py-2">Total</td>
+            <td class="px-4 py-2" colspan="2">Total</td>
             <td class="px-4 py-2 text-right">{{ totalCups }}</td>
             <td class="px-4 py-2 text-right">100%</td>
           </tr>
@@ -184,6 +188,7 @@ const entidades = [
 // Simulación de datos de CUPS por entidad y mes
 interface CupsPorEntidad {
   nombre: string
+  codigoCups: string
   cantidad: number
   porcentaje: number
 }
@@ -192,67 +197,91 @@ const cupsPorEntidadMes: Record<string, CupsPorEntidad[][]> = {
   'Hospital Universitario San Vicente Fundación': [
     // Enero
     [
-      { nombre: 'Consulta de oncología médica', cantidad: 85, porcentaje: 25 },
-      { nombre: 'Consulta de oncología quirúrgica', cantidad: 65, porcentaje: 19 },
-      { nombre: 'Consulta de radioterapia', cantidad: 45, porcentaje: 13 },
-      { nombre: 'Quimioterapia', cantidad: 55, porcentaje: 16 },
-      { nombre: 'Radioterapia', cantidad: 40, porcentaje: 12 },
-      { nombre: 'Cirugía oncológica', cantidad: 30, porcentaje: 9 },
-      { nombre: 'Procedimientos diagnósticos oncológicos', cantidad: 25, porcentaje: 7 }
+      { nombre: 'Consulta de oncología médica', codigoCups: '890101', cantidad: 85, porcentaje: 25 },
+      { nombre: 'Consulta de oncología quirúrgica', codigoCups: '890102', cantidad: 65, porcentaje: 19 },
+      { nombre: 'Consulta de radioterapia', codigoCups: '890103', cantidad: 45, porcentaje: 13 },
+      { nombre: 'Quimioterapia', codigoCups: '890104', cantidad: 55, porcentaje: 16 },
+      { nombre: 'Radioterapia', codigoCups: '890105', cantidad: 40, porcentaje: 12 },
+      { nombre: 'Cirugía oncológica', codigoCups: '890106', cantidad: 30, porcentaje: 9 },
+      { nombre: 'Procedimientos diagnósticos oncológicos', codigoCups: '890107', cantidad: 25, porcentaje: 7 },
+      { nombre: 'Biopsia por aspiración con aguja fina (BAAF)', codigoCups: '890108', cantidad: 35, porcentaje: 10 },
+      { nombre: 'Biopsia por punción con aguja gruesa', codigoCups: '890109', cantidad: 28, porcentaje: 8 },
+      { nombre: 'Inmunohistoquímica', codigoCups: '890110', cantidad: 42, porcentaje: 12 },
+      { nombre: 'Estudio molecular en tejido tumoral', codigoCups: '890111', cantidad: 15, porcentaje: 4 }
     ],
     // Febrero
     [
-      { nombre: 'Consulta de oncología médica', cantidad: 90, porcentaje: 26 },
-      { nombre: 'Consulta de oncología quirúrgica', cantidad: 70, porcentaje: 20 },
-      { nombre: 'Consulta de radioterapia', cantidad: 45, porcentaje: 13 },
-      { nombre: 'Quimioterapia', cantidad: 60, porcentaje: 17 },
-      { nombre: 'Radioterapia', cantidad: 35, porcentaje: 10 },
-      { nombre: 'Cirugía oncológica', cantidad: 25, porcentaje: 7 },
-      { nombre: 'Procedimientos diagnósticos oncológicos', cantidad: 20, porcentaje: 6 }
+      { nombre: 'Consulta de oncología médica', codigoCups: '890101', cantidad: 90, porcentaje: 26 },
+      { nombre: 'Consulta de oncología quirúrgica', codigoCups: '890102', cantidad: 70, porcentaje: 20 },
+      { nombre: 'Consulta de radioterapia', codigoCups: '890103', cantidad: 45, porcentaje: 13 },
+      { nombre: 'Quimioterapia', codigoCups: '890104', cantidad: 60, porcentaje: 17 },
+      { nombre: 'Radioterapia', codigoCups: '890105', cantidad: 35, porcentaje: 10 },
+      { nombre: 'Cirugía oncológica', codigoCups: '890106', cantidad: 25, porcentaje: 7 },
+      { nombre: 'Procedimientos diagnósticos oncológicos', codigoCups: '890107', cantidad: 20, porcentaje: 6 },
+      { nombre: 'Biopsia por aspiración con aguja fina (BAAF)', codigoCups: '890108', cantidad: 38, porcentaje: 11 },
+      { nombre: 'Biopsia por punción con aguja gruesa', codigoCups: '890109', cantidad: 32, porcentaje: 9 },
+      { nombre: 'Inmunohistoquímica', codigoCups: '890110', cantidad: 45, porcentaje: 13 },
+      { nombre: 'Estudio molecular en tejido tumoral', codigoCups: '890111', cantidad: 18, porcentaje: 5 }
     ]
   ],
   'IPS Universitaria Sede Medellín': [
     // Enero
     [
-      { nombre: 'Consulta de oncología médica', cantidad: 70, porcentaje: 24 },
-      { nombre: 'Consulta de oncología quirúrgica', cantidad: 55, porcentaje: 19 },
-      { nombre: 'Consulta de radioterapia', cantidad: 40, porcentaje: 14 },
-      { nombre: 'Quimioterapia', cantidad: 45, porcentaje: 15 },
-      { nombre: 'Radioterapia', cantidad: 35, porcentaje: 12 },
-      { nombre: 'Cirugía oncológica', cantidad: 25, porcentaje: 9 },
-      { nombre: 'Procedimientos diagnósticos oncológicos', cantidad: 20, porcentaje: 7 }
+      { nombre: 'Consulta de oncología médica', codigoCups: '890101', cantidad: 70, porcentaje: 24 },
+      { nombre: 'Consulta de oncología quirúrgica', codigoCups: '890102', cantidad: 55, porcentaje: 19 },
+      { nombre: 'Consulta de radioterapia', codigoCups: '890103', cantidad: 40, porcentaje: 14 },
+      { nombre: 'Quimioterapia', codigoCups: '890104', cantidad: 45, porcentaje: 15 },
+      { nombre: 'Radioterapia', codigoCups: '890105', cantidad: 35, porcentaje: 12 },
+      { nombre: 'Cirugía oncológica', codigoCups: '890106', cantidad: 25, porcentaje: 9 },
+      { nombre: 'Procedimientos diagnósticos oncológicos', codigoCups: '890107', cantidad: 20, porcentaje: 7 },
+      { nombre: 'Biopsia por aspiración con aguja fina (BAAF)', codigoCups: '890108', cantidad: 30, porcentaje: 10 },
+      { nombre: 'Biopsia por punción con aguja gruesa', codigoCups: '890109', cantidad: 25, porcentaje: 9 },
+      { nombre: 'Inmunohistoquímica', codigoCups: '890110', cantidad: 35, porcentaje: 12 },
+      { nombre: 'Estudio molecular en tejido tumoral', codigoCups: '890111', cantidad: 12, porcentaje: 4 }
     ],
     // Febrero
     [
-      { nombre: 'Consulta de oncología médica', cantidad: 75, porcentaje: 25 },
-      { nombre: 'Consulta de oncología quirúrgica', cantidad: 60, porcentaje: 20 },
-      { nombre: 'Consulta de radioterapia', cantidad: 40, porcentaje: 13 },
-      { nombre: 'Quimioterapia', cantidad: 50, porcentaje: 17 },
-      { nombre: 'Radioterapia', cantidad: 30, porcentaje: 10 },
-      { nombre: 'Cirugía oncológica', cantidad: 25, porcentaje: 8 },
-      { nombre: 'Procedimientos diagnósticos oncológicos', cantidad: 20, porcentaje: 7 }
+      { nombre: 'Consulta de oncología médica', codigoCups: '890101', cantidad: 75, porcentaje: 25 },
+      { nombre: 'Consulta de oncología quirúrgica', codigoCups: '890102', cantidad: 60, porcentaje: 20 },
+      { nombre: 'Consulta de radioterapia', codigoCups: '890103', cantidad: 40, porcentaje: 13 },
+      { nombre: 'Quimioterapia', codigoCups: '890104', cantidad: 50, porcentaje: 17 },
+      { nombre: 'Radioterapia', codigoCups: '890105', cantidad: 30, porcentaje: 10 },
+      { nombre: 'Cirugía oncológica', codigoCups: '890106', cantidad: 25, porcentaje: 8 },
+      { nombre: 'Procedimientos diagnósticos oncológicos', codigoCups: '890107', cantidad: 20, porcentaje: 7 },
+      { nombre: 'Biopsia por aspiración con aguja fina (BAAF)', codigoCups: '890108', cantidad: 32, porcentaje: 11 },
+      { nombre: 'Biopsia por punción con aguja gruesa', codigoCups: '890109', cantidad: 28, porcentaje: 9 },
+      { nombre: 'Inmunohistoquímica', codigoCups: '890110', cantidad: 38, porcentaje: 13 },
+      { nombre: 'Estudio molecular en tejido tumoral', codigoCups: '890111', cantidad: 15, porcentaje: 5 }
     ]
   ],
   'Hospital San Juan de Dios': [
     // Enero
     [
-      { nombre: 'Consulta de oncología médica', cantidad: 60, porcentaje: 23 },
-      { nombre: 'Consulta de oncología quirúrgica', cantidad: 45, porcentaje: 17 },
-      { nombre: 'Consulta de radioterapia', cantidad: 35, porcentaje: 13 },
-      { nombre: 'Quimioterapia', cantidad: 40, porcentaje: 15 },
-      { nombre: 'Radioterapia', cantidad: 30, porcentaje: 11 },
-      { nombre: 'Cirugía oncológica', cantidad: 25, porcentaje: 10 },
-      { nombre: 'Procedimientos diagnósticos oncológicos', cantidad: 20, porcentaje: 8 }
+      { nombre: 'Consulta de oncología médica', codigoCups: '890101', cantidad: 60, porcentaje: 23 },
+      { nombre: 'Consulta de oncología quirúrgica', codigoCups: '890102', cantidad: 45, porcentaje: 17 },
+      { nombre: 'Consulta de radioterapia', codigoCups: '890103', cantidad: 35, porcentaje: 13 },
+      { nombre: 'Quimioterapia', codigoCups: '890104', cantidad: 40, porcentaje: 15 },
+      { nombre: 'Radioterapia', codigoCups: '890105', cantidad: 30, porcentaje: 11 },
+      { nombre: 'Cirugía oncológica', codigoCups: '890106', cantidad: 25, porcentaje: 10 },
+      { nombre: 'Procedimientos diagnósticos oncológicos', codigoCups: '890107', cantidad: 20, porcentaje: 8 },
+      { nombre: 'Biopsia por aspiración con aguja fina (BAAF)', codigoCups: '890108', cantidad: 25, porcentaje: 10 },
+      { nombre: 'Biopsia por punción con aguja gruesa', codigoCups: '890109', cantidad: 20, porcentaje: 8 },
+      { nombre: 'Inmunohistoquímica', codigoCups: '890110', cantidad: 30, porcentaje: 11 },
+      { nombre: 'Estudio molecular en tejido tumoral', codigoCups: '890111', cantidad: 10, porcentaje: 4 }
     ],
     // Febrero
     [
-      { nombre: 'Consulta de oncología médica', cantidad: 65, porcentaje: 24 },
-      { nombre: 'Consulta de oncología quirúrgica', cantidad: 50, porcentaje: 18 },
-      { nombre: 'Consulta de radioterapia', cantidad: 35, porcentaje: 13 },
-      { nombre: 'Quimioterapia', cantidad: 45, porcentaje: 16 },
-      { nombre: 'Radioterapia', cantidad: 30, porcentaje: 11 },
-      { nombre: 'Cirugía oncológica', cantidad: 25, porcentaje: 9 },
-      { nombre: 'Procedimientos diagnósticos oncológicos', cantidad: 20, porcentaje: 7 }
+      { nombre: 'Consulta de oncología médica', codigoCups: '890101', cantidad: 65, porcentaje: 24 },
+      { nombre: 'Consulta de oncología quirúrgica', codigoCups: '890102', cantidad: 50, porcentaje: 18 },
+      { nombre: 'Consulta de radioterapia', codigoCups: '890103', cantidad: 35, porcentaje: 13 },
+      { nombre: 'Quimioterapia', codigoCups: '890104', cantidad: 45, porcentaje: 16 },
+      { nombre: 'Radioterapia', codigoCups: '890105', cantidad: 30, porcentaje: 11 },
+      { nombre: 'Cirugía oncológica', codigoCups: '890106', cantidad: 25, porcentaje: 9 },
+      { nombre: 'Procedimientos diagnósticos oncológicos', codigoCups: '890107', cantidad: 20, porcentaje: 7 },
+      { nombre: 'Biopsia por aspiración con aguja fina (BAAF)', codigoCups: '890108', cantidad: 28, porcentaje: 10 },
+      { nombre: 'Biopsia por punción con aguja gruesa', codigoCups: '890109', cantidad: 22, porcentaje: 8 },
+      { nombre: 'Inmunohistoquímica', codigoCups: '890110', cantidad: 32, porcentaje: 12 },
+      { nombre: 'Estudio molecular en tejido tumoral', codigoCups: '890111', cantidad: 12, porcentaje: 4 }
     ]
   ]
 }
@@ -391,6 +420,7 @@ const imprimir = () => {
   // Generar las filas de la tabla
   const filasCups = cups.map(cups => `
     <tr>
+      <td>${cups.codigoCups}</td>
       <td>${cups.nombre}</td>
       <td>${cups.cantidad}</td>
       <td>${((cups.cantidad / total) * 100).toFixed(1)}%</td>
@@ -520,6 +550,7 @@ const imprimir = () => {
         <thead>
           <tr>
             <th>Procedimiento Oncológico</th>
+            <th>Código</th>
             <th>Cantidad</th>
             <th>Porcentaje</th>
           </tr>
@@ -530,6 +561,7 @@ const imprimir = () => {
         <tfoot>
           <tr>
             <td>Total</td>
+            <td>${total}</td>
             <td>${total}</td>
             <td>100%</td>
           </tr>

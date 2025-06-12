@@ -15,9 +15,9 @@
       <!-- Encabezado con título y menú desplegable -->
       <div class="flex justify-between items-center">
         <div>
-          <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Muestras Activas</h3>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">Oportunidad de Atención</h3>
           <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Total de muestras que se han ingresado y estan activas
+            Porcentaje de muestras procesadas dentro del tiempo de oportunidad
           </p>
         </div>
         <!-- Menú de opciones con icono y efectos hover -->
@@ -60,26 +60,72 @@
         <!-- Indicador de porcentaje de crecimiento -->
         <span
           class="absolute left-1/2 top-[85%] -translate-x-1/2 -translate-y-[85%] rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-600 transition-all duration-300 hover:bg-success-100 dark:bg-success-500/15 dark:text-success-500 dark:hover:bg-success-500/25"
-          >+10%</span 
+          >+5.2%</span 
         >
       </div>
       <!-- Descripción del gráfico -->
       <p class="mx-auto mt-1.5 w-full max-w-[380px] text-center text-sm text-gray-500 transition-colors duration-300 dark:text-gray-400 sm:text-base">
-        Progreso de muestras ingresadas y se encuentran activas
+        Progreso en el cumplimiento de tiempos de oportunidad
       </p>
     </div>
 
     <!-- Sección de métricas con efectos hover y animaciones -->
     <div class="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
-      <!-- Métrica: Promesa media -->
+      <!-- Métrica: Tiempo promedio de procesamiento -->
       <div class="group transition-all duration-300 hover:scale-105">
         <p class="mb-1 text-center text-gray-500 text-theme-xs transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300 sm:text-sm">
-          Promesa media
+          Tiempo promedio
         </p>
         <p
           class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 transition-colors duration-300 group-hover:text-primary-600 dark:text-white/90 dark:group-hover:text-primary-400 sm:text-lg"
         >
-          6.3
+          4.2
+          <span class="text-sm text-gray-500">días</span>
+        </p>
+      </div>
+
+      <!-- Separador vertical -->
+      <div class="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
+
+      <!-- Métrica: Muestras dentro de oportunidad -->
+      <div class="group transition-all duration-300 hover:scale-105">
+        <p class="mb-1 text-center text-gray-500 text-theme-xs transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300 sm:text-sm">
+          Dentro de oportunidad
+        </p>
+        <p
+          class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 transition-colors duration-300 group-hover:text-primary-600 dark:text-white/90 dark:group-hover:text-primary-400 sm:text-lg"
+        >
+          285
+          <svg
+            class="transition-transform duration-300 group-hover:translate-y-[-2px]"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M7.60141 2.33683C7.73885 2.18084 7.9401 2.08243 8.16435 2.08243C8.16475 2.08243 8.16516 2.08243 8.16556 2.08243C8.35773 2.08219 8.54998 2.15535 8.69664 2.30191L12.6968 6.29924C12.9898 6.59203 12.9899 7.0669 12.6971 7.3599C12.4044 7.6529 11.9295 7.65306 11.6365 7.36027L8.91435 4.64004L8.91435 13.5C8.91435 13.9142 8.57856 14.25 8.16435 14.25C7.75013 14.25 7.41435 13.9142 7.41435 13.5L7.41435 4.64442L4.69679 7.36025C4.4038 7.65305 3.92893 7.6529 3.63613 7.35992C3.34333 7.06693 3.34348 6.59206 3.63646 6.29926L7.60141 2.33683Z"
+              fill="#039855"
+            />
+          </svg>
+        </p>
+      </div>
+
+      <!-- Separador vertical -->
+      <div class="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
+
+      <!-- Métrica: Muestras fuera de oportunidad -->
+      <div class="group transition-all duration-300 hover:scale-105">
+        <p class="mb-1 text-center text-gray-500 text-theme-xs transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300 sm:text-sm">
+          Fuera de oportunidad
+        </p>
+        <p
+          class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 transition-colors duration-300 group-hover:text-primary-600 dark:text-white/90 dark:group-hover:text-primary-400 sm:text-lg"
+        >
+          45
           <svg
             class="transition-transform duration-300 group-hover:translate-y-[-2px]"
             width="16"
@@ -97,66 +143,6 @@
           </svg>
         </p>
       </div>
-
-      <!-- Separador vertical -->
-      <div class="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
-
-      <!-- Métrica: Muestras activas -->
-      <div class="group transition-all duration-300 hover:scale-105">
-        <p class="mb-1 text-center text-gray-500 text-theme-xs transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300 sm:text-sm">
-          Muestras activas
-        </p>
-        <p
-          class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 transition-colors duration-300 group-hover:text-primary-600 dark:text-white/90 dark:group-hover:text-primary-400 sm:text-lg"
-        >
-          123
-          <svg
-            class="transition-transform duration-300 group-hover:translate-y-[-2px]"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M7.60141 2.33683C7.73885 2.18084 7.9401 2.08243 8.16435 2.08243C8.16475 2.08243 8.16516 2.08243 8.16556 2.08243C8.35773 2.08219 8.54998 2.15535 8.69664 2.30191L12.6968 6.29924C12.9898 6.59203 12.9899 7.0669 12.6971 7.3599C12.4044 7.6529 11.9295 7.65306 11.6365 7.36027L8.91435 4.64004L8.91435 13.5C8.91435 13.9142 8.57856 14.25 8.16435 14.25C7.75013 14.25 7.41435 13.9142 7.41435 13.5L7.41435 4.64442L4.69679 7.36025C4.4038 7.65305 3.92893 7.6529 3.63613 7.35992C3.34333 7.06693 3.34348 6.59206 3.63646 6.29926L7.60141 2.33683Z"
-              fill="#039855"
-            />
-          </svg>
-        </p>
-      </div>
-
-      <!-- Separador vertical -->
-      <div class="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
-
-      <!-- Métrica: Muestras de hoy -->
-      <div class="group transition-all duration-300 hover:scale-105">
-        <p class="mb-1 text-center text-gray-500 text-theme-xs transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300 sm:text-sm">
-          Hoy
-        </p>
-        <p
-          class="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 transition-colors duration-300 group-hover:text-primary-600 dark:text-white/90 dark:group-hover:text-primary-400 sm:text-lg"
-        >
-          12
-          <svg
-            class="transition-transform duration-300 group-hover:translate-y-[-2px]"
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M7.60141 2.33683C7.73885 2.18084 7.9401 2.08243 8.16435 2.08243C8.16475 2.08243 8.16516 2.08243 8.16556 2.08243C8.35773 2.08219 8.54998 2.15535 8.69664 2.30191L12.6968 6.29924C12.9898 6.59203 12.9899 7.0669 12.6971 7.3599C12.4044 7.6529 11.9295 7.65306 11.6365 7.36027L8.91435 4.64004L8.91435 13.5C8.91435 13.9142 8.57856 14.25 8.16435 14.25C7.75013 14.25 7.41435 13.9142 7.41435 13.5L7.41435 4.64442L4.69679 7.36025C4.4038 7.65305 3.92893 7.6529 3.63613 7.35992C3.34333 7.06693 3.34348 6.59206 3.63646 6.29926L7.60141 2.33683Z"
-              fill="#039855"
-            />
-          </svg>
-        </p>
-      </div>
     </div>
   </div>
 </template>
@@ -169,8 +155,8 @@ import VueApexCharts from 'vue3-apexcharts'
 // Opciones del menú desplegable
 const menuItems = [
   { 
-    label: 'Ver más detalles', 
-    onClick: () => console.log('Ver más detalles clicked'),
+    label: 'Ver informe detallado', 
+    onClick: () => console.log('Ver informe detallado clicked'),
     icon: 'chart-bar'
   },
   { 
@@ -189,7 +175,7 @@ const menuItems = [
 const props = defineProps({
   value: {
     type: Number,
-    default: 75.55,
+    default: 86.36, // Porcentaje de muestras dentro de oportunidad
   },
 })
 
@@ -267,7 +253,7 @@ const chartOptions = {
     lineCap: 'round',
     width: 2
   },
-  labels: ['Progress'],
+  labels: ['Oportunidad'],
   // Estados del gráfico
   states: {
     hover: {

@@ -255,6 +255,7 @@ const menuGroups: MenuGroup[] = [
         name: "Estadisticas",
         subItems: [
           { name: "Informes mensuales", path: "/informe-mensual", pro: false },
+          { name: "Informe oportunidad", path: "/informe-oportunidad", pro: false },
         ],
       },
       {
@@ -263,9 +264,6 @@ const menuGroups: MenuGroup[] = [
         subItems: [
           { name: "Mi Perfil", path: "/perfil", pro: false },
           { name: "Crear Usuario", path: "/crear-usuario", pro: false },
-          { name: "Nuevo Patólogo", path: "/nuevo-patologo", pro: false },
-          { name: "Nueva Entidad", path: "/nueva-entidad", pro: false },
-          { name: "Nuevo Cups", path: "/nuevo-cups", pro: false },
         ],
       },
     ],

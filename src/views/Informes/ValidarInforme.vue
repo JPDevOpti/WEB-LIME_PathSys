@@ -13,7 +13,7 @@
       </div>
 
       <!-- Realizador de informe completo en la parte inferior -->
-      <ComponentCard title="Realizar Informe Completo" clickable> 
+      <ComponentCard title="Validar Informe" clickable> 
         <ValidarInformeMuestra :muestra-id="''" /> 
       </ComponentCard>
     </div>
@@ -25,9 +25,9 @@ import { ref } from 'vue'
 import PageBreadcrumb from '@/components/common/PageBreadcrumb.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
 import ComponentCard from '@/components/common/ComponentCard.vue'
-import VerificarMuestrasCodigo from '@/components/Muestras/ValidarInforme/VerificarMuestrasCodigo.vue'
-import VerificarMuestraPaciente from '@/components/Muestras/ValidarInforme/VerificarMuestrasPaciente.vue'
+import VerificarMuestrasCodigo from '@/components/Muestras/ComponentesMuestras/VerificarMuestrasCodigo.vue'
+import VerificarMuestraPaciente from '@/components/Muestras/ComponentesMuestras/VerificarMuestrasPaciente.vue'
 import ValidarInformeMuestra from '@/components/Muestras/ValidarInforme/ValidarInformeMuestra.vue'
 
-const currentPageTitle = ref('Gestión de Muestras')
+const currentPageTitle = ref('Validar Informes')
 </script>

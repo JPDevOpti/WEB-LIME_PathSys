@@ -162,15 +162,6 @@
             <input 
               type="radio" 
               v-model="formData.estadoValidacion" 
-              value="rechazado" 
-              class="form-radio h-5 w-5 text-red-600"
-            >
-            <span class="ml-2 text-sm text-gray-700">Rechazado</span>
-          </label>
-          <label class="inline-flex items-center">
-            <input 
-              type="radio" 
-              v-model="formData.estadoValidacion" 
               value="requiere_cambios" 
               class="form-radio h-5 w-5 text-yellow-600"
             >
@@ -179,14 +170,14 @@
         </div>
       </div>
 
-      <!-- Comentarios de validación -->
-      <div>
+      <!-- Comentarios de validación (solo visible si requiere cambios) -->
+      <div v-if="formData.estadoValidacion === 'requiere_cambios'">
         <label class="mb-2 block text-sm font-medium text-gray-700">
           Comentarios de Validación *
         </label>
         <textarea
           v-model="formData.comentariosValidacion"
-          placeholder="Ingrese sus comentarios sobre el informe"
+          placeholder="Ingrese sus comentarios sobre los cambios requeridos"
           rows="4"
           class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
           required
@@ -435,9 +426,12 @@ const formData = reactive({
   comentariosValidacion: ''
 })
 
-// Validación: se requiere estado de validación y comentarios
+// Modificar la validación para que solo requiera comentarios si es requiere_cambios
 const validacionCompleta = computed(() => {
-  return formData.estadoValidacion && formData.comentariosValidacion.trim().length > 0
+  if (formData.estadoValidacion === 'requiere_cambios') {
+    return formData.estadoValidacion && formData.comentariosValidacion.trim().length > 0
+  }
+  return formData.estadoValidacion === 'aprobado'
 })
 
 // Clases para el mensaje de estado

@@ -36,7 +36,7 @@
       <!-- Contenido de la tarjeta: título, valor y porcentaje -->
       <div class="flex items-end justify-between mt-5">
         <div>
-          <span class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300">Pacientes</span>
+          <span class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300">Pacientes ingresados este mes</span>
           <h4 class="mt-2 font-bold text-gray-800 text-title-sm transition-colors duration-300 group-hover:text-primary-600 dark:text-white/90 dark:group-hover:text-primary-400">3,782</h4>
         </div>
 
@@ -92,7 +92,7 @@
       <!-- Contenido de la tarjeta: título, valor y porcentaje -->
       <div class="flex items-end justify-between mt-5">
         <div>
-          <span class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300">Muestras actuales</span>
+          <span class="text-sm text-gray-500 transition-colors duration-300 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300">Muestras Ingresadas este mes</span>
           <h4 class="mt-2 font-bold text-gray-800 text-title-sm transition-colors duration-300 group-hover:text-primary-600 dark:text-white/90 dark:group-hover:text-primary-400">5,359</h4>
         </div>
 
