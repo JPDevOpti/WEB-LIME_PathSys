@@ -85,47 +85,56 @@
       </div>
     </div>
 
-    <!-- Resultados de Análisis (Solo lectura) -->
+    <!-- Resultados de Análisis (Editable) -->
     <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
       <h3 class="text-sm font-semibold text-blue-700 mb-4">Resultados de Análisis (Informe)</h3>
       
-      <!-- Prueba 1 -->
+      <!-- Corte Macro -->
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-medium text-gray-700">Prueba 1</label>
+          <label class="text-sm font-medium text-gray-700">Corte Macro</label>
           <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            Código: {{ formData.codigoPrueba1 }}
+            Código: {{ formData.codigoCorteMacro }}
           </span>
         </div>
-        <div class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-700">
-          {{ formData.resultadoPrueba1 || 'Sin resultados registrados' }}
-        </div>
+        <textarea
+          v-model="formData.resultadoCorteMacro"
+          rows="4"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
+          placeholder="Ingrese la descripción del corte macro"
+        ></textarea>
       </div>
 
-      <!-- Prueba 2 -->
+      <!-- Corte Micro -->
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-medium text-gray-700">Prueba 2</label>
+          <label class="text-sm font-medium text-gray-700">Corte Micro</label>
           <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            Código: {{ formData.codigoPrueba2 }}
+            Código: {{ formData.codigoCorteMicro }}
           </span>
         </div>
-        <div class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-700">
-          {{ formData.resultadoPrueba2 || 'Sin resultados registrados' }}
-        </div>
+        <textarea
+          v-model="formData.resultadoCorteMicro"
+          rows="4"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
+          placeholder="Ingrese la descripción del corte micro"
+        ></textarea>
       </div>
 
-      <!-- Prueba 3 -->
+      <!-- Método -->
       <div class="mb-4">
         <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-medium text-gray-700">Prueba 3</label>
+          <label class="text-sm font-medium text-gray-700">Método</label>
           <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            Código: {{ formData.codigoPrueba3 }}
+            Código: {{ formData.codigoMetodo }}
           </span>
         </div>
-        <div class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-700">
-          {{ formData.resultadoPrueba3 || 'Sin resultados registrados' }}
-        </div>
+        <textarea
+          v-model="formData.resultadoMetodo"
+          rows="4"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
+          placeholder="Ingrese la descripción del método utilizado"
+        ></textarea>
       </div>
 
       <!-- Diagnóstico Final -->
@@ -133,8 +142,46 @@
         <label class="mb-2 block text-sm font-medium text-gray-700">
           Diagnóstico Final
         </label>
-        <div class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-700 min-h-[100px]">
-          {{ formData.diagnosticoFinal || 'Sin diagnóstico registrado' }}
+        <textarea
+          v-model="formData.diagnosticoFinal"
+          rows="6"
+          class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none"
+          placeholder="Ingrese el diagnóstico final"
+        ></textarea>
+      </div>
+      <!-- Campo: ¿Cáncer? Sí / No -->
+      <div class="mt-4">
+        <label class="mb-2 block text-sm font-medium text-gray-700">
+          ¿Cáncer?
+        </label>
+        <div class="flex items-center space-x-6">
+          <label class="inline-flex items-center">
+            <input
+              type="radio"
+              v-model="formData.cancer"
+              :value="'si'"
+              class="form-radio h-5 w-5 text-red-600"
+            >
+            <span class="ml-2 text-sm text-gray-700">Sí</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input
+              type="radio"
+              v-model="formData.cancer"
+              :value="'no'"
+              class="form-radio h-5 w-5 text-green-600"
+            >
+            <span class="ml-2 text-sm text-gray-700">No</span>
+          </label>
+          <label class="inline-flex items-center">
+            <input
+              type="radio"
+              v-model="formData.cancer"
+              :value="'no_aplica'"
+              class="form-radio h-5 w-5 text-blue-600"
+            >
+            <span class="ml-2 text-sm text-gray-700">No aplica</span>
+          </label>
         </div>
       </div>
     </div>
@@ -410,16 +457,19 @@ const formData = reactive({
   fechaIngresoTexto: '',
   fechaResultadoTexto: '',
   
-  // Códigos de prueba
-  codigoPrueba1: '',
-  codigoPrueba2: '',
-  codigoPrueba3: '',
+  // Códigos de secciones
+  codigoCorteMacro: '',
+  codigoCorteMicro: '',
+  codigoMetodo: '',
   
-  // Resultados de las pruebas (solo lectura)
-  resultadoPrueba1: '',
-  resultadoPrueba2: '',
-  resultadoPrueba3: '',
+  // Resultados editables
+  resultadoCorteMacro: '',
+  resultadoCorteMicro: '',
+  resultadoMetodo: '',
   diagnosticoFinal: '',
+  
+  // Nuevo campo: ¿Cáncer?
+  cancer: '',
   
   // Campos para la validación
   estadoValidacion: '',
@@ -524,9 +574,6 @@ const cargarInforme = async () => {
 
   try {
     // Simulación de carga de datos desde la API
-    // En un caso real, aquí se haría la petición al servidor
-    
-    // Datos simulados del informe ya realizado - siempre cargar estos datos independientemente del prop
     const informeData = {
       idMuestra: props.muestraId || 'L2024-0586',
       paciente: {
@@ -536,41 +583,30 @@ const cargarInforme = async () => {
         sexo: 'Femenino',
         fechaNacimiento: '12/05/1982'
       },
-      tipoAnalisisTexto: 'Perfil Bioquímico Completo',
+      tipoAnalisisTexto: 'Biopsia de Mama',
       estadoTexto: 'Pendiente de Validación',
-      medicoSolicitanteTexto: 'Dra. Gabriela Salazar - Medicina Interna',
+      medicoSolicitanteTexto: 'Dra. Gabriela Salazar - Cirugía General',
       fechaIngresoTexto: '18/07/2024 09:15',
       fechaResultadoTexto: '19/07/2024 14:30',
       
-      // Códigos de prueba
-      codigoPrueba1: 'BIO-GLU-102',
-      codigoPrueba2: 'BIO-LIP-158', 
-      codigoPrueba3: 'BIO-HEP-205',
+      // Códigos de secciones
+      codigoCorteMacro: 'MAC-001',
+      codigoCorteMicro: 'MIC-001',
+      codigoMetodo: 'MET-001',
       
-      // Resultados ya existentes (que serían de solo lectura)
-      resultadoPrueba1: 'Glucosa: 105 mg/dL (Rango normal: 70-100 mg/dL)\nCreatinina: 0.9 mg/dL (Rango normal: 0.6-1.2 mg/dL)\nUrea: 32 mg/dL (Rango normal: 15-40 mg/dL)\nÁcido Úrico: 5.2 mg/dL (Rango normal: 2.4-6.0 mg/dL)',
-      resultadoPrueba2: 'Colesterol Total: 215 mg/dL (Rango normal: <200 mg/dL)\nHDL: 65 mg/dL (Rango normal: >40 mg/dL)\nLDL: 130 mg/dL (Rango normal: <130 mg/dL)\nTriglicéridos: 142 mg/dL (Rango normal: <150 mg/dL)',
-      resultadoPrueba3: 'TGO/AST: 28 U/L (Rango normal: 5-40 U/L)\nTGP/ALT: 32 U/L (Rango normal: 5-41 U/L)\nFosfatasa Alcalina: 85 U/L (Rango normal: 40-129 U/L)\nBilirrubina Total: 0.8 mg/dL (Rango normal: 0.2-1.2 mg/dL)',
-      diagnosticoFinal: 'El perfil bioquímico muestra valores de glucosa ligeramente elevados, sugiriendo una posible prediabetes. El perfil lipídico indica un colesterol total levemente elevado, aunque con buena relación HDL/LDL. La función hepática y renal se encuentran dentro de límites normales. Se recomienda seguimiento con el especialista en Medicina Interna para evaluar medidas dietéticas y realizar nuevo control en 3 meses. Considerar prueba de hemoglobina glicosilada para confirmar el estado glucémico.'
+      // Resultados iniciales
+      resultadoCorteMacro: 'Muestra de tejido mamario derecho, de 2.5 x 1.8 x 1.2 cm, con superficie externa irregular y coloración blanco-grisácea. Al corte se observa una lesión nodular de 1.5 cm de diámetro, de consistencia firme y coloración blanco-amarillenta.',
+      resultadoCorteMicro: 'Se observa proliferación de células epiteliales atípicas con núcleos hipercromáticos y pleomórficos. Se identifican mitosis atípicas y pérdida de la arquitectura normal del tejido. El estroma muestra desmoplasia moderada.',
+      resultadoMetodo: 'Tinción con Hematoxilina-Eosina. Inmunohistoquímica positiva para receptores de estrógeno y progesterona. Ki-67 elevado (30%).',
+      diagnosticoFinal: 'Carcinoma ductal infiltrante de mama, grado II (moderadamente diferenciado). Tamaño tumoral: 1.5 cm. Margen quirúrgico libre de tumor. Ganglios linfáticos negativos para metástasis (0/3).',
+      // Valor por defecto para cáncer
+      cancer: ''
     }
     
-    // Asignar datos al formulario de manera directa
-    formData.idMuestra = informeData.idMuestra
-    formData.paciente = informeData.paciente
-    formData.tipoAnalisisTexto = informeData.tipoAnalisisTexto
-    formData.estadoTexto = informeData.estadoTexto
-    formData.medicoSolicitanteTexto = informeData.medicoSolicitanteTexto
-    formData.fechaIngresoTexto = informeData.fechaIngresoTexto
-    formData.fechaResultadoTexto = informeData.fechaResultadoTexto
-    formData.codigoPrueba1 = informeData.codigoPrueba1
-    formData.codigoPrueba2 = informeData.codigoPrueba2
-    formData.codigoPrueba3 = informeData.codigoPrueba3
-    formData.resultadoPrueba1 = informeData.resultadoPrueba1
-    formData.resultadoPrueba2 = informeData.resultadoPrueba2
-    formData.resultadoPrueba3 = informeData.resultadoPrueba3
-    formData.diagnosticoFinal = informeData.diagnosticoFinal
+    // Asignar datos al formulario
+    Object.assign(formData, informeData)
     
-    console.log('Datos cargados:', formData) // Para depuración
+    console.log('Datos cargados:', formData)
     
   } catch (error) {
     statusType.value = 'error'
