@@ -9,15 +9,14 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
-# Set all CORS enabled origins
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# Set all CORS enabled origins - Temporarily allowing all origins for debugging
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Temporarily allow all origins
+    allow_credentials=False,  # Must be False when using allow_origins=["*"]
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Event handlers for startup and shutdown
 @app.on_event("startup")

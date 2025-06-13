@@ -1,32 +1,44 @@
-from pydantic import BaseModel
-from typing import Optional, Dict, Any
+from pydantic import BaseModel, Field
+from typing import Optional, Dict, Any, List
 from datetime import datetime
 
+class CupsItem(BaseModel):
+    code: str
+    cantidad: int = 1
+
+class MuestraIndividual(BaseModel):
+    numero: int
+    region_cuerpo: str
+    cups: List[CupsItem]
+
 class MuestraBase(BaseModel):
-    codigo: str
-    tipo: str
-    ubicacion: str
-    fecha_recoleccion: datetime
+    medico_solicitante: Optional[str] = None
+    fecha_ingreso: datetime
     observaciones: Optional[str] = None
+    muestras: List[MuestraIndividual]  # Múltiples muestras por solicitud
 
 class MuestraCreate(MuestraBase):
+    codigo_muestra: Optional[str] = Field(None, description="Código único de la muestra (se genera automáticamente si no se proporciona)")
     usuario_id: str
+    paciente_id: str  # ID del paciente asociado (cédula)
 
 class MuestraUpdate(BaseModel):
-    codigo: Optional[str] = None
-    tipo: Optional[str] = None
-    ubicacion: Optional[str] = None
-    fecha_recoleccion: Optional[datetime] = None
+    medico_solicitante: Optional[str] = None
+    fecha_ingreso: Optional[datetime] = None
     estado: Optional[str] = None
     observaciones: Optional[str] = None
     resultados: Optional[Dict[str, Any]] = None
 
 class Muestra(MuestraBase):
-    id: str
+    id: str = Field(alias="_id")  # El _id será el codigo_muestra
     estado: str = "pendiente"
     usuario_id: str
+    paciente_id: str  # Cédula del paciente
     resultados: Optional[Dict[str, Any]] = None
-    fecha_creacion: Optional[datetime] = None
+    fecha_creacion: datetime
+    fecha_actualizacion: Optional[datetime] = None
+    codigo_solicitud: Optional[str] = None  # Para compatibilidad con frontend
 
     class Config:
         from_attributes = True
+        populate_by_name = True

@@ -15,10 +15,10 @@ class Settings(BaseSettings):
     MONGODB_URL: str = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
     DATABASE_NAME: str = os.getenv("DATABASE_NAME", "lime_pathsys")
     
-    # CORS
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
         "http://localhost:3000",
-        "http://localhost:5173", 
+        "http://localhost:5173",
+        "http://localhost:5174",
         "http://localhost:8080"
     ]
 

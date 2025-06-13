@@ -1,18 +1,40 @@
 <template>
   <div class="space-y-6">
-    <!-- Número de Cédula -->
+    <!-- Cédula -->
     <div>
       <label class="mb-1.5 block text-sm font-medium text-gray-700">
-        Número de Cédula *
+        Cédula *
       </label>
-      <input
-        type="text"
-        v-model="formData.numeroCedula"
-        placeholder="Ej: 12345678"
-        :class="getFieldClasses('numeroCedula', true)"
-        required
-        ref="cedulaInput"
-      />
+      <div class="relative">
+        <input
+          type="text"
+          v-model="formData.numeroCedula"
+          @input="handleCedulaInput"
+          @blur="validateCedula"
+          placeholder="Ejemplo: 12345678"
+          :class="getCedulaFieldClasses()"
+          required
+          ref="cedulaInput"
+          maxlength="10"
+          :disabled="isValidatingCedula"
+        />
+        <div v-if="isValidatingCedula" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+          <svg class="animate-spin h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+      </div>
+      <div v-if="cedulaErrors.length > 0" class="mt-1 space-y-1">
+        <p v-for="error in cedulaErrors" :key="error" class="text-sm text-red-600">
+          {{ error }}
+        </p>
+      </div>
+      <div v-if="cedulaWarnings.length > 0" class="mt-1 space-y-1">
+        <p v-for="warning in cedulaWarnings" :key="warning" class="text-sm text-yellow-600">
+          {{ warning }}
+        </p>
+      </div>
     </div>
 
     <!-- Nombre del Paciente -->
@@ -23,11 +45,19 @@
       <input
         type="text"
         v-model="formData.nombrePaciente"
+        @input="handleNombreInput"
+        @blur="validateNombre"
         placeholder="Ingrese el nombre completo del paciente"
-        :class="getFieldClasses('nombrePaciente', true)"
+        :class="getNombreFieldClasses()"
         required
         ref="nombreInput"
+        maxlength="100"
       />
+      <div v-if="nombreErrors.length > 0" class="mt-1 space-y-1">
+        <p v-for="error in nombreErrors" :key="error" class="text-sm text-red-600">
+          {{ error }}
+        </p>
+      </div>
     </div>
 
     <!-- Sexo -->
@@ -70,13 +100,25 @@
       <input
         type="number"
         v-model="formData.edad"
+        @input="handleEdadInput"
+        @blur="validateEdad"
         placeholder="Ingrese la edad"
-        :class="getFieldClasses('edad', true)"
+        :class="getEdadFieldClasses()"
         required
         ref="edadInput"
         min="0"
-        max="120"
+        max="150"
       />
+      <div v-if="edadErrors.length > 0" class="mt-1 space-y-1">
+        <p v-for="error in edadErrors" :key="error" class="text-sm text-red-600">
+          {{ error }}
+        </p>
+      </div>
+      <div v-if="edadWarnings.length > 0" class="mt-1 space-y-1">
+        <p v-for="warning in edadWarnings" :key="warning" class="text-sm text-yellow-600">
+          {{ warning }}
+        </p>
+      </div>
     </div>
 
     <!-- Entidad -->
@@ -145,16 +187,16 @@
       <div class="flex items-center justify-end space-x-3 mb-4">
         <BotonLimpiar 
           @limpiar="limpiarFormulario"
-          :disabled="isLoading"
+          :disabled="isLoading || isValidatingCedula"
         />
         <button
           @click="handleGuardarClick"
           type="button"
           class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          :disabled="isLoading"
+          :disabled="isLoading || isValidatingCedula"
         >
           <svg
-            v-if="isLoading"
+            v-if="isLoading || isValidatingCedula"
             class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -177,7 +219,7 @@
               d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
             />
           </svg>
-          {{ isLoading ? 'Guardando...' : 'Guardar Paciente' }}
+          {{ isLoading ? 'Guardando...' : isValidatingCedula ? 'Validando...' : 'Guardar Paciente' }}
         </button>
       </div>
       
@@ -187,7 +229,7 @@
         :campos="formData"
         :campos-obligatorios="['numeroCedula','nombrePaciente','sexo','edad','entidad','tipoAtencion']"
         :etiquetas="{
-          numeroCedula: 'Número de Cédula',
+          numeroCedula: 'Cédula',
           nombrePaciente: 'Nombre del Paciente',
           sexo: 'Sexo',
           edad: 'Edad',
@@ -233,17 +275,17 @@
             <div class="bg-white bg-opacity-50 rounded-md border border-green-300 p-3">
               <p class="text-sm font-medium text-green-800 mb-2">Datos del Paciente Registrado:</p>
               <div class="space-y-1">
-                <p class="text-lg font-semibold text-green-900">{{ formData.nombrePaciente }}</p>
-                <p class="text-base text-green-800">Número de Cédula: <span class="font-mono font-bold">{{ formData.numeroCedula }}</span></p>
+                <p class="text-lg font-semibold text-green-900">{{ pacienteGuardado.nombrePaciente }}</p>
+                <p class="text-base text-green-800">Cédula: <span class="font-mono font-bold">{{ pacienteGuardado.numeroCedula }}</span></p>
               </div>
               <button 
-                @click="copiarDNI"
+                @click="copiarCedula"
                 class="mt-2 inline-flex items-center px-3 py-1.5 border border-green-300 rounded-md text-xs font-medium text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors"
               >
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
-                Copiar Número de Cédula
+                Copiar Cédula
               </button>
             </div>
           </div>
@@ -251,94 +293,7 @@
       </div>
     </div>
 
-    <!-- Notificación Emergente Centrada -->
-    <transition
-      enter-active-class="transition ease-out duration-300"
-      enter-from-class="opacity-0 transform scale-95"
-      enter-to-class="opacity-100 transform scale-100"
-      leave-active-class="transition ease-in duration-200"
-      leave-from-class="opacity-100 transform scale-100"
-      leave-to-class="opacity-0 transform scale-95"
-    >
-      <div
-        v-if="showNotification"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
-      >
-        <!-- Overlay oscuro -->
-        <div 
-          class="absolute inset-0 bg-black bg-opacity-50"
-          @click="showNotification = false"
-        ></div>
-        
-        <!-- Modal de notificación -->
-        <div
-          class="relative bg-white rounded-2xl shadow-2xl border-l-4 border-green-500 p-8 max-w-md w-full"
-        >
-          <div class="text-center">
-            <!-- Ícono de éxito -->
-            <div class="mx-auto flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
-              <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            
-            <!-- Título -->
-            <h3 class="text-2xl font-bold text-gray-900 mb-2">¡Paciente Registrado!</h3>
-            
-            <!-- Mensaje -->
-            <p class="text-gray-600 mb-1">
-              El paciente <strong class="text-brand-600">{{ formData.nombrePaciente }}</strong>
-            </p>
-            <p class="text-gray-600 mb-1">
-              con Número de Cédula
-            </p>
-            <p class="text-lg font-semibold text-brand-600 font-mono mb-4">
-              {{ formData.numeroCedula }}
-            </p>
-            <p class="text-gray-600 mb-6">
-              se ha registrado correctamente en el sistema.
-            </p>
-            
-            <!-- Timestamp -->
-            <div class="flex items-center justify-center text-sm text-gray-500 mb-6">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              {{ new Date().toLocaleTimeString() }}
-            </div>
-            
-            <!-- Barra de progreso -->
-            <div class="w-full bg-gray-200 rounded-full h-2 mb-6">
-              <div 
-                class="bg-green-500 h-2 rounded-full transition-all duration-75 ease-linear"
-                :style="{ width: progressWidth + '%' }"
-              ></div>
-            </div>
-            
-            <!-- Botón de cerrar -->
-            <button
-              @click="showNotification = false"
-              class="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-lg text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-3 focus:ring-green-500 focus:ring-offset-2 transition-colors"
-            >
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              Entendido
-            </button>
-          </div>
-          
-          <!-- Botón X en la esquina -->
-          <button
-            @click="showNotification = false"
-            class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100"
-          >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </transition>
+
   </div>
 </template>
 
@@ -348,6 +303,7 @@ import 'flatpickr/dist/flatpickr.css'
 import ListaDesplegable from '../../ComponentesFormularios/ListaDesplegable.vue'
 import BotonGuardar from '../../ComponentesFormularios/BotonGuardar.vue'
 import BotonLimpiar from '../../ComponentesFormularios/BotonLimpiar.vue'
+import { crearPaciente, buscarPacientePorCedula } from '@/api/pacientes'
 
 // Estados para el componente
 const isLoading = ref(false)
@@ -358,6 +314,25 @@ const showNotification = ref(false)
 const progressWidth = ref(100)
 const botonGuardarRef = ref<{ validarExternamente: () => boolean } | null>(null)
 const showValidationError = ref(false)
+
+// Variable para almacenar los datos del paciente guardado
+const pacienteGuardado = ref({
+  numeroCedula: '',
+  nombrePaciente: '',
+  sexo: '',
+  edad: '',
+  entidad: '',
+  tipoAtencion: '',
+  observaciones: ''
+})
+
+// Estados para validación
+const cedulaErrors = ref<string[]>([])
+const cedulaWarnings = ref<string[]>([])
+const nombreErrors = ref<string[]>([])
+const edadErrors = ref<string[]>([])
+const edadWarnings = ref<string[]>([])
+const isValidatingCedula = ref(false)
 
 // Entidades disponibles
 const entidades = [
@@ -397,31 +372,298 @@ const statusIconClass = computed(() => {
   return statusType.value === 'success' ? 'text-green-600' : 'text-red-600'
 })
 
+// Funciones de validación y formateo
+
+// Validación de cédula
+const validateCedula = async () => {
+  const cedula = formData.numeroCedula.trim()
+  cedulaErrors.value = []
+  cedulaWarnings.value = []
+  
+  if (!cedula) {
+    if (hasAttemptedSubmit.value) {
+      cedulaErrors.value.push('La cédula es obligatoria')
+    }
+    return
+  }
+  
+  // Validar solo números
+  if (!/^\d+$/.test(cedula)) {
+    cedulaErrors.value.push('La cédula debe contener solo números')
+    return
+  }
+  
+  // Validar longitud mínima
+  if (cedula.length < 7) {
+    cedulaErrors.value.push('La cédula debe tener al menos 7 dígitos')
+    return
+  }
+  
+  // Validar longitud máxima
+  if (cedula.length > 10) {
+    cedulaErrors.value.push('La cédula no puede tener más de 10 dígitos')
+    return
+  }
+  
+  // Advertencias
+  if (cedula.length < 8) {
+    cedulaWarnings.value.push('La mayoría de cédulas tienen 8 dígitos o más')
+  }
+  
+  // Validar si la cédula ya existe (solo en blur)
+  if (cedula.length >= 7 && hasAttemptedSubmit.value) {
+    try {
+      isValidatingCedula.value = true
+      const pacienteExistente = await buscarPacientePorCedula(cedula)
+      if (pacienteExistente) {
+        cedulaErrors.value.push(`Ya existe un paciente con la cédula ${cedula}: ${pacienteExistente.nombrePaciente}`)
+      }
+    } catch (error) {
+      console.error('Error al validar cédula:', error)
+    } finally {
+      isValidatingCedula.value = false
+    }
+  }
+}
+
+// Manejo de entrada de cédula
+const handleCedulaInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const value = target.value
+  
+  // Solo permitir números
+  const numericValue = value.replace(/\D/g, '')
+  formData.numeroCedula = numericValue
+  
+  // Validar en tiempo real
+  if (numericValue.length > 0) {
+    validateCedula()
+  } else {
+    cedulaErrors.value = []
+    cedulaWarnings.value = []
+  }
+}
+
+// Validación de nombre
+const validateNombre = () => {
+  const nombre = formData.nombrePaciente.trim()
+  nombreErrors.value = []
+  
+  if (!nombre) {
+    if (hasAttemptedSubmit.value) {
+      nombreErrors.value.push('El nombre del paciente es obligatorio')
+    }
+    return
+  }
+  
+  // Validar longitud mínima
+  if (nombre.length < 2) {
+    nombreErrors.value.push('El nombre debe tener al menos 2 caracteres')
+    return
+  }
+  
+  // Validar que contenga al menos dos palabras
+  const palabras = nombre.split(/\s+/).filter(p => p.length > 0)
+  if (palabras.length < 2) {
+    nombreErrors.value.push('Ingrese el nombre completo (nombre y apellido)')
+    return
+  }
+  
+  // Validar caracteres válidos (letras, espacios, acentos, guiones)
+  if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s\-']+$/.test(nombre)) {
+    nombreErrors.value.push('El nombre solo puede contener letras, espacios, guiones y apostrofes')
+    return
+  }
+}
+
+// Manejo de entrada de nombre
+const handleNombreInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  let value = target.value
+  
+  // Capitalizar primera letra de cada palabra
+  value = value.replace(/\b\w/g, (char) => char.toUpperCase())
+  formData.nombrePaciente = value
+  
+  // Validar en tiempo real
+  if (value.length > 0) {
+    validateNombre()
+  } else {
+    nombreErrors.value = []
+  }
+}
+
+// Validación de edad
+const validateEdad = () => {
+  const edad = parseInt(formData.edad)
+  edadErrors.value = []
+  edadWarnings.value = []
+  
+  if (!formData.edad || isNaN(edad)) {
+    if (hasAttemptedSubmit.value) {
+      edadErrors.value.push('La edad es obligatoria')
+    }
+    return
+  }
+  
+  if (edad < 0) {
+    edadErrors.value.push('La edad no puede ser negativa')
+    return
+  }
+  
+  if (edad > 150) {
+    edadErrors.value.push('La edad no puede ser mayor a 150 años')
+    return
+  }
+  
+  // Advertencias
+  if (edad > 120) {
+    edadWarnings.value.push('Edad muy alta, verifique que sea correcta')
+  } else if (edad === 0) {
+    edadWarnings.value.push('¿Es un recién nacido? Considere usar meses si es menor a 1 año')
+  }
+}
+
+// Manejo de entrada de edad
+const handleEdadInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const value = target.value
+  
+  // Solo permitir números
+  const numericValue = value.replace(/\D/g, '')
+  formData.edad = numericValue
+  
+  // Validar en tiempo real
+  if (numericValue.length > 0) {
+    validateEdad()
+  } else {
+    edadErrors.value = []
+    edadWarnings.value = []
+  }
+}
+
+// Funciones para clases CSS
+const getCedulaFieldClasses = () => {
+  const baseClasses = "h-11 w-full rounded-lg border bg-white px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3"
+  
+  if (cedulaErrors.value.length > 0) {
+    return `${baseClasses} border-red-500 focus:border-red-500 focus:ring-red-500/10 bg-red-50`
+  }
+  
+  if (cedulaWarnings.value.length > 0) {
+    return `${baseClasses} border-yellow-500 focus:border-yellow-500 focus:ring-yellow-500/10 bg-yellow-50`
+  }
+  
+  if (formData.numeroCedula && cedulaErrors.value.length === 0) {
+    return `${baseClasses} border-green-500 focus:border-green-500 focus:ring-green-500/10 bg-green-50`
+  }
+  
+  return `${baseClasses} border-gray-300 focus:border-brand-300 focus:ring-brand-500/10 bg-white`
+}
+
+const getNombreFieldClasses = () => {
+  const baseClasses = "h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3"
+  
+  if (nombreErrors.value.length > 0) {
+    return `${baseClasses} border-red-500 focus:border-red-500 focus:ring-red-500/10 bg-red-50`
+  }
+  
+  if (formData.nombrePaciente && nombreErrors.value.length === 0) {
+    return `${baseClasses} border-green-500 focus:border-green-500 focus:ring-green-500/10 bg-green-50`
+  }
+  
+  return `${baseClasses} border-gray-300 focus:border-brand-300 focus:ring-brand-500/10`
+}
+
+const getEdadFieldClasses = () => {
+  const baseClasses = "h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3"
+  
+  if (edadErrors.value.length > 0) {
+    return `${baseClasses} border-red-500 focus:border-red-500 focus:ring-red-500/10 bg-red-50`
+  }
+  
+  if (edadWarnings.value.length > 0) {
+    return `${baseClasses} border-yellow-500 focus:border-yellow-500 focus:ring-yellow-500/10 bg-yellow-50`
+  }
+  
+  if (formData.edad && edadErrors.value.length === 0) {
+    return `${baseClasses} border-green-500 focus:border-green-500 focus:ring-green-500/10 bg-green-50`
+  }
+  
+  return `${baseClasses} border-gray-300 focus:border-brand-300 focus:ring-brand-500/10`
+}
+
 // Función para guardar el paciente
 const guardarPaciente = async () => {
   isLoading.value = true
   statusMessage.value = ''
+  
+  // Guardar los datos del paciente antes de limpiar el formulario (para mostrarlos en el mensaje de éxito)
+  pacienteGuardado.value = {
+    numeroCedula: formData.numeroCedula,
+    nombrePaciente: formData.nombrePaciente,
+    sexo: formData.sexo,
+    edad: formData.edad,
+    entidad: formData.entidad,
+    tipoAtencion: formData.tipoAtencion,
+    observaciones: formData.observaciones
+  }
+  
   try {
+    // Transformar los datos al formato esperado por el backend
+    const pacientePayload = {
+      numeroCedula: formData.numeroCedula,
+      nombrePaciente: formData.nombrePaciente,
+      sexo: formData.sexo,
+      edad: Number(formData.edad),
+      entidad: formData.entidad,
+      tipoAtencion: formData.tipoAtencion,
+      observaciones: formData.observaciones || undefined
+    }
+    
+    // Debug: Ver qué datos se están enviando
+    console.log('Payload enviado:', pacientePayload)
+    
+    // Llamada a la API para guardar el paciente
+    await crearPaciente(pacientePayload)
+    
+    // Mostrar mensaje de éxito
     statusType.value = 'success'
     statusMessage.value = 'Paciente guardado exitosamente'
-    showNotification.value = true
-    progressWidth.value = 100
-    const duration = 5000
-    const interval = 50
-    const decrement = (interval / duration) * 100
-    const progressInterval = setInterval(() => {
-      progressWidth.value -= decrement
-      if (progressWidth.value <= 0) {
-        clearInterval(progressInterval)
-        showNotification.value = false
-        progressWidth.value = 100
-      }
-    }, interval)
-    emit('patient-saved', { ...formData })
-  } catch (error) {
+    
+    // Emitir evento con los datos del paciente guardado
+    emit('patient-saved', pacienteGuardado.value)
+    
+    // Limpiar el formulario automáticamente después de guardar exitosamente
+    setTimeout(() => {
+      limpiarSoloFormulario()
+    }, 100) // Pequeño delay para que el mensaje se muestre antes de limpiar
+    
+    // Auto-ocultar el mensaje de éxito después de 10 segundos
+    setTimeout(() => {
+      statusMessage.value = ''
+    }, 10000)
+    
+  } catch (error: any) {
     statusType.value = 'error'
-    statusMessage.value = 'Error al guardar el paciente. Intente nuevamente.'
-    console.error('Error:', error)
+    
+    // Manejar errores específicos
+    if (error.response?.status === 409) {
+      statusMessage.value = `Ya existe un paciente registrado con la cédula ${formData.numeroCedula}`
+      cedulaErrors.value = [`Ya existe un paciente con la cédula ${formData.numeroCedula}`]
+      if (cedulaInput.value) {
+        cedulaInput.value.focus()
+      }
+    } else if (error.response?.data?.detail) {
+      statusMessage.value = `Error: ${error.response.data.detail}`
+    } else {
+      statusMessage.value = 'Error al guardar el paciente. Intente nuevamente.'
+    }
+    
+    console.error('Error completo:', error)
+    if (error.response && error.response.data) {
+      console.error('Detalles del error:', error.response.data)
+    }
   } finally {
     isLoading.value = false
   }
@@ -437,9 +679,38 @@ const limpiarFormulario = () => {
   formData.tipoAtencion = ''
   formData.observaciones = ''
   
+  // Limpiar estados de validación
+  cedulaErrors.value = []
+  cedulaWarnings.value = []
+  nombreErrors.value = []
+  edadErrors.value = []
+  edadWarnings.value = []
+  
   statusMessage.value = ''
   hasAttemptedSubmit.value = false
   showValidationError.value = false
+}
+
+// Función para limpiar solo los datos del formulario (sin afectar mensajes de estado)
+const limpiarSoloFormulario = () => {
+  formData.numeroCedula = ''
+  formData.nombrePaciente = ''
+  formData.sexo = ''
+  formData.edad = ''
+  formData.entidad = ''
+  formData.tipoAtencion = ''
+  formData.observaciones = ''
+  
+  // Limpiar estados de validación
+  cedulaErrors.value = []
+  cedulaWarnings.value = []
+  nombreErrors.value = []
+  edadErrors.value = []
+  edadWarnings.value = []
+  
+  hasAttemptedSubmit.value = false
+  showValidationError.value = false
+  // NO limpiar statusMessage para mantener el cartel de éxito visible
 }
 
 // Función para manejar errores de validación
@@ -449,15 +720,38 @@ const handleValidationError = (camposInvalidos: string[]) => {
 }
 
 // Función para manejar el click del botón guardar
-const handleGuardarClick = () => {
+const handleGuardarClick = async () => {
+  hasAttemptedSubmit.value = true
+  
+  // Ejecutar todas las validaciones
+  await validateCedula()
+  validateNombre()
+  validateEdad()
+  
+  // Verificar si hay errores de validación personalizados
+  const hasCustomErrors = cedulaErrors.value.length > 0 || 
+                         nombreErrors.value.length > 0 || 
+                         edadErrors.value.length > 0
+  
   // Trigger validation using the BotonGuardar component
+  let isValidBotonGuardar = true
   if (botonGuardarRef.value) {
-    const isValid = botonGuardarRef.value.validarExternamente()
-    if (isValid) {
-      guardarPaciente()
-      showValidationError.value = false
-    } else {
-      showValidationError.value = true
+    isValidBotonGuardar = botonGuardarRef.value.validarExternamente()
+  }
+  
+  if (isValidBotonGuardar && !hasCustomErrors) {
+    guardarPaciente()
+    showValidationError.value = false
+  } else {
+    showValidationError.value = true
+    
+    // Hacer scroll al primer campo con error
+    if (cedulaErrors.value.length > 0 && cedulaInput.value) {
+      cedulaInput.value.focus()
+    } else if (nombreErrors.value.length > 0 && nombreInput.value) {
+      nombreInput.value.focus()
+    } else if (edadErrors.value.length > 0 && edadInput.value) {
+      edadInput.value.focus()
     }
   }
 }
@@ -474,11 +768,33 @@ watch(formData, (newData) => {
 watch(formData, () => {
   if (showValidationError.value && botonGuardarRef.value) {
     const isValid = botonGuardarRef.value.validarExternamente()
-    if (isValid) {
+    const hasCustomErrors = cedulaErrors.value.length > 0 || 
+                           nombreErrors.value.length > 0 || 
+                           edadErrors.value.length > 0
+    if (isValid && !hasCustomErrors) {
       showValidationError.value = false
     }
   }
 }, { deep: true })
+
+// Watch individual para campos específicos
+watch(() => formData.numeroCedula, () => {
+  if (formData.numeroCedula) {
+    validateCedula()
+  }
+})
+
+watch(() => formData.nombrePaciente, () => {
+  if (formData.nombrePaciente) {
+    validateNombre()
+  }
+})
+
+watch(() => formData.edad, () => {
+  if (formData.edad) {
+    validateEdad()
+  }
+})
 
 // Función para obtener clases CSS condicionales para campos requeridos
 const getFieldClasses = (fieldName: keyof typeof formData, isRequired = false) => {
@@ -502,15 +818,28 @@ const getTextareaClasses = (fieldName: keyof typeof formData, isRequired = false
   return `${baseClasses} border-gray-300 focus:border-brand-300 focus:ring-brand-500/10`
 }
 
-// Función para copiar el Número de Cédula del paciente
+// Función para copiar la Cédula del paciente guardado
+const copiarCedula = async () => {
+  if (pacienteGuardado.value.numeroCedula) {
+    try {
+      await navigator.clipboard.writeText(pacienteGuardado.value.numeroCedula)
+      // Opcional: mostrar feedback visual de que se copió
+      console.log('Cédula copiada al portapapeles')
+    } catch (err) {
+      console.error('Error al copiar la cédula:', err)
+    }
+  }
+}
+
+// Función para copiar la Cédula del paciente (función legacy, mantener por compatibilidad)
 const copiarDNI = async () => {
   if (formData.numeroCedula) {
     try {
       await navigator.clipboard.writeText(formData.numeroCedula)
       // Opcional: mostrar feedback visual de que se copió
-      console.log('Número de Cédula copiado al portapapeles')
+      console.log('Cédula copiada al portapapeles')
     } catch (err) {
-      console.error('Error al copiar el Número de Cédula:', err)
+      console.error('Error al copiar la cédula:', err)
     }
   }
 }

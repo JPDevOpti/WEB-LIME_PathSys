@@ -46,8 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
 // Interfaz para las propiedades del componente
 interface BreadcrumbProps {
   pageTitle: string  // Título que se mostrará en el breadcrumb
