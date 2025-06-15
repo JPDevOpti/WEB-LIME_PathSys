@@ -13,6 +13,7 @@ Backend API para el sistema LIME PathSys desarrollado con FastAPI, MongoDB y Pyt
 ### Instalación
 
 1. **Crear entorno virtual:**
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # En Linux/Mac
@@ -20,30 +21,34 @@ source .venv/bin/activate  # En Linux/Mac
 .venv\Scripts\activate     # En Windows
 ```
 
-2. **Instalar dependencias:**
+1. **Instalar dependencias:**
+
 ```bash
 pip install -r requirements.txt
 ```
 
-3. **Configurar variables de entorno:**
+1. **Configurar variables de entorno:**
+
 ```bash
 cp .env.example .env
 # Editar .env con tus configuraciones
 ```
 
-4. **Inicializar base de datos:**
+1. **Inicializar base de datos:**
+
 ```bash
 python init_db.py
 ```
 
-5. **Ejecutar servidor de desarrollo:**
+1. **Ejecutar servidor de desarrollo:**
+
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## 📁 Estructura del Proyecto
 
-```
+```text
 Back-End/
 ├── app/
 │   ├── __init__.py
@@ -95,9 +100,11 @@ BACKEND_CORS_ORIGINS=["http://localhost:3000", "http://localhost:5173"]
 ## 📚 API Endpoints
 
 ### Autenticación
+
 - `POST /api/v1/auth/login` - Iniciar sesión
 
 ### Usuarios
+
 - `GET /api/v1/usuarios/` - Listar usuarios
 - `POST /api/v1/usuarios/` - Crear usuario
 - `GET /api/v1/usuarios/{id}` - Obtener usuario
@@ -105,6 +112,7 @@ BACKEND_CORS_ORIGINS=["http://localhost:3000", "http://localhost:5173"]
 - `DELETE /api/v1/usuarios/{id}` - Eliminar usuario
 
 ### Muestras
+
 - `GET /api/v1/muestras/` - Listar muestras
 - `POST /api/v1/muestras/` - Crear muestra
 - `GET /api/v1/muestras/{id}` - Obtener muestra
@@ -116,14 +124,15 @@ BACKEND_CORS_ORIGINS=["http://localhost:3000", "http://localhost:5173"]
 
 Una vez ejecutado el servidor, puedes acceder a:
 
-- **Swagger UI:** http://localhost:8000/docs
-- **ReDoc:** http://localhost:8000/redoc
+- **Swagger UI:** <http://localhost:8000/docs>
+- **ReDoc:** <http://localhost:8000/redoc>
 
 ## 🗄️ Base de Datos
 
 ### Colecciones MongoDB
 
 #### usuarios
+
 ```json
 {
   "_id": "ObjectId",
@@ -137,6 +146,7 @@ Una vez ejecutado el servidor, puedes acceder a:
 ```
 
 #### muestras
+
 ```json
 {
   "_id": "ObjectId", 
@@ -155,16 +165,19 @@ Una vez ejecutado el servidor, puedes acceder a:
 ## 🧑‍💻 Desarrollo
 
 ### Ejecutar en modo desarrollo
+
 ```bash
 uvicorn app.main:app --reload
 ```
 
 ### Ejecutar tests
+
 ```bash
 pytest
 ```
 
 ### Formatear código
+
 ```bash
 black app/
 isort app/
@@ -173,6 +186,7 @@ isort app/
 ## 🚀 Producción
 
 ### Con Docker
+
 ```bash
 # Construir imagen
 docker build -t lime-pathsys-backend .
@@ -182,6 +196,7 @@ docker run -p 8000:8000 lime-pathsys-backend
 ```
 
 ### Con Gunicorn
+
 ```bash
 gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker
 ```
