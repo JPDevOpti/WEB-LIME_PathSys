@@ -13,6 +13,9 @@ export interface MuestraFormData {
   medicoSolicitante: string
   fechaIngreso: string
   pacienteId: string
+  // Agregar nuevos campos
+  nombrePaciente: string
+  entidad: string
   observaciones?: string
 }
 
@@ -44,6 +47,9 @@ export const crearSolicitudMuestras = async (data: MuestraFormData) => {
     medico_solicitante: data.medicoSolicitante || null,
     fecha_ingreso: parseSpanishDateToISO(data.fechaIngreso),
     observaciones: data.observaciones || null,
+    // Agregar nombre del paciente y entidad
+    nombre_paciente: data.nombrePaciente,
+    entidad: data.entidad,
     muestras: data.muestras.map(muestra => ({
       numero: muestra.numero,
       region_cuerpo: muestra.regionCuerpo,

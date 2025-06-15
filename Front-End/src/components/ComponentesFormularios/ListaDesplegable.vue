@@ -7,7 +7,7 @@
       <input
         type="text"
         :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
+        @input="$emit('update:modelValue', ($event.target as HTMLInputElement)?.value)"
         @focus="showDropdown = true"
         @blur="hideDropdown"
         :placeholder="placeholder"

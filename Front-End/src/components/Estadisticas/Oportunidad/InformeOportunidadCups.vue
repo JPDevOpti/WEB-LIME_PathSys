@@ -431,7 +431,7 @@ const imprimir = () => {
   const procedimientos = cupsMesSeleccionado.value;
   const totalDentro = totalDentroOportunidad.value;
   const totalFuera = totalFueraOportunidad.value;
-  const totalProcedimientos = totalProcedimientos.value;
+  const totalProcedimientosCount = totalProcedimientos.value;
   const fechaActual = new Date();
 
   // Generar las filas de la tabla
@@ -587,8 +587,8 @@ const imprimir = () => {
             <td></td>
             <td>${totalDentro}</td>
             <td>${totalFuera}</td>
-            <td>${totalProcedimientos}</td>
-            <td>${((totalDentro / totalProcedimientos) * 100).toFixed(1)}%</td>
+            <td>${totalProcedimientosCount}</td>
+            <td>${((totalDentro / totalProcedimientosCount) * 100).toFixed(1)}%</td>
           </tr>
         </tfoot>
       </table>

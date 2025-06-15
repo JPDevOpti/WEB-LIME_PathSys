@@ -494,6 +494,29 @@ interface Usuario {
   firmaPatologoUrl?: string
 }
 
+interface NuevoUsuario {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  role: string
+  specialty?: string
+  documento?: string
+  startDate?: string
+  entityName?: string
+  nit?: string
+  address?: string
+  entityType?: string
+  medicalLicense?: string
+  observaciones?: string
+  firmaPatologoUrl?: string
+  isActive?: boolean
+  cupsCode?: string
+  cupsName?: string
+  cupsCategory?: string
+  cupsDescription?: string
+}
+
 const tiposUsuario = [
   { value: 'administrativo', label: 'Administrativo' },
   { value: 'patologo', label: 'Patólogo' },
@@ -773,6 +796,46 @@ const actualizarUsuario = async () => {
   } catch (error) {
     console.error('Error al actualizar usuario:', error)
     errorBusqueda.value = 'Error al actualizar usuario'
+  }
+}
+
+// Crear usuario
+const crearUsuario = async () => {
+  try {
+    const usuarioData = { ...nuevoUsuario.value } as NuevoUsuario
+    const response = await api.crearUsuario(usuarioData)
+    
+    if (response.success) {
+      // Limpiar el formulario
+      nuevoUsuario.value = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        role: '',
+        specialty: '',
+        documento: '',
+        startDate: '',
+        entityName: '',
+        nit: '',
+        address: '',
+        entityType: '',
+        medicalLicense: '',
+        observaciones: '',
+        firmaPatologoUrl: '',
+        isActive: true,
+        cupsCode: '',
+        cupsName: '',
+        cupsCategory: '',
+        cupsDescription: ''
+      }
+      
+      // Mostrar mensaje de éxito
+      alert('Usuario creado exitosamente')
+    }
+  } catch (error) {
+    console.error('Error al crear usuario:', error)
+    alert('Error al crear usuario')
   }
 }
 

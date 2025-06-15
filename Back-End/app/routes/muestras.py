@@ -65,7 +65,8 @@ async def crear_solicitud_muestras(muestra: MuestraCreate):
     muestra_dict = muestra.dict(exclude={"codigo_muestra"} if hasattr(muestra, 'codigo_muestra') else set())
     muestra_dict["_id"] = codigo_muestra
     muestra_dict["fecha_creacion"] = datetime.utcnow()
-    muestra_dict["estado"] = "pendiente"
+    muestra_dict["estado"] = "En proceso"  # Cambiar estado por defecto
+    muestra_dict["patologo"] = "Pendiente"  # Campo patólogo por defecto
     
     # Insertar la muestra
     await db.muestras.insert_one(muestra_dict)

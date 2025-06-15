@@ -1432,6 +1432,9 @@ const guardarMuestra = async () => {
       medicoSolicitante: formData.medicoSolicitante.trim() || '',
       fechaIngreso: fechaIngreso.value,
       pacienteId: pacienteInfo.value.id,
+      // Agregar nombre del paciente y entidad
+      nombrePaciente: pacienteInfo.value.nombre,
+      entidad: pacienteInfo.value.entidad || '',
       observaciones: ''
     }
 

@@ -133,7 +133,7 @@ const chartOptions = ref({
       show: false,
     },
     y: {
-      formatter: function (val) {
+      formatter: function (val: any) {
         return val.toString()
       },
     },

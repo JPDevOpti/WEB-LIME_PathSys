@@ -12,7 +12,7 @@ export const buscarPacientePorCedula = async (numeroCedula: string) => {
   try {
     const response = await axios.get(`${API_URL}/pacientes/cedula/${numeroCedula}`)
     return response.data
-  } catch (error) {
+  } catch (error: any) {
     if (error.response?.status === 404) {
       return null // Paciente no encontrado
     }

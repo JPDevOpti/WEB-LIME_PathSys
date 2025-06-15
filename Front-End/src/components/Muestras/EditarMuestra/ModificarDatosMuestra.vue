@@ -471,13 +471,13 @@ onMounted(() => {
 // Methods
 const getFieldClasses = (field: string) => {
   const baseClasses = 'h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10'
-  const errorClasses = hasAttemptedSubmit.value && !formData[field] ? 'border-red-300' : 'border-gray-300'
+  const errorClasses = hasAttemptedSubmit.value && !(formData as any)[field] ? 'border-red-300' : 'border-gray-300'
   return `${baseClasses} ${errorClasses}`
 }
 
 const getTextareaClasses = (field: string) => {
   const baseClasses = 'w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 resize-none'
-  const errorClasses = hasAttemptedSubmit.value && !formData[field] ? 'border-red-300' : 'border-gray-300'
+  const errorClasses = hasAttemptedSubmit.value && !(formData as any)[field] ? 'border-red-300' : 'border-gray-300'
   return `${baseClasses} ${errorClasses}`
 }
 
