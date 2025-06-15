@@ -1,0 +1,12 @@
+{
+  "_id": "12345678",
+  "nombrePaciente": "Juan Pérez García",
+  "sexo": "masculino",
+  "edad": 35,
+  "entidad": "MINSA",
+  "tipoAtencion": "ambulatorio",
+  "observaciones": "Paciente con antecedentes de hipertensión",
+  "fecha_creacion": {
+    "$date": "2025-06-13T17:34:19.979Z"
+  }
+}
